@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#cccccc</color>
+    <color name="colorPrimaryDark">#828b96</color>
+    <color name="colorAccent">#828b96</color>
+
+    <color name="cmm_main_back">#cccccc</color>
+    <color name="cmm_main_red">#ea2d49</color>
+    <color name="cmm_main_gray">#2b2d35</color>
+    <color name="cmm_main_text_gray">#828b96</color>
+    <color name="cmm_main_divider">#15161b</color>
+    <color name="cmm_content">#9A9A9A</color>
+
+    <color name="frg_cycling_red_high">#ccea2d49</color>
+    <color name="frg_cycling_red_low">#33ea2d49</color>
+    <color name="frg_cycling_back">#ec090707</color>
+    <color name="frg_abstract_holder_back">#15161b</color>
+    <color name="frg_map_title">#D9202126</color>
+    <color name="act_abstract_gray">#D62d3037</color>
+    <color name="act_abstract_item_name">#a6a6a6</color>
+    <color name="act_details_data_back">#15161b</color>
+    <!--#15161b!-->
+    <color name="act_details_data_text">#6f7781</color>
+    <color name="act_details_chart_speed">#0099c5</color>
+    <color name="act_details_chart_climb">#51eb99</color>
+    <color name="act_details_chart_back">#22242a</color>
+    <color name="act_chart_text_2">#d2d2d2</color>
+    <color name="act_chart_ranking_1">#c4c239</color>
+    <color name="act_chart_ranking_2">#c4a239</color>
+    <color name="act_chart_ranking_3">#c45d39</color>
+    <color name="dlg_push_msg">#f2f2f2</color>
+
+
+    <color name="axis">#ffffff</color>
+    <color name="label">#ffffff</color>
+
+
+    <!--个人界面的颜色-->
+    <color name="act_person_back">#2A2D34</color>
+    <color name="action_person_back_2">#3A3D46</color>
+
+
+    <color name="white">#ffffff</color>
+    <color name="share_press">#eeeeee</color>
+    <color name="transparent">#00000000</color>
+    <color name="black">#090707</color>
+    <color name="cmm_click">#444849</color>
+
+    <color name="popwin_red">#ea2d49</color>
+
+    <color name="head_view">#202126</color>
+
+
+    <!--离线地图-->
+    <color name="divider_line">#2E2E31</color>
+    <color name="holo_black">#15161B</color>
+    <!-- 15161B  -->
+
+
+    <!-- 背景白色底色时用-->
+    <color name="divider_line2">#C8C7CC</color>
+
+    <!--公告背景色-->
+    <color name="bg_notice">#2d2e32</color>
+
+</resources>

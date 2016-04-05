@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Main.Theme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/Main.ActionBar</item>
+        <item name="actionBarStyle">@style/Main.ActionBar</item>
+        <!-- For the home as up icon on sub pages -->
+        <!--<item name="homeAsUpIndicator">@mipmap/icon</item>-->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:displayOptions">showHome|showTitle</item>
+        <!-- <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>-->
+        <item name="actionMenuTextAppearance">@style/ActionBarMenuText</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowBackground">@color/cmm_content</item>
+        <item name="colorPrimary">@color/cmm_content</item>
+        <item name="colorPrimaryDark">@color/cmm_content</item>
+        <item name="colorAccent">@color/cmm_content</item>
+    </style>
+</resources>

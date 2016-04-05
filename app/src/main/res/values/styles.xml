@@ -1,0 +1,103 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="Main.Theme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/Main.ActionBar</item>
+        <item name="actionBarStyle">@style/Main.ActionBar</item>
+        <!-- For the home as up icon on sub pages -->
+        <!--<item name="homeAsUpIndicator">@mipmap/icon</item>-->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:displayOptions">showHome|showTitle</item>
+        <!-- <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>-->
+        <item name="actionMenuTextAppearance">@style/ActionBarMenuText</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
+
+        <item name="colorPrimary">@color/holo_black</item>
+        <item name="colorPrimaryDark">@color/holo_black</item>
+        <item name="colorAccent">@color/holo_black</item>
+
+    </style>
+
+
+    <style name="Theme.NoneTranslucent" parent="Main.Theme">
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowDisablePreview">true</item>
+    </style>
+
+
+    <style name="Theme.Transparent" parent="Main.Theme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+
+    <!-- <style name="RabbitActionBar" parent="@style/Widget.AppCompat.ActionBar">-->
+    <style name="Main.ActionBar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">@color/cmm_main_back</item>
+        <item name="android:titleTextStyle">@style/RabbitActionBarTitle</item>
+        <!--Support library compatibility-->
+        <item name="background">@color/cmm_main_back</item>
+        <item name="titleTextStyle">@style/RabbitActionBarTitle</item>
+        <item name="android:popupBackground">@color/holo_black</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">false</item>
+        <!--去掉toolbar阴影-->
+        <item name="elevation">0dp</item>
+    </style>
+
+    <style name="RabbitActionBarTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="ActionBarMenuText" parent="TextAppearance.AppCompat.Widget.ActionBar.Menu">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="MMTabButton">
+        <item name="android:textSize">12.0dip</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:button">@null</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_weight">1.0</item>
+        <item name="android:paddingBottom">2.0dip</item>
+        <item name="android:paddingTop">2.0dip</item>
+    </style>
+
+    <style name="CustomTabPageIndicator.Text" parent="android:TextAppearance.Medium">
+        <item name="android:typeface">monospace</item>
+    </style>
+
+    <!-- Don't touch this -->
+    <attr name="numberPickerStyle" format="reference" />
+
+    <!--横线-->
+    <style name="line_horizontal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0.5dp</item>
+        <item name="android:background">@color/divider_line</item>
+    </style>
+
+
+    <style name="TabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+    <style name="TabLayoutTextAppearanceInverse" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@android:color/holo_red_light</item>
+    </style>
+
+    <!--<style name="progress_circle_list" parent="progress_circle">-->
+    <!--<item name="android:indeterminateDrawable">@drawable/bg_progressbar_list</item>-->
+    <!--</style>-->
+
+</resources>
