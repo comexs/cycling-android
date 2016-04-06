@@ -48,7 +48,7 @@ public class DBContext extends ContextWrapper {
             if (TextUtils.isEmpty(path)) {
                 return createFile(FileUtils.getDbDir(), name);
             } else {
-                return createFile(FileUtils.getTrackDir(), name+".gx");
+                return createFile(FileUtils.getTrackDir(), name+".db");
             }
         }
         return null;

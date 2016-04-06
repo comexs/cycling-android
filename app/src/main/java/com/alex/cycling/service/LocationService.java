@@ -44,7 +44,7 @@ public class LocationService extends Service {
 
     private void initService() {
         workHandler = new TrackWorkHandler();
-        workHandler.start(getBaseContext());
+        workHandler.startWork(getBaseContext());
     }
 
 }

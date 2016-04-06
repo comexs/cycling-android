@@ -52,7 +52,7 @@ public class TrackManager {
         if (!isExist) {
             openTrackDb(workPoint);
         }
-        DbUtil.creTrackDb(trackName).saveAsync(workPoint);
+        DbUtil.creTrackDb(trackName).save(workPoint);
     }
 
 

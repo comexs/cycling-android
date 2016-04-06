@@ -3,49 +3,28 @@ package com.alex.cycling.service;
 
 import android.content.Context;
 import android.location.Location;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
+import android.os.*;
 
+import com.alex.cycling.bean.ActInfo;
+import com.alex.cycling.client.TClient;
 import com.alex.cycling.client.TrackClient;
-import com.alex.cycling.db.DbUtil;
-import com.alex.cycling.db.impl.WorkPointService;
-import com.alex.cycling.utils.BaiduTool;
-import com.alex.cycling.utils.LogUtils;
 import com.alex.greendao.WorkPoint;
-import com.baidu.mapapi.model.LatLng;
 
 import java.math.BigDecimal;
 
 /**
  * Created by comexs on 16/3/28.
  */
-public class TrackWorkHandler extends Handler {
-
-    //服务发出来的消息
-    public final static int MSG_TRACK_START = -1;       //服务启动
-    public final static int MSG_TRACK_GIVEUP = -2;      //放弃轨迹
-    public final static int MSG_TRACK_SAVED = -3;       //轨迹保存
-    public final static int MSG_SERVICE_INIT = -5;      //
-    public final static int MSG_TRACK_RESTART = -6;
-
-
-    //客户端发出来的命令
-    public static final int CMM_SAVE_STATE = 1;
-    public static final int CMM_START_TRACK = 2;
-    public static final int CMM_CANCEL_PAUSE = 3;
-    public static final int CMM_SET_AUTO_PAUSE = 4;
-    public static final int CMM_PAUSE = 5;
-    public static final int CMM_SAVE_TRACK = 6;
-    public static final int CMM_END_TRACK = 7;
-    public static final int CMM_RECOVERY_TRACK = 8;
-    public static final int CMM_INIT = 9;
-
+public class TrackWorkHandler extends Thread {
 
     private LocationSersor mLocationSersor;
     private OnHandlerListener handlerListener;
     private long startTime = 0; //开始时间
+    private long tempTime = 0;
     private boolean isEnd = false; // 是否结束
+    private Location mLocation;
+    private int mSignal;
+    private ActInfo actInfo;
 
     public TrackWorkHandler() {
         mLocationSersor = new LocationSersor();
@@ -53,13 +32,14 @@ public class TrackWorkHandler extends Handler {
         TrackClient.getInstance().setWorkHandler(this);
     }
 
-    public void start(Context context) {
+    public void startWork(Context context) {
         mLocationSersor.start(context);
+        start();
     }
 
     public void end() {
         mLocationSersor.end();
-
+        interrupt();
     }
 
     //保存轨迹
@@ -67,10 +47,26 @@ public class TrackWorkHandler extends Handler {
         isEnd = true;
     }
 
-
     @Override
-    public void handleMessage(Message msg) {
-        super.handleMessage(msg);
+    public void run() {
+        android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+        while (true) {
+            synchronized (TrackWorkHandler.class) {
+                long minTime = SystemClock.elapsedRealtime();
+                if (minTime - tempTime > 1000) {
+                    tempTime = minTime;
+                    if (startTime == 0) {
+                        startTime = minTime;
+                    }
+                    if (isEnd) {
+                        end();
+                        return;
+                    }
+                    if (null != handlerListener)
+                        handlerListener.onPostData(mLocation, (tempTime - startTime) / 1000, mSignal, actInfo);
+                }
+            }
+        }
     }
 
     private LocationSersor.LocationListener listener = new LocationSersor.LocationListener() {
@@ -79,6 +75,8 @@ public class TrackWorkHandler extends Handler {
             if (null == location) {
                 return;
             }
+            mLocation = location;
+            mSignal = signal;
             handlerLocation(location);
             WorkPoint workPoint = new WorkPoint();
             workPoint.setLat(location.getLatitude());
@@ -86,15 +84,14 @@ public class TrackWorkHandler extends Handler {
             workPoint.setTime(location.getTime());
             workPoint.setSpeed(location.getSpeed());
             workPoint.setAlt(location.getAltitude());
-            LogUtils.e(workPoint.toString());
+//            LogUtils.e(workPoint.toString());
             if (isEnd) {
                 TrackManager.closeTrackDB(workPoint);
                 end();
                 return;
             }
             TrackManager.saveWorkPoint(workPoint);
-            location.setTime(location.getTime()-startTime);
-            if (null != handlerListener) handlerListener.onPostData(location, signal);
+            location.setTime(location.getTime() - startTime);
         }
     };
 
@@ -135,7 +132,7 @@ public class TrackWorkHandler extends Handler {
 
 
     public interface OnHandlerListener {
-        void onPostData(Location location, int signal);
+        void onPostData(Location location, long time, int signal, ActInfo actInfo);
     }
 
 }

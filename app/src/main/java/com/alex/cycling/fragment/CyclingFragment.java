@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
+import com.alex.cycling.bean.ActInfo;
 import com.alex.cycling.client.TrackClient;
 
 import butterknife.Bind;
@@ -55,17 +56,17 @@ public class CyclingFragment extends BaseFragment {
     private TrackClient.OnCyclingListener onCyclingListener = new TrackClient.OnCyclingListener() {
 
         @Override
-        public void onCycling(int code, String time) {
+        public void onCycling(ActInfo actInfo) {
 
         }
 
         @Override
-        public void onNewLocation(Location pt, int signal) {
+        public void onNewLocation(Location pt, long time, int signal) {
+            CyclingFragment.this.time.setText(getTimeIntervalFormat(time));
             if (null == pt) {
                 return;
             }
             speed.setText(String.format("%.2f", pt.getSpeed() * 3.6));
-            time.setText(getTimeIntervalFormat(pt.getTime()));
             distance.setText(String.format("%.2f", pt.getAltitude()));
         }
     };

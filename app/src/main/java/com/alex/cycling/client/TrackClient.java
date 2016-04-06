@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 
+import com.alex.cycling.bean.ActInfo;
 import com.alex.cycling.service.LocationService;
 import com.alex.cycling.service.TrackWorkHandler;
 import com.alex.cycling.utils.thread.ExecutUtils;
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * Created by comexs on 16/3/28.
  */
-public class TrackClient implements ITrack {
+public class TrackClient implements TClient {
 
 
     private static final TrackClient client = new TrackClient();
@@ -80,7 +81,7 @@ public class TrackClient implements ITrack {
 
     private TrackWorkHandler.OnHandlerListener handlerListener = new TrackWorkHandler.OnHandlerListener() {
         @Override
-        public void onPostData(final Location location, final int signal) {
+        public void onPostData(final Location location, final long time, final int signal, final ActInfo actInfo) {
             for (final OnCyclingListener listener : listenerList) {
                 if (null == listener) {
                     return;
@@ -88,19 +89,23 @@ public class TrackClient implements ITrack {
                 ExecutUtils.runInMain(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onNewLocation(location, signal);
+                        listener.onNewLocation(location, time, signal);
+                        listener.onCycling(actInfo);
                     }
                 });
+
             }
         }
+
+
     };
 
 
     public interface OnCyclingListener {
 
-        void onCycling(int code, String time);
+        void onCycling(ActInfo actInfo);
 
-        void onNewLocation(Location pt, int signal);
+        void onNewLocation(Location pt, long time, int signal);
     }
 
 }

@@ -5,7 +5,7 @@ import android.content.Context;
 /**
  * Created by comexs on 16/3/28.
  */
-public interface ITrack {
+public interface TClient {
 
     void start(Context context); //开启轨迹监听
 

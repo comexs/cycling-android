@@ -24,7 +24,7 @@ public class CacheWorkThread extends Thread {
     public CacheWorkThread(Context context, LocationSersor locationSersor) {
         this.locationSersor = locationSersor;
         this.context = context;
-        list = DbUtil.creTrackDb("test").queryAll();
+        list = DbUtil.creTrackDb("default10").queryAll();
     }
 
     int i = 0;

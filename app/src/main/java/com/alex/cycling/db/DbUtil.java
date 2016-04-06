@@ -13,6 +13,8 @@ public class DbUtil {
 
     private static WorkPointService workPointService;
     private static TrackInfoService trackInfoService;
+    private static String trackName = null;
+
 
     private static WorkPointDao getWorkPointDao(String trackUUID) {
         return DbCore.createTrackSession(trackUUID).getWorkPointDao();
@@ -21,6 +23,12 @@ public class DbUtil {
     public static WorkPointService creTrackDb(String trackUUID) {
         if (workPointService == null) {
             workPointService = new WorkPointService(getWorkPointDao(trackUUID));
+            trackName = trackUUID;
+        } else {
+            if (!trackName.equals(trackUUID)) {
+                workPointService = new WorkPointService(getWorkPointDao(trackUUID));
+                trackName = trackUUID;
+            }
         }
         return workPointService;
     }

@@ -15,10 +15,13 @@ public class DbCore {
 
     private static final String DEFAULT_DB_NAME = "default.db";  //数据库名
     private static DaoMaster daoMaster;
+    private static DaoMaster trackDaoMaster;
     private static DaoSession daoSession;
+    private static DaoSession trackDaoSession;
 
     private static DBContext mContext;
     private static String DB_NAME;
+    private static String TRACK_NAME;
 
     public static void init(Context context) {
         init(context, DEFAULT_DB_NAME);
@@ -42,12 +45,18 @@ public class DbCore {
     }
 
     public static DaoMaster getDaoMaster(String tableName) {
-        if (daoMaster == null) {
+        if (trackDaoMaster == null) {
             mContext.setName(FileUtils.getTrackDir());
             DaoMaster.OpenHelper helper = new DaoMaster.DevOpenHelper(mContext, tableName, null);
-            daoMaster = new DaoMaster(helper.getWritableDatabase());
+            trackDaoMaster = new DaoMaster(helper.getWritableDatabase());
+        } else {
+            if (!TRACK_NAME.equals(tableName)) {
+                mContext.setName(FileUtils.getTrackDir());
+                DaoMaster.OpenHelper helper = new DaoMaster.DevOpenHelper(mContext, tableName, null);
+                trackDaoMaster = new DaoMaster(helper.getWritableDatabase());
+            }
         }
-        return daoMaster;
+        return trackDaoMaster;
     }
 
     public static DaoSession getDaoSession() {
@@ -67,13 +76,19 @@ public class DbCore {
      * @return
      */
     public static DaoSession createTrackSession(String tableName) {
-        if (daoSession == null) {
-            if (daoMaster == null) {
-                daoMaster = getDaoMaster(tableName);
+        if (trackDaoSession == null) {
+            if (trackDaoMaster == null) {
+                trackDaoMaster = getDaoMaster(tableName);
             }
-            daoSession = daoMaster.newSession();
+            trackDaoSession = trackDaoMaster.newSession();
+            TRACK_NAME = tableName;
+        } else {
+            if (!TRACK_NAME.equals(tableName)) {
+                trackDaoMaster = getDaoMaster(tableName);
+                trackDaoSession = trackDaoMaster.newSession();
+            }
         }
-        return daoSession;
+        return trackDaoSession;
     }
 
     public static void enableQueryBuilderLog() {

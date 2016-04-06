@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseActivity;
+import com.alex.cycling.bean.ActInfo;
 import com.alex.cycling.client.TrackClient;
 import com.alex.cycling.utils.BaiduLocationUtils;
 import com.alex.cycling.utils.BaiduTool;
@@ -60,13 +61,18 @@ public class MapActivity extends BaseActivity implements BDLocationListener {
 
 
     private TrackClient.OnCyclingListener onCyclingListener = new TrackClient.OnCyclingListener() {
+
         @Override
-        public void onCycling(int code, String time) {
+        public void onCycling(ActInfo actInfo) {
+
 
         }
 
         @Override
-        public void onNewLocation(Location pt, int signal) {
+        public void onNewLocation(Location pt, long time, int signal) {
+            if (null == pt) {
+                return;
+            }
             LatLng bdPt = BaiduTool.wgs2bd(new LatLng(pt.getLatitude(), pt.getLongitude()));
             latLngList.add(bdPt);
             drawTrack();

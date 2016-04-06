@@ -14,20 +14,20 @@ public class LocationSersor implements LocationListener {
 
     private LocationManager mLocationManager;
     private LocationListener listener;
-    private CacheWorkThread trackWorkThread;
+    private CacheWorkThread cacheWorkThread;
 
     public void start(Context context) {
         mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
-//        trackWorkThread = new CacheWorkThread(context, this);
-//        trackWorkThread.start();
+//        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
+        cacheWorkThread = new CacheWorkThread(context, this);
+        cacheWorkThread.start();
     }
 
     public void end() {
         if (null == mLocationManager) {
             return;
         }
-        if (null != trackWorkThread) trackWorkThread.quit();
+        if (null != cacheWorkThread) cacheWorkThread.quit();
         mLocationManager.removeUpdates(this);
     }
 
