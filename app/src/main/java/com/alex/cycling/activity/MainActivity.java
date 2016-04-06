@@ -40,7 +40,7 @@ public class MainActivity extends BaseActivity {
         tab.setTabTextColors(getResources().getColor(R.color.white), getResources().getColor(R.color.cmm_main_red));
 
 
-        aa
+        
 //        List<TrackInfo> list = DbUtil.getTrackInfoService().queryAll();
 //        LogUtils.e(list.size() + "");
 //        for (TrackInfo trackInfo : list) {
