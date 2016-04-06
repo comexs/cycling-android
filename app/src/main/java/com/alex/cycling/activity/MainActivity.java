@@ -33,7 +33,7 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         mTabAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager());
-        mTabAdapter.addTab(new CyclingFragment(), "骑行");
+        mTabAdapter.addTab(new CyclingFragment(), "记录");
         viewPager.setOffscreenPageLimit(1);
         viewPager.setAdapter(mTabAdapter);
         tab.setupWithViewPager(viewPager);
