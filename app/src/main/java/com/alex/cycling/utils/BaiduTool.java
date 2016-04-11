@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.location.LocationManager;
 import android.provider.Settings;
 
+import com.alex.greendao.WorkPoint;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
 import com.baidu.mapapi.search.geocode.GeoCoder;
@@ -75,6 +76,12 @@ public final class BaiduTool {
         LatLng p1 = wgs2bd(latLng);
         LatLng p2 = wgs2bd(latLng2);
         return DistanceUtil.getDistance(p1, p2);
+    }
+
+    public static double getDis(WorkPoint workPoint1, WorkPoint workPoint2) {
+        LatLng latLng1 = new LatLng(workPoint1.getLat(), workPoint1.getLon());
+        LatLng latLng2 = new LatLng(workPoint2.getLat(), workPoint2.getLon());
+        return getDis(latLng1, latLng2);
     }
 
     public static int boundsToZoom(LatLng latLng, LatLng latLng2, int screen) {
@@ -151,26 +158,12 @@ public final class BaiduTool {
         context.startActivity(intent);
     }
 
-    public static void geoAddress(LatLng latLng) {
+    public static void geoAddress(LatLng latLng, OnGetGeoCoderResultListener listener) {
         GeoCoder geoCoder = GeoCoder.newInstance();
         geoCoder.setOnGetGeoCodeResultListener(listener);
         ReverseGeoCodeOption reversOption;
         reversOption = new ReverseGeoCodeOption();
-        reversOption.location(latLng);
+        reversOption.location(wgs2bd(latLng));
         geoCoder.reverseGeoCode(reversOption);
     }
-
-    private static OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
-        @Override
-        public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
-
-        }
-
-        @Override
-        public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
-            ReverseGeoCodeResult.AddressComponent address = result.getAddressDetail();
-
-        }
-    };
-
 }

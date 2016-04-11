@@ -40,8 +40,8 @@
             android:value="AdiXDFguIpfsOtQ5XGb24iaLxsMHmcPC" />
 
         <activity
-            android:name=".activity.MainActivity"
-            android:label="骑行"
+            android:name=".ui.MainActivity"
+            android:label="跑步"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -61,7 +61,7 @@
         </service>
 
         <activity
-            android:name=".fragment.MapActivity"
+            android:name=".ui.MapActivity"
             android:label="地图"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />

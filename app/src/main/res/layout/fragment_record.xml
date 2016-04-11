@@ -1,108 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
     android:orientation="vertical">
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="时间(t)"
-        android:textColor="@color/cmm_main_text_gray"
-        android:textSize="14sp" />
-
-
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="00:00:00"
-        android:textColor="@color/holo_black"
-        android:textSize="50sp" />
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="实时速度(km/h)"
-        android:textColor="@color/cmm_main_text_gray"
-        android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/speed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="0.00"
-        android:textColor="@color/holo_black"
-        android:textSize="80sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="里程(km)"
-        android:textColor="@color/cmm_main_text_gray"
-        android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/distance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="0.00"
-        android:textColor="@color/holo_black"
-        android:textSize="50sp" />
-
-
-    <FrameLayout
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp">
+        android:layout_height="match_parent">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/record_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="vertical" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/end"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:layout_marginRight="100dp"
-            android:src="@mipmap/ic_finish_black"
-            app:backgroundTint="@color/white"
-            app:elevation="6dp"
-            app:pressedTranslationZ="12dp"
-            app:rippleColor="@color/white" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/start"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:src="@mipmap/ic_play_white"
-            app:backgroundTint="@android:color/holo_red_dark"
-            app:elevation="6dp"
-            app:pressedTranslationZ="12dp"
-            app:rippleColor="@color/white" />
-
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/map"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:layout_marginLeft="100dp"
-            android:src="@mipmap/ico_map"
-            app:backgroundTint="@color/white"
-            app:rippleColor="#33728dff" />
-
-    </FrameLayout>
 
 </LinearLayout>

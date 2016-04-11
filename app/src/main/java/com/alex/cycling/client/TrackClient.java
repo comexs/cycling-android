@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.location.Location;
 
 import com.alex.cycling.bean.ActInfo;
+import com.alex.cycling.db.DbUtil;
 import com.alex.cycling.service.LocationService;
+import com.alex.cycling.service.TrackManager;
 import com.alex.cycling.service.TrackWorkHandler;
 import com.alex.cycling.utils.thread.ExecutUtils;
 
@@ -35,7 +37,8 @@ public class TrackClient implements TClient {
     }
 
     @Override
-    public void start(Context context) {
+        public void start(Context context) {
+        TrackManager.hasRevovery();
         Intent intent = new Intent(context, LocationService.class);
         context.startService(intent);
     }

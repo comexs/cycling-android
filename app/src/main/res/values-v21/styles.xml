@@ -13,7 +13,7 @@
         <!-- <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>-->
         <item name="actionMenuTextAppearance">@style/ActionBarMenuText</item>
         <item name="android:windowIsTranslucent">false</item>
-        <item name="android:windowBackground">@color/cmm_content</item>
+        <item name="android:windowBackground">@color/share_press</item>
         <item name="colorPrimary">@color/cmm_content</item>
         <item name="colorPrimaryDark">@color/cmm_content</item>
         <item name="colorAccent">@color/cmm_content</item>

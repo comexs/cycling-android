@@ -6,9 +6,11 @@ import android.location.Location;
 import android.os.*;
 
 import com.alex.cycling.bean.ActInfo;
-import com.alex.cycling.client.TClient;
 import com.alex.cycling.client.TrackClient;
+import com.alex.cycling.utils.BaiduTool;
+import com.alex.cycling.utils.LogUtils;
 import com.alex.greendao.WorkPoint;
+import com.baidu.mapapi.model.LatLng;
 
 import java.math.BigDecimal;
 
@@ -75,16 +77,16 @@ public class TrackWorkHandler extends Thread {
             if (null == location) {
                 return;
             }
-            mLocation = location;
-            mSignal = signal;
             handlerLocation(location);
+            handlerAccount(location);
             WorkPoint workPoint = new WorkPoint();
             workPoint.setLat(location.getLatitude());
             workPoint.setLon(location.getLongitude());
             workPoint.setTime(location.getTime());
             workPoint.setSpeed(location.getSpeed());
             workPoint.setAlt(location.getAltitude());
-//            LogUtils.e(workPoint.toString());
+            mLocation = location;
+            mSignal = signal;
             if (isEnd) {
                 TrackManager.closeTrackDB(workPoint);
                 end();
@@ -105,7 +107,24 @@ public class TrackWorkHandler extends Thread {
         location.setLongitude(round(location.getLongitude()));
         location.setAltitude(round(location.getAltitude(), 2));
         location.setSpeed(roundSpeed(location.getSpeed()));
+    }
 
+    private void handlerAccount(Location location) {
+        if (null == actInfo) {
+            actInfo = new ActInfo();
+        }
+        if (null == mLocation) {
+            return;
+        }
+        double distance = BaiduTool.getDis(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()), new LatLng(location.getLatitude(), location.getLongitude()));
+        distance = distance / 1000;
+        actInfo.setDistance((actInfo.getDistance() + distance));
+        actInfo.setClimbed(actInfo.getClimbed() + Math.abs(actInfo.getClimbed() - location.getAltitude()));
+        if (0 != (tempTime - startTime) / 1000) {
+            double aSpeed = actInfo.getDistance() / ((tempTime - startTime) / 1000) * 1000;
+            actInfo.setAverSpeed(aSpeed * 3.6);
+            LogUtils.e(actInfo.getAverSpeed() + "");
+        }
     }
 
     //保留6位小数

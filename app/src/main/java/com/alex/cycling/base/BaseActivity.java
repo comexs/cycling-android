@@ -4,11 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -57,7 +54,7 @@ public class BaseActivity extends AppCompatActivity {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
         }
-     initActionBar();
+        initActionBar();
     }
 
     protected View getRootView() {
@@ -187,16 +184,6 @@ public class BaseActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
     /********************************
      * OpenActivity
      ***********************/
@@ -251,60 +238,4 @@ public class BaseActivity extends AppCompatActivity {
         super.finish();
     }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-    }
-
-    public static void openImageDetail(Activity context, String url, ImageView imageView) {
-        //readyGo(ImagesDetailActivity.class, extras);
-        int[] mLocation = new int[2];
-        imageView.getLocationOnScreen(mLocation);
-//        Bitmap bitmap = BitmapUtils.getBitmap(url, context);
-//        if (null == bitmap) {
-//            return;
-//        }
-//        EventBus.getDefault().postSticky(new BaseEvent<Bitmap>(BaseEvent.SEE_DETAIL_IMAGE, bitmap));
-//        ImagesDetailActivity.newInstance(context, url, mLocation[0], mLocation[1], imageView.getWidth(), imageView.getHeight());
-//        context.overridePendingTransition(0, 0);
-    }
-
-    public void navigateToImagesDetail(Activity context, String url, int x, int y, int width, int height) {
-        //readyGo(ImagesDetailActivity.class, extras);
-//        ImagesDetailActivity.newInstance(context, url, x, y, width, height);
-        context.overridePendingTransition(0, 0);
-    }
-
-    static WeakReference<Menu> mOptionsMenu;
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        mOptionsMenu = new WeakReference<Menu>(menu);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    /**
-     * 右上角的统一刷新状态
-     *
-     * @param refreshing
-     */
-//    public static void showMenuLoading(boolean refreshing) {
-//        if (null == mOptionsMenu || mOptionsMenu.get() == null) {
-//            return;
-//        }
-//        Menu menu = mOptionsMenu.get();
-//        final MenuItem refreshItem = menu.findItem(R.id.menu_refresh);
-//        if (null != refreshItem) {
-//            if (refreshing) {
-//                MenuItemCompat.setActionView(refreshItem, R.layout.cmm_menu_progressbar);
-//            } else {
-//                MenuItemCompat.setActionView(refreshItem, null);
-//            }
-//        }
-//    }
 }
