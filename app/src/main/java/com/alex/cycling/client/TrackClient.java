@@ -4,11 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 
-import com.alex.cycling.bean.ActInfo;
-import com.alex.cycling.db.DbUtil;
+import com.jni.ActInfo;
 import com.alex.cycling.service.LocationService;
 import com.alex.cycling.service.TrackManager;
-import com.alex.cycling.service.TrackWorkHandler;
+import com.alex.cycling.service.TrackWorkThread;
 import com.alex.cycling.utils.thread.ExecutUtils;
 
 import java.util.ArrayList;
@@ -20,9 +19,9 @@ import java.util.List;
 public class TrackClient implements TClient {
 
 
-    private static final TrackClient client = new TrackClient();
+    private static TrackClient client = null;
 
-    TrackWorkHandler trackWorkHandler;
+    TrackWorkThread trackWorkHandler;
 
     List<OnCyclingListener> listenerList = new ArrayList<OnCyclingListener>();
 
@@ -31,16 +30,31 @@ public class TrackClient implements TClient {
 
     }
 
-
+    /**
+     * 非线程安全的
+     *
+     * @return
+     */
     public static TrackClient getInstance() {
+        if (null == client) {
+            synchronized (TrackClient.class) {
+                return client = new TrackClient();
+            }
+        }
         return client;
     }
 
     @Override
-        public void start(Context context) {
-        TrackManager.hasRevovery();
+    public void start(Context context) {
         Intent intent = new Intent(context, LocationService.class);
         context.startService(intent);
+//        if (!SystemUtil.hasLocationServiceRun(context)) {
+//            Intent intent = new Intent(context, LocationService.class);
+//            context.startService(intent);
+//        } else {
+//
+//            LogUtil.e("服务已启动");
+//        }
     }
 
     @Override
@@ -60,8 +74,17 @@ public class TrackClient implements TClient {
     }
 
     @Override
-    public void resumeTrack() {
-
+    public void recoveryTrack(Context context) {
+        Intent intent = new Intent(context, LocationService.class);
+        intent.setAction(TrackManager.RECOVERY);
+        context.startService(intent);
+//        if (!SystemUtil.hasLocationServiceRun(context)) {
+//            Intent intent = new Intent(context, LocationService.class);
+//            intent.setAction(TrackManager.RECOVERY);
+//            context.startService(intent);
+//        } else {
+//            LogUtil.e("服务已启动");
+//        }
     }
 
     @Override
@@ -77,12 +100,12 @@ public class TrackClient implements TClient {
         listenerList.remove(listener);
     }
 
-    public void setWorkHandler(TrackWorkHandler handler) {
+    public void setWorkHandler(TrackWorkThread handler) {
         this.trackWorkHandler = handler;
         trackWorkHandler.setOnHandlerListener(handlerListener);
     }
 
-    private TrackWorkHandler.OnHandlerListener handlerListener = new TrackWorkHandler.OnHandlerListener() {
+    private TrackWorkThread.OnHandlerListener handlerListener = new TrackWorkThread.OnHandlerListener() {
         @Override
         public void onPostData(final Location location, final long time, final int signal, final ActInfo actInfo) {
             for (final OnCyclingListener listener : listenerList) {

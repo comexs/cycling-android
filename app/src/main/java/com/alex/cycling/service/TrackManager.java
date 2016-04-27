@@ -1,16 +1,17 @@
 package com.alex.cycling.service;
 
 
-import android.text.TextUtils;
+import android.location.Location;
 
 import com.alex.cycling.db.DbUtil;
 import com.alex.cycling.utils.BaiduTool;
-import com.alex.cycling.utils.LogUtils;
+import com.alex.cycling.utils.LogUtil;
 import com.alex.cycling.utils.VacuateUtil;
 import com.alex.cycling.utils.thread.ExecutUtils;
 import com.alex.greendao.TrackInfo;
 import com.alex.greendao.TrackInfoDao;
 import com.alex.greendao.WorkPoint;
+import com.alex.greendao.WorkPointDao;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
@@ -29,52 +30,52 @@ import de.greenrobot.dao.query.CloseableListIterator;
  */
 public class TrackManager {
 
+    private static String trackUUID = null;
 
-    private static final String trackName = UUID.randomUUID().toString();
+    public static final String RECOVERY = "recovery";
 
-    private static boolean isExist = false;
+    private static boolean hasRecovery = false; //是否恢复
+
+    private static boolean isFirst = true;
+
+    private static List<WorkPoint> workPoints = new ArrayList<WorkPoint>();
 
     //当插入第一条时，写入对应的trackUUID进入数据库和对应的第一个点
     public static void openTrackDb(final WorkPoint workPoint) {
-        List<TrackInfo> trackInfos = DbUtil.getTrackInfoService().queryBuilder().where(TrackInfoDao.Properties.TrackUUID.eq(trackName)).list();
-        if (trackInfos.size() == 0) {
-            isExist = true;
-            TrackInfo trackInfo = new TrackInfo();
-            trackInfo.setTrackUUID(trackName);
-            trackInfo.setStartLat(workPoint.getLat());
-            trackInfo.setStartLon(workPoint.getLon());
-            trackInfo.setStartTime(workPoint.getTime());
-            trackInfo.setStatus(0); //对应的轨迹为未成完状态
-            trackInfo.setCalorie(0.0);
-            DbUtil.getTrackInfoService().save(trackInfo);
-            ExecutUtils.runInMain(new Runnable() {
-                @Override
-                public void run() {
-                    BaiduTool.geoAddress(new LatLng(workPoint.getLat(), workPoint.getLon()), listener);
-                }
-            });
-        }
+        isFirst = false;
+        TrackInfo trackInfo = new TrackInfo();
+        trackInfo.setTrackUUID(getCurrentUUID());
+        trackInfo.setStartLat(workPoint.getLat());
+        trackInfo.setStartLon(workPoint.getLon());
+        trackInfo.setStartTime(workPoint.getTime());
+        trackInfo.setStatus(0); //对应的轨迹为未成完状态
+        trackInfo.setCalorie(0.0);
+        DbUtil.getTrackInfoService().save(trackInfo);
+        ExecutUtils.runInMain(new Runnable() {
+            @Override
+            public void run() {
+                BaiduTool.geoAddress(new LatLng(workPoint.getLat(), workPoint.getLon()), listener);
+            }
+        });
     }
 
     //最后一条进入时，关闭数据库，插入最后一个点
-    public static void closeTrackDB(final WorkPoint workPoint) {
+    public static void closeTrackDB() {
+        isFirst = true;
         List<TrackInfo> trackInfos = DbUtil.getTrackInfoService().queryBuilder().where(TrackInfoDao.Properties.Status.eq("0")).list();
-        if (trackInfos.size() > 0) {
-            isExist = false;
-            TrackInfo trackInfo = trackInfos.get(0);
-            trackInfo.setEndLat(workPoint.getLat());
-            trackInfo.setEndLon(workPoint.getLon());
-            trackInfo.setEndTime(workPoint.getTime());
-            trackInfo.setStatus(1);  //对应的轨迹为完成状态
-            DbUtil.getTrackInfoService().update(trackInfo);
-            ExecutUtils.runInMain(new Runnable() {
-                @Override
-                public void run() {
-                    BaiduTool.geoAddress(new LatLng(workPoint.getLat(), workPoint.getLon()), listener);
-                }
-            });
-            vacuate();
+        if (trackInfos.size() == 0) {
+            return;
         }
+        TrackInfo trackInfo = trackInfos.get(0);
+        trackInfo.setStatus(1);  //对应的轨迹为完成状态
+        DbUtil.getTrackInfoService().update(trackInfo);
+//        ExecutUtils.runInMain(new Runnable() {
+//            @Override
+//            public void run() {
+//                BaiduTool.geoAddress(new LatLng(workPoint.getLat(), workPoint.getLon()), listener);
+//            }
+//        });
+        vacuate();
     }
 
     private static OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
@@ -88,13 +89,13 @@ public class TrackManager {
         public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
             ReverseGeoCodeResult.AddressComponent address = result.getAddressDetail();
             String resultStr = String.format("%s#%s#%s#%s#%s", address.province, address.city, address.district, address.street, address.streetNumber);
-            LogUtils.e(resultStr);
-            if (isExist) {
-                TrackInfo trackInfo = DbUtil.getTrackInfoService().queryBuilder().where(TrackInfoDao.Properties.TrackUUID.eq(trackName)).unique();
+            LogUtil.e(resultStr);
+            if (!isFirst) {
+                TrackInfo trackInfo = DbUtil.getTrackInfoService().queryBuilder().where(TrackInfoDao.Properties.TrackUUID.eq(getCurrentUUID())).unique();
                 trackInfo.setStartGeoCode(resultStr);
                 DbUtil.getTrackInfoService().update(trackInfo);
             } else {
-                TrackInfo trackInfo = DbUtil.getTrackInfoService().queryBuilder().where(TrackInfoDao.Properties.TrackUUID.eq(trackName)).unique();
+                TrackInfo trackInfo = DbUtil.getTrackInfoService().queryBuilder().where(TrackInfoDao.Properties.TrackUUID.eq(getCurrentUUID())).unique();
                 trackInfo.setEndGeoCode(resultStr);
                 DbUtil.getTrackInfoService().update(trackInfo);
             }
@@ -102,24 +103,71 @@ public class TrackManager {
     };
 
 
-    public static void saveWorkPoint(WorkPoint workPoint) {
-        if (!isExist) {
+    public static void saveWorkPoint(Location location, boolean isEnd) {
+        WorkPoint workPoint = new WorkPoint();
+        workPoint.setLat(location.getLatitude());
+        workPoint.setLon(location.getLongitude());
+        workPoint.setTime(location.getTime());
+        workPoint.setSpeed(location.getSpeed());
+        workPoint.setAlt(location.getAltitude());
+        if (isFirst && !hasRevovery()) {
             openTrackDb(workPoint);
         }
-        DbUtil.creTrackDb(trackName).save(workPoint);
+        workPoints.add(workPoint);
+        if (workPoints.size() == 5) {
+            DbUtil.creTrackDb(getCurrentUUID()).save(workPoints);
+            workPoints.clear();
+        }
+        if (isEnd) {
+            TrackManager.closeTrackDB();
+            if (workPoints.size() > 0) {
+                DbUtil.creTrackDb(getCurrentUUID()).save(workPoints);
+                workPoints.clear();
+            }
+            return;
+        }
     }
 
+
+    //恢复最后轨迹最后一个点
+    public static WorkPoint recoveryLastPoint() {
+        return DbUtil.creTrackDb(getCurrentUUID()).queryBuilder().orderDesc(WorkPointDao.Properties.Time).list().get(0);
+    }
+
+    //恢复最后轨迹第一个点
+    public static WorkPoint getLastTrackFirstPoint() {
+        return DbUtil.creTrackDb(getCurrentUUID()).queryBuilder().orderAsc(WorkPointDao.Properties.Time).list().get(0);
+    }
+
+
+    //获取最后轨迹的时间间隔
+    public static long getLastTrackMillTime() {
+        return (recoveryLastPoint().getTime() - getLastTrackFirstPoint().getTime()) * 1000;
+    }
+
+
+    //获取当前的轨迹uuid
     public static String getCurrentUUID() {
-        List<TrackInfo> trackInfos = DbUtil.getTrackInfoService().queryBuilder().where(TrackInfoDao.Properties.Status.eq("0")).orderDesc(TrackInfoDao.Properties.StartTime).list();
-//        if (trackInfos.size() > 0) {
-//            return trackInfos.get(0).getTrackUUID();
-//        }
-        return trackName;
+        if (null == trackUUID) {
+            if (hasRevovery()) {
+                TrackInfo trackInfo = DbUtil.getTrackInfoService().queryBuilder().where(TrackInfoDao.Properties.Status.eq("0")).orderDesc(TrackInfoDao.Properties.StartTime).list().get(0);
+                return trackUUID = trackInfo.getTrackUUID();
+            } else {
+                trackUUID = UUID.randomUUID().toString();
+            }
+        }
+        return trackUUID;
     }
 
-    public static List<LatLng> getCacheList() {
+
+    public static List<LatLng> getCurrentCacheList() {
+        return getCacheList(getCurrentUUID());
+    }
+
+
+    public static List<LatLng> getCacheList(String trackUUID) {
         List<LatLng> cacheList = new ArrayList<LatLng>();
-        CloseableListIterator<WorkPoint> workPoints = DbUtil.creTrackDb(TrackManager.getCurrentUUID()).queryBuilder().listIterator();
+        CloseableListIterator<WorkPoint> workPoints = DbUtil.creTrackDb(trackUUID).queryBuilder().listIterator();
         try {
             while (workPoints.hasNext()) {
                 WorkPoint workPoint = workPoints.next();
@@ -133,21 +181,37 @@ public class TrackManager {
         return cacheList;
     }
 
+    public static List<WorkPoint> queryWorkPointByUUID(String trackUUID) {
+        List<WorkPoint> workPointList = new ArrayList<WorkPoint>();
+        CloseableListIterator<WorkPoint> workPoints = DbUtil.creTrackDb(trackUUID).queryBuilder().listIterator();
+        try {
+            while (workPoints.hasNext()) {
+                WorkPoint workPoint = workPoints.next();
+                workPointList.add(workPoint);
+            }
+            workPoints.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return workPointList;
+    }
+
+
     public static boolean getCyclingStatus() {
-        return isExist;
+        return isFirst;
     }
 
     //是否可以恢复
     public static boolean hasRevovery() {
-        List<TrackInfo> trackInfos = DbUtil.getTrackInfoService().queryBuilder().where(TrackInfoDao.Properties.Status.eq("0")).orderDesc(TrackInfoDao.Properties.StartTime).list();
-        if (trackInfos.size() > 0) {
-            return true;
+        List<TrackInfo> lastTrackInfo = DbUtil.getTrackInfoService().queryBuilder().where(TrackInfoDao.Properties.Status.eq("0")).orderDesc(TrackInfoDao.Properties.StartTime).list();
+        if (lastTrackInfo.size() > 0) {
+            return hasRecovery = true;
         }
-        return false;
+        return hasRecovery = false;
     }
 
     public static void vacuate() {
-        vacuate(trackName);
+        vacuate(trackUUID);
     }
 
     public static void vacuate(final String trackName) {
@@ -155,8 +219,8 @@ public class TrackManager {
             @Override
             public void run() {
                 StringBuffer stringBuffer = new StringBuffer();
-                List<WorkPoint> list = DbUtil.creTrackDb(trackName).queryAll();
-                LogUtils.e(list.size() + "");
+                List<WorkPoint> list = DbUtil.creTrackDb(getCurrentUUID()).queryAll();
+                LogUtil.e(list.size() + "");
                 VacuateUtil vacuateUtil = new VacuateUtil();
                 vacuateUtil.vacuate(list, 3);
                 List<WorkPoint> resultList = vacuateUtil.getResult();
@@ -172,7 +236,7 @@ public class TrackManager {
                 TrackInfo trackInfo = DbUtil.getTrackInfoService().queryBuilder().where(TrackInfoDao.Properties.TrackUUID.eq(trackName)).unique();
                 trackInfo.setImageUrl(stringBuffer.toString());
                 DbUtil.getTrackInfoService().update(trackInfo);
-                LogUtils.e("抽稀完了!");
+                LogUtil.e("抽稀完了!");
             }
         });
     }

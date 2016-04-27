@@ -1,11 +1,9 @@
 package com.alex.cycling.ui.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +11,7 @@ import android.view.ViewGroup;
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
 import com.alex.cycling.db.DbUtil;
-import com.alex.cycling.service.TrackManager;
 import com.alex.cycling.ui.adapter.RecordAdapter;
-import com.alex.cycling.utils.LogUtils;
 import com.alex.cycling.utils.adapter.LoadMoreAdapter;
 import com.alex.greendao.TrackInfo;
 
@@ -63,7 +59,8 @@ public class RecordFragment extends BaseFragment {
                 recordList.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        swipeRefresh.setRefreshing(false);
+                        if (null != swipeRefresh)
+                            swipeRefresh.setRefreshing(false);
                     }
                 }, 3000);
             }
@@ -80,7 +77,7 @@ public class RecordFragment extends BaseFragment {
 //            if (TextUtils.isEmpty(trackInfo.getImageUrl())) {
 //                TrackManager.vacuate(trackInfo.getTrackUUID());
 //            } else {
-//                LogUtils.e(TrackManager.getBaiduUrlByDes(trackInfo.getImageUrl(), 100, 100).toString());
+//                LogUtil.e(TrackManager.getBaiduUrlByDes(trackInfo.getImageUrl(), 100, 100).toString());
 //            }
 //        }
 

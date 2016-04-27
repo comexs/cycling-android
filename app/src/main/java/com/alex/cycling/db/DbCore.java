@@ -1,8 +1,9 @@
 package com.alex.cycling.db;
 
 import android.content.Context;
+import android.text.TextUtils;
 
-import com.alex.cycling.utils.FileUtils;
+import com.alex.cycling.utils.FileUtil;
 import com.alex.greendao.DaoMaster;
 import com.alex.greendao.DaoSession;
 
@@ -45,16 +46,10 @@ public class DbCore {
     }
 
     public static DaoMaster getDaoMaster(String tableName) {
-        if (trackDaoMaster == null) {
-            mContext.setName(FileUtils.getTrackDir());
+        if (TextUtils.isEmpty(TRACK_NAME) || !TextUtils.equals(TRACK_NAME, tableName)) {
+            mContext.setName(FileUtil.getTrackDir());
             DaoMaster.OpenHelper helper = new DaoMaster.DevOpenHelper(mContext, tableName, null);
             trackDaoMaster = new DaoMaster(helper.getWritableDatabase());
-        } else {
-            if (!TRACK_NAME.equals(tableName)) {
-                mContext.setName(FileUtils.getTrackDir());
-                DaoMaster.OpenHelper helper = new DaoMaster.DevOpenHelper(mContext, tableName, null);
-                trackDaoMaster = new DaoMaster(helper.getWritableDatabase());
-            }
         }
         return trackDaoMaster;
     }
@@ -76,17 +71,12 @@ public class DbCore {
      * @return
      */
     public static DaoSession createTrackSession(String tableName) {
-        if (trackDaoSession == null) {
-            if (trackDaoMaster == null) {
+        if (TextUtils.isEmpty(TRACK_NAME) || !TextUtils.equals(TRACK_NAME, tableName)) {
+            if (trackDaoMaster == null || !TextUtils.equals(TRACK_NAME, tableName)) {
                 trackDaoMaster = getDaoMaster(tableName);
+                TRACK_NAME = tableName;
             }
             trackDaoSession = trackDaoMaster.newSession();
-            TRACK_NAME = tableName;
-        } else {
-            if (!TRACK_NAME.equals(tableName)) {
-                trackDaoMaster = getDaoMaster(tableName);
-                trackDaoSession = trackDaoMaster.newSession();
-            }
         }
         return trackDaoSession;
     }

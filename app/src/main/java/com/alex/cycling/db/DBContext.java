@@ -10,7 +10,7 @@ import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
-import com.alex.cycling.utils.FileUtils;
+import com.alex.cycling.utils.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,11 +44,11 @@ public class DBContext extends ContextWrapper {
     @Override
     public File getDatabasePath(String name) {
         //判断是否存在sd卡
-        if (FileUtils.isSDExist()) {
+        if (FileUtil.isSDExist()) {
             if (TextUtils.isEmpty(path)) {
-                return createFile(FileUtils.getDbDir(), name);
+                return createFile(FileUtil.getDbDir(), name);
             } else {
-                return createFile(FileUtils.getTrackDir(), name+".db");
+                return createFile(FileUtil.getTrackDir(), name+".db");
             }
         }
         return null;

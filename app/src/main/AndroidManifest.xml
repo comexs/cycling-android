@@ -19,6 +19,7 @@
     <!--写入扩展存储，向扩展卡写入数据，用于写入缓存定位数据-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <supports-screens
         android:anyDensity="true"
@@ -41,7 +42,7 @@
 
         <activity
             android:name=".ui.MainActivity"
-            android:label="跑步"
+            android:label="骑行"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -65,6 +66,13 @@
             android:label="地图"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.track.TrackInfoActivity"
+            android:label="轨迹详情"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        TrackInfoActivity
 
 
     </application>

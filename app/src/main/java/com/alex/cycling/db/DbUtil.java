@@ -1,5 +1,7 @@
 package com.alex.cycling.db;
 
+import android.text.TextUtils;
+
 import com.alex.cycling.db.impl.TrackInfoService;
 import com.alex.cycling.db.impl.WorkPointService;
 import com.alex.greendao.TrackInfoDao;
@@ -21,14 +23,9 @@ public class DbUtil {
     }
 
     public static WorkPointService creTrackDb(String trackUUID) {
-        if (workPointService == null) {
+        if (TextUtils.isEmpty(trackName) || !TextUtils.equals(trackName, trackUUID)) {
             workPointService = new WorkPointService(getWorkPointDao(trackUUID));
             trackName = trackUUID;
-        } else {
-            if (!trackName.equals(trackUUID)) {
-                workPointService = new WorkPointService(getWorkPointDao(trackUUID));
-                trackName = trackUUID;
-            }
         }
         return workPointService;
     }

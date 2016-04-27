@@ -2,7 +2,6 @@ package com.alex.cycling.utils;
 
 import android.content.Context;
 
-import com.alex.cycling.base.CSApplication;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -51,7 +50,7 @@ public enum BaiduLocationUtils {
             if (exportLocationListener != null) {
                 exportLocationListener.onReceiveLocation(bdLocation);
             }
-            LogUtils.e("requestLocation success !");
+            LogUtil.e("requestLocation success !");
         }
     };
 }

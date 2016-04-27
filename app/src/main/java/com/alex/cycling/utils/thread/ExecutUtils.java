@@ -6,6 +6,8 @@ import android.os.Looper;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by comexs on 16/4/3.
@@ -13,8 +15,10 @@ import java.util.concurrent.RejectedExecutionException;
 public class ExecutUtils {
 
     //多线程读写
-    public static final ExecutorService sExecutorService = Executors.newCachedThreadPool();
-    public static final Handler handler = new Handler(Looper.getMainLooper());
+    private static final ExecutorService sExecutorService = Executors.newCachedThreadPool();
+    private static final Handler handler = new Handler(Looper.getMainLooper());
+    //单延迟线程池
+    private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     public static void executeAsync(Runnable runnable) {
         try {
@@ -22,6 +26,10 @@ public class ExecutUtils {
         } catch (RejectedExecutionException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Handler getMainHandler() {
+        return handler;
     }
 
     public static <T> void deliverValue(final Callback<T> callback,
@@ -42,6 +50,9 @@ public class ExecutUtils {
         executeAsync(runnable);
     }
 
-
+    public static void runInBack(Runnable runnable, int delayTime) {
+        scheduler.schedule(runnable, delayTime, TimeUnit.MILLISECONDS);
+        scheduler.shutdown();
+    }
 
 }

@@ -1,18 +1,16 @@
 package com.alex.cycling.ui.adapter;
 
 import android.net.Uri;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alex.cycling.R;
 import com.alex.cycling.service.TrackManager;
+import com.alex.cycling.ui.track.TrackInfoActivity;
 import com.alex.cycling.utils.DateUtil;
-import com.alex.cycling.utils.LogUtils;
 import com.alex.cycling.utils.adapter.SimpleAdapter;
 import com.alex.cycling.utils.adapter.ViewUtils;
 import com.alex.greendao.TrackInfo;
@@ -39,12 +37,21 @@ public class RecordAdapter extends SimpleAdapter<TrackInfo, RecordAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        TrackInfo trackInfo = getItem(position);
+        final TrackInfo trackInfo = getItem(position);
         holder.trackName.setText(trackInfo.getTrackUUID());
         holder.time.setText(DateUtil.parseDateLineToBlurStr(trackInfo.getStartTime() * 1000));
         if (!TextUtils.isEmpty(trackInfo.getImageUrl())) {
             holder.trackImage.setImageURI(Uri.parse(TrackManager.getBaiduUrlByDes(trackInfo.getImageUrl(), 100, 100)));
+        } else {
+            TrackManager.vacuate(trackInfo.getTrackUUID());
         }
+        holder.itemMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TrackInfoActivity.newInstance(v.getContext(), trackInfo.getTrackUUID());
+            }
+        });
+
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -57,6 +64,8 @@ public class RecordAdapter extends SimpleAdapter<TrackInfo, RecordAdapter.ViewHo
         public TextView time;
         @Bind(R.id.distance)
         public TextView distance;
+        @Bind(R.id.itemMain)
+        View itemMain;
 
         public ViewHolder(View itemView) {
             super(itemView);

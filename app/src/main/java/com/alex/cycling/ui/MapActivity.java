@@ -8,15 +8,11 @@ import android.view.View;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseActivity;
-import com.alex.cycling.bean.ActInfo;
+import com.jni.ActInfo;
 import com.alex.cycling.client.TrackClient;
-import com.alex.cycling.db.DbUtil;
 import com.alex.cycling.service.TrackManager;
 import com.alex.cycling.utils.BaiduLocationUtils;
 import com.alex.cycling.utils.BaiduTool;
-import com.alex.cycling.utils.LogUtils;
-import com.alex.cycling.utils.VacuateUtil;
-import com.alex.greendao.WorkPoint;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.mapapi.map.MapStatusUpdate;
@@ -104,7 +100,7 @@ public class MapActivity extends BaseActivity implements BDLocationListener {
         if (mapView == null || mapView.getMap() == null) {
             return;
         }
-        latLngList = TrackManager.getCacheList();
+        latLngList = TrackManager.getCurrentCacheList();
         mapView.getMap().clear();
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.color(Color.RED);
@@ -173,7 +169,7 @@ public class MapActivity extends BaseActivity implements BDLocationListener {
         if (null == bdLocation) {
             return;
         }
-        if (TrackManager.getCyclingStatus()) {
+        if (!TrackManager.getCyclingStatus()) {
             return;
         }
         LatLng bdPt = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());

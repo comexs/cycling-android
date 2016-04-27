@@ -1,9 +1,10 @@
 package com.alex.cycling.ui.fragment;
 
+import android.content.DialogInterface;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +12,10 @@ import android.widget.TextView;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
-import com.alex.cycling.bean.ActInfo;
+import com.alex.cycling.service.TrackManager;
+import com.jni.ActInfo;
 import com.alex.cycling.client.TrackClient;
-import com.alex.cycling.db.DbUtil;
 import com.alex.cycling.ui.MapActivity;
-import com.alex.cycling.utils.BaiduTool;
-import com.alex.greendao.WorkPoint;
-import com.baidu.mapapi.model.LatLng;
-
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -105,7 +101,12 @@ public class CyclingFragment extends BaseFragment {
     void click(View v) {
         switch (v.getId()) {
             case R.id.start:
-                TrackClient.getInstance().start(getActivity());
+                //可以恢复
+                if (TrackManager.hasRevovery()) {
+                    showDiloag();
+                } else {
+                    TrackClient.getInstance().start(getActivity());
+                }
                 break;
             case R.id.map:
                 openActivity(getActivity(), MapActivity.class);
@@ -115,6 +116,32 @@ public class CyclingFragment extends BaseFragment {
                 break;
         }
     }
+
+
+    public void showDiloag() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("是否继续上次未完成的骑行记录");
+        builder.setPositiveButton("继续", dialog_click);
+        builder.setNegativeButton("保存", dialog_click);
+        builder.setCancelable(false);
+        builder.show();
+    }
+
+    private DialogInterface.OnClickListener dialog_click = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    TrackClient.getInstance().recoveryTrack(getActivity());
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    TrackClient.getInstance().saveTrack();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
 
     @Override

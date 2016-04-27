@@ -8,7 +8,7 @@ package com.alex.cycling.utils.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.alex.cycling.utils.LogUtils;
+import com.alex.cycling.utils.LogUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +32,7 @@ public class MergeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         for (RecyclerView.Adapter adapter : mAdapters) {
             if (!adapter.hasStableIds()) {
                 hasStableIds = false;
-                LogUtils.w("not all the adapters have stable ids: " + adapter);
+                LogUtil.w("not all the adapters have stable ids: " + adapter);
             }
         }
         super.setHasStableIds(hasStableIds);

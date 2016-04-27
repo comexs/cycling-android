@@ -1,7 +1,7 @@
 package com.alex.cycling.ui;
 
-import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseActivity;
@@ -19,7 +19,6 @@ public class MainActivity extends BaseActivity {
     @Bind(R.id.bottom_navigation_bar)
     BottomNavigationBar bottomBar;
 
-    private TabFragmentPagerAdapter mTabAdapter;
 
     PersonFragment personFragment;
     CyclingFragment cyclingFragment;
@@ -31,13 +30,6 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-//        mTabAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager());
-//        mTabAdapter.addTab(new CyclingFragment(), "骑行");
-//        viewPager.setOffscreenPageLimit(1);
-//        viewPager.setAdapter(mTabAdapter);
-//        tab.setupWithViewPager(viewPager);
-//        tab.setTabTextColors(getResources().getColor(R.color.white), getResources().getColor(R.color.cmm_main_red));
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         bottomBar.addItem(new BottomNavigationItem(R.mipmap.ic_launcher, "Home"))
@@ -67,7 +59,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void tableSelect(int position) {
-        FragmentTransaction localFragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction localFragmentTransaction = getSupportFragmentManager().beginTransaction();
         switch (position) {
             case 0:
                 if (null == personFragment) {
@@ -93,4 +85,14 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

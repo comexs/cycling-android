@@ -84,7 +84,7 @@ public final class BaiduTool {
         return getDis(latLng1, latLng2);
     }
 
-    public static int boundsToZoom(LatLng latLng, LatLng latLng2, int screen) {
+    public static int LatLngBoundsToZoom(LatLng latLng, LatLng latLng2, int screen) {
         double dis = getDis(latLng, latLng2);
         dis *= 1.2;
         double resolution = dis / screen;

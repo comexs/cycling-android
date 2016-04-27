@@ -1,16 +1,15 @@
 package com.alex.cycling.base;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
 
 
 public abstract class BaseFragment extends Fragment {
@@ -139,17 +138,6 @@ public abstract class BaseFragment extends Fragment {
             intent.putExtras(bundle);
         }
         startActivityForResult(intent, requestCode);
-    }
-
-    public void openFragment(Fragment fragment, Bundle args) {
-        ViewGroup viewGroup = (ViewGroup) getView().getParent();
-        int parentId = viewGroup.getId();
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        transaction.addToBackStack(getTag());
-        fragment.setArguments(args);
-        transaction.replace(parentId, fragment);
-        transaction.commit();
     }
 
 }

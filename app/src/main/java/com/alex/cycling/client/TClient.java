@@ -15,7 +15,7 @@ public interface TClient {
 
     void endTrack(); //结束
 
-    void resumeTrack(); //恢复
+    void recoveryTrack(Context context); //恢复
 
     void addTrackListener(TrackClient.OnCyclingListener listener);
 

@@ -18,9 +18,9 @@ public class LocationSersor implements LocationListener {
 
     public void start(Context context) {
         mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-//        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
-        cacheWorkThread = new CacheWorkThread(context, this);
-        cacheWorkThread.start();
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
+//        cacheWorkThread = new CacheWorkThread(context, this);
+//        cacheWorkThread.start();
     }
 
     public void end() {

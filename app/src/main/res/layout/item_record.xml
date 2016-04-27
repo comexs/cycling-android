@@ -12,7 +12,8 @@
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
     app:cardCornerRadius="3dp"
-    app:cardMaxElevation="3dp">
+    app:cardMaxElevation="3dp"
+    android:id="@+id/itemMain">
 
 
     <com.facebook.drawee.view.SimpleDraweeView

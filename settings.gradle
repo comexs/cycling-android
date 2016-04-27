@@ -1,1 +1,1 @@
-include ':app', ':volley', ':db', ':gson'
+include ':app', ':db', ':gson', ':mpchartlib'

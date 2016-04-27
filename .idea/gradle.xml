@@ -13,7 +13,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/db" />
             <option value="$PROJECT_DIR$/gson" />
-            <option value="$PROJECT_DIR$/volley" />
+            <option value="$PROJECT_DIR$/mpchartlib" />
           </set>
         </option>
         <option name="myModules">
@@ -22,7 +22,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/db" />
             <option value="$PROJECT_DIR$/gson" />
-            <option value="$PROJECT_DIR$/volley" />
+            <option value="$PROJECT_DIR$/mpchartlib" />
           </set>
         </option>
       </GradleProjectSettings>
