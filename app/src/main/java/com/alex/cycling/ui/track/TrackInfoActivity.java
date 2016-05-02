@@ -56,7 +56,7 @@ public class TrackInfoActivity extends BaseActivity {
         mTabAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager());
         mTabAdapter.addTab(TrackMainFragment.newInstance(trackUUID), "轨迹");
         mTabAdapter.addTab(ChartFragment.newInstance(trackUUID), "图表");
-        mTabAdapter.addTab(new TrackDetailFragment(), "数据");
+        mTabAdapter.addTab(TrackDetailFragment.newInstance(trackUUID), "数据");
         viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(mTabAdapter);
         tab.setupWithViewPager(viewPager);
