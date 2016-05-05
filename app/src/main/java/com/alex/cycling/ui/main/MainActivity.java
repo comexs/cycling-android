@@ -1,13 +1,13 @@
-package com.alex.cycling.ui;
+package com.alex.cycling.ui.main;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseActivity;
-import com.alex.cycling.ui.fragment.CyclingFragment;
-import com.alex.cycling.ui.fragment.PersonFragment;
-import com.alex.cycling.ui.fragment.RecordFragment;
+import com.alex.cycling.ui.main.fragment.CyclingFragment;
+import com.alex.cycling.ui.main.fragment.PersonFragment;
+import com.alex.cycling.ui.main.fragment.RecordFragment;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 
@@ -38,7 +38,8 @@ public class MainActivity extends BaseActivity {
                 .initialise();
         bottomBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
         bottomBar.setMode(BottomNavigationBar.MODE_CLASSIC);
-        bottomBar.setActiveColor(R.color.holo_black).setInActiveColor(R.color.colorPrimary);
+        bottomBar.setActiveColor(R.color.blue).setInActiveColor(R.color.white);
+        bottomBar.setBarBackgroundColor(R.color.colorPrimary);
         bottomBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
             @Override
             public void onTabSelected(int position) {

@@ -1,4 +1,4 @@
-package com.alex.cycling.ui.adapter;
+package com.alex.cycling.ui.main.adapter;
 
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;

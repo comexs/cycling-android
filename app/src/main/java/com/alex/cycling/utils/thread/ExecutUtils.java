@@ -50,9 +50,20 @@ public class ExecutUtils {
         executeAsync(runnable);
     }
 
+    public static <T> void runInBack(final Runnable runnable, final Callback<T> callback) {
+        executeAsync(new Runnable() {
+            @Override
+            public void run() {
+                runInBack(runnable);
+                deliverValue(callback, null);
+            }
+        });
+    }
+
     public static void runInBack(Runnable runnable, int delayTime) {
         scheduler.schedule(runnable, delayTime, TimeUnit.MILLISECONDS);
         scheduler.shutdown();
     }
+
 
 }

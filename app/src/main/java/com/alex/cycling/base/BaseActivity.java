@@ -1,5 +1,6 @@
 package com.alex.cycling.base;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +23,7 @@ import android.widget.ImageView;
 
 
 import com.alex.cycling.R;
+import com.alex.cycling.utils.SystemBarTintManager;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -39,6 +42,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getOverflowMenu();
+        initWindow();
     }
 
     @Override
@@ -47,7 +51,7 @@ public class BaseActivity extends AppCompatActivity {
         //透明状态栏
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             getRootView().setFitsSystemWindows(true);
         }
         mToolbar = (Toolbar) findViewById(R.id.common_toolbar);
@@ -55,6 +59,27 @@ public class BaseActivity extends AppCompatActivity {
             setSupportActionBar(mToolbar);
         }
         initActionBar();
+    }
+
+    @TargetApi(19)
+    private void initWindow() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintColor(getStatusBarColor());
+            tintManager.setStatusBarTintEnabled(true);
+        }
+    }
+
+    public int getStatusBarColor() {
+        return getColorPrimary();
+    }
+
+    public int getColorPrimary() {
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        return typedValue.data;
     }
 
     protected View getRootView() {

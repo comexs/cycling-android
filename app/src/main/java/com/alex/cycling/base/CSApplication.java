@@ -18,12 +18,13 @@ import java.io.File;
 public class CSApplication extends Application {
 
 
-    private static final CSApplication application = new CSApplication();
+    private static CSApplication application;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
+        application = this;
         DbCore.init(this);
         DbCore.enableQueryBuilderLog();
         SDKInitializer.initialize(this);
@@ -32,6 +33,9 @@ public class CSApplication extends Application {
 
 
     public static Application getInstance() {
+        if (application == null) {
+            application = new CSApplication();
+        }
         return application;
     }
 

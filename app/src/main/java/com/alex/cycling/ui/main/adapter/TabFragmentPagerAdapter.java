@@ -3,7 +3,7 @@
  * All Rights Reserved.
  */
 
-package com.alex.cycling.ui.adapter;
+package com.alex.cycling.ui.main.adapter;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;

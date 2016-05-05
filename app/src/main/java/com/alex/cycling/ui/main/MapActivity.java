@@ -1,4 +1,4 @@
-package com.alex.cycling.ui;
+package com.alex.cycling.ui.main;
 
 import android.graphics.Color;
 import android.location.Location;

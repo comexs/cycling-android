@@ -1,4 +1,4 @@
-package com.alex.cycling.ui.fragment;
+package com.alex.cycling.ui.main.fragment;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
 import com.alex.cycling.db.DbUtil;
-import com.alex.cycling.ui.adapter.RecordAdapter;
+import com.alex.cycling.ui.main.adapter.RecordAdapter;
 import com.alex.cycling.utils.adapter.LoadMoreAdapter;
 import com.alex.greendao.TrackInfo;
 

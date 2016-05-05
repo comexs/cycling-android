@@ -1,4 +1,4 @@
-package com.alex.cycling.ui.fragment;
+package com.alex.cycling.ui.main.fragment;
 
 import android.content.DialogInterface;
 import android.location.Location;
@@ -15,7 +15,7 @@ import com.alex.cycling.base.BaseFragment;
 import com.alex.cycling.service.TrackManager;
 import com.jni.ActInfo;
 import com.alex.cycling.client.TrackClient;
-import com.alex.cycling.ui.MapActivity;
+import com.alex.cycling.ui.main.MapActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

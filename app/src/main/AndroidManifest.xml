@@ -21,6 +21,13 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -41,7 +48,7 @@
             android:value="AdiXDFguIpfsOtQ5XGb24iaLxsMHmcPC" />
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:label="骑行"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -62,7 +69,7 @@
         </service>
 
         <activity
-            android:name=".ui.MapActivity"
+            android:name=".ui.main.MapActivity"
             android:label="地图"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
@@ -72,7 +79,11 @@
             android:label="轨迹详情"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
-        TrackInfoActivity
+
+        <activity
+            android:name=".ui.camera.CameraActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
 
 
     </application>
