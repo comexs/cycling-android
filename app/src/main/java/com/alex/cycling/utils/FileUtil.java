@@ -78,4 +78,9 @@ public final class FileUtil {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 
+    //获取系统的SD卡图片
+    public static String getSystemPhotoPath() {
+        return Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/Camera";
+    }
+
 }

@@ -34,6 +34,7 @@ import butterknife.ButterKnife;
 public class BaseActivity extends AppCompatActivity {
 
     protected Toolbar mToolbar;
+    protected DialogHelper dialogHelper;
 
     /************************
      * Activity LifeCycle For Debug
@@ -245,6 +246,24 @@ public class BaseActivity extends AppCompatActivity {
         startActivityForResult(intent, requestCode);
     }
 
+
+    /**
+     * 显示进度对话框
+     *
+     * @param msg 消息
+     */
+    public void showProDialog(String msg) {
+        if (null == dialogHelper) {
+            dialogHelper = new DialogHelper(this);
+        }
+        dialogHelper.showProgressDialog(msg);
+    }
+
+    public void hideProDialog() {
+        if (null != dialogHelper) {
+            dialogHelper.dismissProgressDialog();
+        }
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

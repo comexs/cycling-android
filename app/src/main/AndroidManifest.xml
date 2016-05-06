@@ -83,8 +83,14 @@
         <activity
             android:name=".ui.camera.CameraActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Main.Theme.FullScreen" />
 
+        <activity
+            android:name=".ui.camera.PhotoProcessActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/Main.Theme.FullScreen" />
 
     </application>
 

@@ -9,11 +9,13 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -25,10 +27,14 @@ import android.widget.Toast;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseActivity;
+import com.alex.cycling.ui.camera.bean.PhotoItem;
+import com.alex.cycling.ui.camera.util.CameraHelper;
 import com.alex.cycling.utils.DisplayUtil;
 import com.alex.cycling.utils.FileUtil;
 import com.alex.cycling.utils.ImageUtils;
+import com.alex.cycling.utils.SystemUtil;
 import com.alex.cycling.utils.ToastUtil;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -50,14 +56,14 @@ import butterknife.OnClick;
  */
 public class CameraActivity extends BaseActivity {
 
-    //    private CameraHelper mCameraHelper;
+    private CameraHelper mCameraHelper;
     private Camera.Parameters parameters = null;
     private Camera cameraInst = null;
     private Bundle bundle = null;
-    //    private int photoWidth = DistanceUtil.getCameraPhotoWidth();
-//    private int photoNumber = 4;
-//    private int photoMargin = App.getApp().dp2px(1);
-//    private float pointX, pointY;
+    private int photoWidth = SystemUtil.getCameraPhotoWidth();
+    private int photoNumber = 4;
+    private int photoMargin = DisplayUtil.dip2px(1);
+    //    private float pointX, pointY;
 //    static final int FOCUS = 1;            // 聚焦
 //    static final int ZOOM = 2;            // 缩放
 //    private int mode;                      //0是聚焦 1是放大
@@ -92,10 +98,10 @@ public class CameraActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-//        mCameraHelper = new CameraHelper(this);
+        mCameraHelper = new CameraHelper(this);
         ButterKnife.bind(this);
         initView();
-//        initEvent();
+        initEvent();
     }
 
     private void initView() {
@@ -116,51 +122,56 @@ public class CameraActivity extends BaseActivity {
 //                - App.getApp().getScreenWidth()
 //                - DistanceUtil.getCameraPhotoAreaHeight();
 //
-//        //添加系统相册内的图片
-//        ArrayList<PhotoItem> sysPhotos = FileUtils.getInst().findPicsInDir(
-//                FileUtils.getInst().getSystemPhotoPath());
-//        int showNumber = sysPhotos.size() > photoNumber ? photoNumber
-//                : sysPhotos.size();
-//        for (int i = 0; i < showNumber; i++) {
-//            addPhoto(sysPhotos.get(showNumber - 1 - i));
-//        }
+        //添加系统相册内的图片
+        ArrayList<PhotoItem> sysPhotos = SystemUtil.findPicsInDir(
+                FileUtil.getSystemPhotoPath());
+        int showNumber = sysPhotos.size() > photoNumber ? photoNumber
+                : sysPhotos.size();
+        for (int i = 0; i < showNumber; i++) {
+            addPhoto(sysPhotos.get(showNumber - 1 - i));
+        }
     }
-//
-//    private void addPhoto(PhotoItem photoItem) {
-//        ImageView photo = new ImageView(this);
-//        if (StringUtils.isNotBlank(photoItem.getImageUri())) {
+
+    private void addPhoto(final PhotoItem photoItem) {
+        SimpleDraweeView photo = new SimpleDraweeView(this);
+        if (!TextUtils.isEmpty(photoItem.getImageUri())) {
+            photo.setImageURI(Uri.parse("file://" + photoItem.getImageUri()));
 //            ImageLoaderUtils.displayLocalImage(photoItem.getImageUri(), photo, null);
-//        } else {
-//            photo.setImageResource(R.drawable.default_img);
-//        }
-//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//                photoWidth, photoWidth);
-//        params.leftMargin = photoMargin;
-//        params.rightMargin = photoMargin;
-//        params.gravity = Gravity.CENTER;
-//        photo.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//        photo.setTag(photoItem.getImageUri());
-//
-//        if (photoArea.getChildCount() >= photoNumber) {
-//            photoArea.removeViewAt(photoArea.getChildCount() - 1);
-//            photoArea.addView(photo, 0, params);
-//        } else {
-//            photoArea.addView(photo, 0, params);
-//        }
+        } else {
+            photo.setImageResource(R.mipmap.default_img);
+        }
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                photoWidth, photoWidth);
+        params.leftMargin = photoMargin;
+        params.rightMargin = photoMargin;
+        params.gravity = Gravity.CENTER;
+        photo.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        photo.setTag(photoItem.getImageUri());
+
+        if (photoArea.getChildCount() >= photoNumber) {
+            photoArea.removeViewAt(photoArea.getChildCount() - 1);
+            photoArea.addView(photo, 0, params);
+        } else {
+            photoArea.addView(photo, 0, params);
+        }
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PhotoProcessActivity.newInstance(v.getContext(), "file://" + photoItem.getImageUri());
+            }
+        });
 //        photo.setOnClickListener(v -> {
 //            if (v instanceof ImageView && v.getTag() instanceof String) {
 //                CameraManager.getInst().processPhotoItem(CameraActivity.this,
 //                        new PhotoItem((String) v.getTag(), System.currentTimeMillis()));
 //            }
 //        });
-//    }
+    }
 
-
-    @OnClick({R.id.takepicture})
+    @OnClick({R.id.takepicture, R.id.back, R.id.change, R.id.flashBtn})
     void click(View v) {
         switch (v.getId()) {
-            //拍照
-            case R.id.takepicture:
+            case R.id.takepicture:   //拍照
                 try {
                     cameraInst.takePicture(null, null, new MyPictureCallback());
                 } catch (Throwable t) {
@@ -169,55 +180,36 @@ public class CameraActivity extends BaseActivity {
                     try {
                         cameraInst.startPreview();
                     } catch (Throwable e) {
-
+                        e.printStackTrace();
                     }
                 }
+                break;
+            case R.id.back:      //后退
+                finish();
+                break;
+            case R.id.change:    //旋转相机
+                switchCamera();
+                break;
+            case R.id.flashBtn:  //闪光灯
+                turnLight(cameraInst);
                 break;
         }
     }
 
-//    private void initEvent() {
-//        //拍照
-//        takePicture.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                try {
-//                    cameraInst.takePicture(null, null, new MyPictureCallback());
-//                } catch (Throwable t) {
-//                    t.printStackTrace();
-//                    ToastUtil.showToast("拍照失败，请重试！");
-//                    try {
-//                        cameraInst.startPreview();
-//                    } catch (Throwable e) {
-//
-//                    }
-//                }
-//            }
-//        });
-//        //闪光灯
-//        flashBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                turnLight(cameraInst);
-//            }
-//        });
-//        //前后置摄像头切换
-//        boolean canSwitch = false;
-//        try {
-//            canSwitch = mCameraHelper.hasFrontCamera() && mCameraHelper.hasBackCamera();
-//        } catch (Exception e) {
-//            //获取相机信息失败
-//        }
-//        if (!canSwitch) {
-//            changeBtn.setVisibility(View.GONE);
-//        } else {
-//            changeBtn.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    switchCamera();
-//                }
-//            });
-//        }
+    private void initEvent() {
+        //前后置摄像头切换
+        boolean canSwitch = false;
+        try {
+            canSwitch = mCameraHelper.hasFrontCamera() && mCameraHelper.hasBackCamera();
+        } catch (Exception e) {
+            //获取相机信息失败
+        }
+        if (!canSwitch) {
+            changeBtn.setVisibility(View.GONE);
+        } else {
+            changeBtn.setVisibility(View.VISIBLE);
+        }
+    }
 //        //跳转相册
 ////        galleryBtn.setOnClickListener(v -> startActivity(new Intent(CameraActivity.this, AlbumActivity.class)));
 //        //返回按钮
@@ -386,10 +378,8 @@ public class CameraActivity extends BaseActivity {
         private byte[] data;
 
         protected void onPreExecute() {
-//            showProgressDialog("处理中");
+            showProDialog("处理中");
         }
-
-        ;
 
         SavePicTask(byte[] data) {
             this.data = data;
@@ -410,7 +400,8 @@ public class CameraActivity extends BaseActivity {
             super.onPostExecute(result);
 
             if (!TextUtils.isEmpty(result)) {
-//                dismissProgressDialog();
+                hideProDialog();
+                PhotoProcessActivity.newInstance(CameraActivity.this, "file://" + result);
 //                CameraManager.getInst().processPhotoItem(CameraActivity.this,
 //                        new PhotoItem(result, System.currentTimeMillis()));
             } else {
@@ -783,88 +774,87 @@ public class CameraActivity extends BaseActivity {
             croppedImage.recycle();
         return rotatedImage;
     }
-//
-//    /**
-//     * 闪光灯开关   开->关->自动
-//     *
-//     * @param mCamera
-//     */
-//    private void turnLight(Camera mCamera) {
-//        if (mCamera == null || mCamera.getParameters() == null
-//                || mCamera.getParameters().getSupportedFlashModes() == null) {
-//            return;
-//        }
-//        Camera.Parameters parameters = mCamera.getParameters();
-//        String flashMode = mCamera.getParameters().getFlashMode();
-//        List<String> supportedModes = mCamera.getParameters().getSupportedFlashModes();
-//        if (Camera.Parameters.FLASH_MODE_OFF.equals(flashMode)
-//                && supportedModes.contains(Camera.Parameters.FLASH_MODE_ON)) {//关闭状态
-//            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
-//            mCamera.setParameters(parameters);
-//            flashBtn.setImageResource(R.drawable.ic_camera_flash_on);
-//        } else if (Camera.Parameters.FLASH_MODE_ON.equals(flashMode)) {//开启状态
-//            if (supportedModes.contains(Camera.Parameters.FLASH_MODE_AUTO)) {
-//                parameters.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
-//                flashBtn.setImageResource(R.drawable.ic_camera_flash_auto);
-//                mCamera.setParameters(parameters);
-//            } else if (supportedModes.contains(Camera.Parameters.FLASH_MODE_OFF)) {
-//                parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-//                flashBtn.setImageResource(R.drawable.ic_camera_flash_off);
-//                mCamera.setParameters(parameters);
-//            }
-//        } else if (Camera.Parameters.FLASH_MODE_AUTO.equals(flashMode)
-//                && supportedModes.contains(Camera.Parameters.FLASH_MODE_OFF)) {
-//            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-//            mCamera.setParameters(parameters);
-//            flashBtn.setImageResource(R.drawable.ic_camera_flash_off);
-//        }
-//    }
-//
-//
-//    //切换前后置摄像头
-//    private void switchCamera() {
-//        mCurrentCameraId = (mCurrentCameraId + 1) % mCameraHelper.getNumberOfCameras();
-//        releaseCamera();
-//        Log.d("DDDD", "DDDD----mCurrentCameraId" + mCurrentCameraId);
-//        setUpCamera(mCurrentCameraId);
-//    }
-//
-//    private void releaseCamera() {
-//        if (cameraInst != null) {
-//            cameraInst.setPreviewCallback(null);
-//            cameraInst.release();
-//            cameraInst = null;
-//        }
-//        adapterSize = null;
-//        previewSize = null;
-//    }
-//
-//    /**
-//     * @param mCurrentCameraId2
-//     */
-//    private void setUpCamera(int mCurrentCameraId2) {
-//        cameraInst = getCameraInstance(mCurrentCameraId2);
-//        if (cameraInst != null) {
-//            try {
-//                cameraInst.setPreviewDisplay(surfaceView.getHolder());
-//                initCamera();
-//                cameraInst.startPreview();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            toast("切换失败，请重试！", Toast.LENGTH_LONG);
-//
-//        }
-//    }
-//
-//    private Camera getCameraInstance(final int id) {
-//        Camera c = null;
-//        try {
-//            c = mCameraHelper.openCamera(id);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return c;
-//    }
+
+    /**
+     * 闪光灯开关   开->关->自动
+     *
+     * @param mCamera
+     */
+    private void turnLight(Camera mCamera) {
+        if (mCamera == null || mCamera.getParameters() == null
+                || mCamera.getParameters().getSupportedFlashModes() == null) {
+            return;
+        }
+        Camera.Parameters parameters = mCamera.getParameters();
+        String flashMode = mCamera.getParameters().getFlashMode();
+        List<String> supportedModes = mCamera.getParameters().getSupportedFlashModes();
+        if (Camera.Parameters.FLASH_MODE_OFF.equals(flashMode)
+                && supportedModes.contains(Camera.Parameters.FLASH_MODE_ON)) {//关闭状态
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
+            mCamera.setParameters(parameters);
+            flashBtn.setImageResource(R.mipmap.ic_camera_flash_on);
+        } else if (Camera.Parameters.FLASH_MODE_ON.equals(flashMode)) {//开启状态
+            if (supportedModes.contains(Camera.Parameters.FLASH_MODE_AUTO)) {
+                parameters.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+                flashBtn.setImageResource(R.mipmap.ic_camera_flash_auto);
+                mCamera.setParameters(parameters);
+            } else if (supportedModes.contains(Camera.Parameters.FLASH_MODE_OFF)) {
+                parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                flashBtn.setImageResource(R.mipmap.ic_camera_flash_off);
+                mCamera.setParameters(parameters);
+            }
+        } else if (Camera.Parameters.FLASH_MODE_AUTO.equals(flashMode)
+                && supportedModes.contains(Camera.Parameters.FLASH_MODE_OFF)) {
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+            mCamera.setParameters(parameters);
+            flashBtn.setImageResource(R.mipmap.ic_camera_flash_off);
+        }
+    }
+
+
+    //切换前后置摄像头
+    private void switchCamera() {
+        mCurrentCameraId = (mCurrentCameraId + 1) % mCameraHelper.getNumberOfCameras();
+        releaseCamera();
+        Log.d("DDDD", "DDDD----mCurrentCameraId" + mCurrentCameraId);
+        setUpCamera(mCurrentCameraId);
+    }
+
+    private void releaseCamera() {
+        if (cameraInst != null) {
+            cameraInst.setPreviewCallback(null);
+            cameraInst.release();
+            cameraInst = null;
+        }
+        adapterSize = null;
+        previewSize = null;
+    }
+
+    /**
+     * @param mCurrentCameraId2
+     */
+    private void setUpCamera(int mCurrentCameraId2) {
+        cameraInst = getCameraInstance(mCurrentCameraId2);
+        if (cameraInst != null) {
+            try {
+                cameraInst.setPreviewDisplay(surfaceView.getHolder());
+                initCamera();
+                cameraInst.startPreview();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            ToastUtil.showToast("切换失败，请重试！");
+        }
+    }
+
+    private Camera getCameraInstance(final int id) {
+        Camera c = null;
+        try {
+            c = mCameraHelper.openCamera(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return c;
+    }
 }

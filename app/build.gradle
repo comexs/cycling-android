@@ -39,5 +39,6 @@ dependencies {
     compile 'com.ashokvarma.android:bottom-navigation-bar:0.9.8'
     compile 'com.facebook.fresco:fresco:0.9.0+'
     compile project(':mpchartlib')
+    compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
 //    compile project(':stickercamera')
 }

@@ -13,6 +13,7 @@ import com.alex.cycling.base.BaseFragment;
 import com.alex.cycling.db.DbUtil;
 import com.alex.cycling.service.TrackManager;
 import com.alex.cycling.utils.BaiduTool;
+import com.alex.cycling.utils.DisplayUtil;
 import com.alex.cycling.utils.SystemUtil;
 import com.alex.greendao.TrackInfo;
 import com.alex.greendao.TrackInfoDao;
@@ -130,14 +131,14 @@ public class TrackMainFragment extends BaseFragment {
 
 
     private void computeMapSie() {
-        int height = (int) (139 * SystemUtil.getScreenInfo(getContext()).density + 0.5);//mapViewContainer 高为 139dp
-        int width = SystemUtil.getScreenInfo(getContext()).widthPixels;
+        int height = (int) (139 * DisplayUtil.getScreenInfo().density + 0.5);//mapViewContainer 高为 139dp
+        int width = DisplayUtil.getScreenInfo().widthPixels;
         int zoom1 = BaiduTool.LatLngBoundsToZoom(firstLatlng, endLatlng, height);
         int zoom2 = BaiduTool.LatLngBoundsToZoom(firstLatlng, endLatlng, width);
 
         float smallZoom = zoom1 < zoom2 ? zoom1 : zoom2;
         smallZoom = smallZoom - 1f;
-        height = (int) (mapView.getHeight() * SystemUtil.getScreenInfo(getContext()).density - height + 0.5);
+        height = (int) (mapView.getHeight() * DisplayUtil.getScreenInfo().density - height + 0.5);
         height -= 80;
         double angle2 = BaiduTool.pixelsToAngle(smallZoom, height);
         centerLatlng = new LatLng((endLatlng.latitude + firstLatlng.latitude - angle2) / 2, (endLatlng.longitude + firstLatlng.longitude) / 2);

@@ -21,6 +21,13 @@
 
     </style>
 
+    <style name="Main.Theme.FullScreen" parent="@style/Main.Theme">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="colorPrimary">@color/transparent</item>
+    </style>
 
     <style name="Theme.NoneTranslucent" parent="Main.Theme">
         <item name="android:windowIsTranslucent">false</item>
@@ -95,6 +102,16 @@
     <style name="TabLayoutTextAppearanceInverse" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">@android:color/holo_red_light</item>
+    </style>
+
+
+    <style name="text_default">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/blue</item>
+        <item name="android:clickable">true</item>
+        <item name="android:onClick">tagClick</item>
+        <item name="android:padding">10dp</item>
     </style>
 
     <!--<style name="progress_circle_list" parent="progress_circle">-->
