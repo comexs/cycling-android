@@ -1,5 +1,6 @@
 package com.alex.cycling.ui.camera.adapter;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -34,7 +35,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
     private int selectFilter = 0;
     OnItemClickListener listener;
 
-    public FilterAdapter(List<FilterEffect> effects, Bitmap backgroud) {
+    public FilterAdapter( List<FilterEffect> effects, Bitmap backgroud) {
         filterUris = effects;
         this.background = backgroud;
     }
@@ -53,6 +54,11 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
     }
 
     @Override
+    public long getItemId(int position) {
+        return position + 100;
+    }
+
+    @Override
     public FilterAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_bottom_filter, parent, false));
     }
@@ -62,8 +68,9 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
         FilterEffect effect = filterUris.get(position);
         holder.filteredImg.setImage(background);
         holder.filterName.setText(effect.getTitle());
-        GPUImageFilter filter = GPUImageFilterTools.createFilterForType(holder.filteredImg.getContext(), effect.getType());
-        holder.filteredImg.setFilter(filter);
+//        GPUImageFilter filter = GPUImageFilterTools.createFilterForType(holder.filteredImg.getContext(), effect.getType());
+//        holder.filteredImg.setFilter(filter);
+        holder.filteredImg.setTag(position);
         holder.filteredImg.setOnClickListener(clickListener);
     }
 
@@ -76,6 +83,12 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
             }
         }
     };
+
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+
+        super.onViewRecycled(holder);
+    }
 
     public void setItemClickListener(OnItemClickListener listener) {
         this.listener = listener;

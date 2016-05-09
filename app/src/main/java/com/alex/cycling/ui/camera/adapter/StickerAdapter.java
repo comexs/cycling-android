@@ -1,6 +1,5 @@
 package com.alex.cycling.ui.camera.adapter;
 
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -22,12 +21,12 @@ import butterknife.ButterKnife;
  *
  * @author tongqian.ni
  */
-public class StickerToolAdapter extends RecyclerView.Adapter<StickerToolAdapter.ViewHolder> {
+public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.ViewHolder> {
 
     List<Addon> filterUris;
     OnItemClickListener listener;
 
-    public StickerToolAdapter(List<Addon> datats) {
+    public StickerAdapter(List<Addon> datats) {
         filterUris = datats;
     }
 
@@ -37,7 +36,7 @@ public class StickerToolAdapter extends RecyclerView.Adapter<StickerToolAdapter.
     }
 
     @Override
-    public StickerToolAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public StickerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_bottom_tool, parent, false));
     }
 
@@ -46,8 +45,8 @@ public class StickerToolAdapter extends RecyclerView.Adapter<StickerToolAdapter.
         Addon sticker = filterUris.get(position);
         holder.container.setVisibility(View.GONE);
         holder.logo.setImageResource(sticker.getId());
-        holder.container.setTag(position);
-        holder.container.setOnClickListener(clickListener);
+        holder.logo.setTag(position);
+        holder.logo.setOnClickListener(clickListener);
     }
 
     private View.OnClickListener clickListener = new View.OnClickListener() {
