@@ -31,7 +31,6 @@ public class RecordFragment extends BaseFragment {
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefresh;
 
-
     private RecordAdapter recordAdapter;
     private LoadMoreAdapter loadMoreAdapter;
 
@@ -71,8 +70,6 @@ public class RecordFragment extends BaseFragment {
         loadMoreAdapter = new LoadMoreAdapter(recordAdapter);
         recordList.setAdapter(loadMoreAdapter);
 
-        setRefreshing(true, false);
-
 //        for (TrackInfo trackInfo : trackInfos) {
 //            if (TextUtils.isEmpty(trackInfo.getImageUrl())) {
 //                TrackManager.vacuate(trackInfo.getTrackUUID());
@@ -94,6 +91,7 @@ public class RecordFragment extends BaseFragment {
     @Override
     public void onPageStart() {
         super.onPageStart();
+        setRefreshing(true, false);
     }
 
     @Override

@@ -11,9 +11,13 @@ import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
 import com.alex.cycling.service.TrackManager;
 import com.alex.cycling.ui.widget.SpeedLineChart;
+import com.alex.cycling.utils.LogUtil;
+import com.alex.cycling.utils.VacuateUtil;
+import com.alex.cycling.utils.thread.ExecutUtils;
 import com.alex.greendao.WorkPoint;
 import com.github.mikephil.charting.charts.LineChart;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -22,7 +26,7 @@ import butterknife.ButterKnife;
 /**
  * Created by comexs on 16/4/24.
  */
-public class ChartFragment extends BaseFragment {
+public class TrackChartFragment extends BaseFragment {
 
     @Bind(R.id.speedChart)
     LineChart speedChart;
@@ -34,10 +38,10 @@ public class ChartFragment extends BaseFragment {
 
     private String trackUUID;
 
-    List<WorkPoint> workPointList;
+    List<WorkPoint> cacheList = new ArrayList<WorkPoint>();
 
     public static Fragment newInstance(String trackUUID) {
-        ChartFragment fragment = new ChartFragment();
+        TrackChartFragment fragment = new TrackChartFragment();
         Bundle bundle = new Bundle();
         bundle.putString("uuid", trackUUID);
         fragment.setArguments(bundle);
@@ -57,8 +61,25 @@ public class ChartFragment extends BaseFragment {
 
         trackUUID = getArguments().getString("uuid");
 
-        workPointList = TrackManager.queryWorkPointByUUID(trackUUID);
-
+        final List<WorkPoint> workPointList = TrackManager.queryWorkPointByUUID(trackUUID);
+        if (workPointList.size() <= 200) {
+            cacheList = workPointList;
+        } else {
+            ExecutUtils.runInBack(new Runnable() {
+                @Override
+                public void run() {
+                    VacuateUtil vacuateUtil = new VacuateUtil();
+                    vacuateUtil.vacuate(workPointList, 3);
+                    List<WorkPoint> list = vacuateUtil.getResult();
+                    for (WorkPoint workPoint : list) {
+                        if (workPoint.getStatus() != -1) {
+                            cacheList.add(workPoint);
+                        }
+                    }
+                    LogUtil.e(cacheList.size() + "");
+                }
+            });
+        }
 
         speedLineChart = new SpeedLineChart();
         climbLineChart = new SpeedLineChart();
@@ -69,8 +90,8 @@ public class ChartFragment extends BaseFragment {
     @Override
     public void onPageStart() {
         super.onPageStart();
-        speedLineChart.setData(speedChart, workPointList);
-        climbLineChart.setData(climbChart, workPointList);
+        speedLineChart.setData(speedChart, cacheList);
+        climbLineChart.setData(climbChart, cacheList);
     }
 
     @Override

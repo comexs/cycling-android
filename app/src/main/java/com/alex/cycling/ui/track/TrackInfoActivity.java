@@ -5,13 +5,25 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseActivity;
 import com.alex.cycling.ui.main.adapter.TabFragmentPagerAdapter;
-import com.alex.cycling.ui.track.fragment.ChartFragment;
+import com.alex.cycling.ui.track.fragment.TrackChartFragment;
 import com.alex.cycling.ui.track.fragment.TrackDetailFragment;
 import com.alex.cycling.ui.track.fragment.TrackMainFragment;
+import com.alex.cycling.ui.widget.CustomViewPager;
+import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
+import com.yalantis.contextmenu.lib.MenuObject;
+import com.yalantis.contextmenu.lib.MenuParams;
+import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -19,7 +31,7 @@ import butterknife.ButterKnife;
 /**
  * Created by comexs on 16/4/20.
  */
-public class TrackInfoActivity extends BaseActivity {
+public class TrackInfoActivity extends BaseActivity implements OnMenuItemClickListener {
 
     @Bind(R.id.tab)
     TabLayout tab;
@@ -27,9 +39,8 @@ public class TrackInfoActivity extends BaseActivity {
     ViewPager viewPager;
 
     private TabFragmentPagerAdapter mTabAdapter;
-
     private String trackUUID;
-
+    private ContextMenuDialogFragment mMenuDialogFragment;
 
     public static void newInstance(Context context, String uuid) {
         Intent intent = new Intent(context, TrackInfoActivity.class);
@@ -45,6 +56,7 @@ public class TrackInfoActivity extends BaseActivity {
         ButterKnife.bind(this);
         initDate();
         initView();
+        initMenuFragment();
     }
 
     private void initDate() {
@@ -54,7 +66,7 @@ public class TrackInfoActivity extends BaseActivity {
     private void initView() {
         mTabAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager());
         mTabAdapter.addTab(TrackMainFragment.newInstance(trackUUID), "轨迹");
-        mTabAdapter.addTab(ChartFragment.newInstance(trackUUID), "图表");
+        mTabAdapter.addTab(TrackChartFragment.newInstance(trackUUID), "图表");
         mTabAdapter.addTab(TrackDetailFragment.newInstance(trackUUID), "数据");
         viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(mTabAdapter);
@@ -64,10 +76,85 @@ public class TrackInfoActivity extends BaseActivity {
         tab.setTabTextColors(getResources().getColor(R.color.white), getResources().getColor(R.color.cmm_main_red));
     }
 
+    private void initMenuFragment() {
+        MenuParams menuParams = new MenuParams();
+        menuParams.setActionBarSize((int) getResources().getDimension(R.dimen.tool_bar_height));
+        menuParams.setMenuObjects(getMenuObjects());
+        menuParams.setClosableOutside(true);
+        mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);
+        mMenuDialogFragment.setItemClickListener(this);
+    }
+
+    private List<MenuObject> getMenuObjects() {
+        List<MenuObject> menuObjects = new ArrayList<>();
+
+        MenuObject close = new MenuObject("关闭");
+        close.setColor(R.color.cmm_main_red);
+        close.setResource(R.mipmap.ic_share_close);
+
+        MenuObject shareQQ = new MenuObject("QQ");
+        shareQQ.setResource(R.mipmap.ic_share_qq);
+
+        MenuObject shareQZone = new MenuObject("QQ空间");
+        shareQZone.setResource(R.mipmap.ic_share_qzone);
+
+        MenuObject shareFriend = new MenuObject("朋友圈");
+        shareFriend.setResource(R.mipmap.ic_share_friend);
+
+        MenuObject shareWchat = new MenuObject("微信");
+        shareWchat.setResource(R.mipmap.ic_share_wchat);
+
+        MenuObject shareWeibo = new MenuObject("微博");
+        shareWeibo.setResource(R.mipmap.ic_share_weibo);
+
+        menuObjects.add(close);
+        menuObjects.add(shareQQ);
+        menuObjects.add(shareQZone);
+        menuObjects.add(shareFriend);
+        menuObjects.add(shareWchat);
+        menuObjects.add(shareWeibo);
+        return menuObjects;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_comm, menu);
+        MenuItem menuItem = menu.findItem(R.id.menu_common);
+        menuItem.setTitle("分享");
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_common:
+                mMenuDialogFragment.show(getSupportFragmentManager(), "ContextMenuDialogFragment");
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mMenuDialogFragment != null && mMenuDialogFragment.isAdded()) {
+            mMenuDialogFragment.dismiss();
+        } else {
+            finish();
+        }
+    }
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onMenuItemClick(View clickedView, int position) {
+        switch (position) {
+
+        }
     }
 }
