@@ -9,12 +9,17 @@ import android.view.ViewGroup;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
+import com.alex.cycling.db.DbUtil;
 import com.alex.cycling.service.TrackManager;
 import com.alex.cycling.ui.widget.SpeedLineChart;
 import com.alex.cycling.utils.LogUtil;
 import com.alex.cycling.utils.VacuateUtil;
 import com.alex.cycling.utils.thread.ExecutUtils;
+import com.alex.greendao.TrackInfo;
+import com.alex.greendao.TrackInfoDao;
 import com.alex.greendao.WorkPoint;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.github.mikephil.charting.charts.LineChart;
 
 import java.util.ArrayList;
@@ -37,6 +42,7 @@ public class TrackChartFragment extends BaseFragment {
     private SpeedLineChart climbLineChart;
 
     private String trackUUID;
+    private TrackInfo trackInfo;
 
     List<WorkPoint> cacheList = new ArrayList<WorkPoint>();
 
@@ -60,6 +66,7 @@ public class TrackChartFragment extends BaseFragment {
     private void init() {
 
         trackUUID = getArguments().getString("uuid");
+        trackInfo = DbUtil.getTrackInfoService().queryBuilder().where(TrackInfoDao.Properties.TrackUUID.eq(trackUUID)).unique();
 
         final List<WorkPoint> workPointList = TrackManager.queryWorkPointByUUID(trackUUID);
         if (workPointList.size() <= 200) {
@@ -80,12 +87,43 @@ public class TrackChartFragment extends BaseFragment {
                 }
             });
         }
+        test(workPointList);
 
         speedLineChart = new SpeedLineChart();
         climbLineChart = new SpeedLineChart();
         speedLineChart.initChart(speedChart);
         climbLineChart.initChart(climbChart);
     }
+
+    private void test(final List<WorkPoint> workPointList) {
+        ExecutUtils.runInBack(new Runnable() {
+            @Override
+            public void run() {
+                for (WorkPoint workPoint : workPointList) {
+                    if (null == firstLatLng) {
+                        firstLatLng = new LatLng(workPoint.getLat(), workPoint.getLon());
+                        climbup = workPoint.getAlt();
+                    } else {
+                        LatLng latLng = new LatLng(workPoint.getLat(), workPoint.getLon());
+                        double distance = DistanceUtil.getDistance(firstLatLng, latLng);
+                        allDistance += distance;
+                        firstLatLng = latLng;
+                        if (workPoint.getAlt() - climbup > 0) {
+                            climbup += (workPoint.getAlt() - climbup);
+
+                        }
+                    }
+                }
+                trackInfo.setTotalDis(allDistance);
+                trackInfo.setAverageSpeed(allDistance / (workPointList.get(0).getTime() - workPointList.get(workPointList.size() - 1).getTime()));
+                trackInfo.setClimbUp(climbup);
+            }
+        });
+    }
+
+    private LatLng firstLatLng;
+    private double allDistance = 0;
+    private double climbup = 0;
 
     @Override
     public void onPageStart() {

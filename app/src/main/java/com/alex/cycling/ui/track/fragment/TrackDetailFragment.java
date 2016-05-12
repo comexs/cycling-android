@@ -23,7 +23,6 @@ import butterknife.ButterKnife;
  */
 public class TrackDetailFragment extends BaseFragment {
 
-
     @Bind(R.id.max_climb)
     TextView maxClimb;
     @Bind(R.id.climbup)

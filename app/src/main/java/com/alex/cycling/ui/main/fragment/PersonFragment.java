@@ -10,6 +10,7 @@ import android.widget.Button;
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
 import com.alex.cycling.ui.camera.CameraActivity;
+import com.alex.cycling.ui.track.TestFragment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -21,8 +22,8 @@ import butterknife.OnClick;
 public class PersonFragment extends BaseFragment {
 
 
-    @Bind(R.id.button)
-    Button button;
+//    @Bind(R.id.button)
+//    Button button;
 
     @Nullable
     @Override
@@ -32,8 +33,10 @@ public class PersonFragment extends BaseFragment {
         return main;
     }
 
-    @OnClick(R.id.button)
+//    @OnClick(R.id.button)
     void click(View v) {
+//        TestFragment testFragment = new TestFragment();
+//        testFragment.show(getFragmentManager(), "aaa");
         openActivity(getActivity(), CameraActivity.class);
     }
 

@@ -78,7 +78,7 @@ public class TrackInfoActivity extends BaseActivity implements OnMenuItemClickLi
 
     private void initMenuFragment() {
         MenuParams menuParams = new MenuParams();
-        menuParams.setActionBarSize((int) getResources().getDimension(R.dimen.tool_bar_height));
+        menuParams.setActionBarSize((int) getResources().getDimension(R.dimen.toolbar_height));
         menuParams.setMenuObjects(getMenuObjects());
         menuParams.setClosableOutside(true);
         mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);

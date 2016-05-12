@@ -42,8 +42,6 @@ public class TrackMainFragment extends BaseFragment {
     @Bind(R.id.frg_map)
     MapView mapView;
 
-    private LatLngBounds bounds;
-
     private String trackUUID;
     private TrackInfo trackInfo;
 
@@ -89,19 +87,20 @@ public class TrackMainFragment extends BaseFragment {
             @Override
             public void onMapLoaded() {
                 initData(trackInfo);
-//                mapView.getMap().setMapStatusLimits(bounds);
-                computeMapSie();
+//                computeMapSie();
             }
         });
     }
 
     private void initData(TrackInfo info) {
         List<LatLng> bdpts = TrackManager.getCacheList(info.getTrackUUID());
-
         LatLngBounds.Builder boundBuilder = new LatLngBounds.Builder();
-        boundBuilder.include(bdpts.get(0));
-        boundBuilder.include(bdpts.get(bdpts.size() - 1));
-        bounds = boundBuilder.build();
+        for (LatLng latLng : bdpts) {
+            boundBuilder.include(latLng);
+        }
+//        boundBuilder.include(bdpts.get(0));
+//        boundBuilder.include(bdpts.get(bdpts.size() - 1));
+//        bounds = boundBuilder.build();
 
         PolylineOptions polyline = new PolylineOptions();
         if (bdpts.size() > 1) {
@@ -123,28 +122,31 @@ public class TrackMainFragment extends BaseFragment {
             end.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_location_stop));
             mapView.getMap().addOverlay(end);
         }
-        MapStatusUpdate update = MapStatusUpdateFactory.zoomTo(19);
-        mapView.getMap().setMapStatus(update);
+//        MapStatusUpdate update = MapStatusUpdateFactory.zoomTo(19);
+//        mapView.getMap().setMapStatus(update);
+        MapStatusUpdate u = MapStatusUpdateFactory.newLatLngBounds(boundBuilder.build());
+        mapView.getMap().animateMapStatus(u);
 //        MapStatusUpdate u = MapStatusUpdateFactory.newLatLngBounds(bounds);
 //        mapView.getMap().animateMapStatus(u);
     }
 
 
-    private void computeMapSie() {
-        int height = (int) (139 * DisplayUtil.getScreenInfo().density + 0.5);//mapViewContainer 高为 139dp
-        int width = DisplayUtil.getScreenInfo().widthPixels;
-        int zoom1 = BaiduTool.LatLngBoundsToZoom(firstLatlng, endLatlng, height);
-        int zoom2 = BaiduTool.LatLngBoundsToZoom(firstLatlng, endLatlng, width);
-
-        float smallZoom = zoom1 < zoom2 ? zoom1 : zoom2;
-        smallZoom = smallZoom - 1f;
-        height = (int) (mapView.getHeight() * DisplayUtil.getScreenInfo().density - height + 0.5);
-        height -= 80;
-        double angle2 = BaiduTool.pixelsToAngle(smallZoom, height);
-        centerLatlng = new LatLng((endLatlng.latitude + firstLatlng.latitude - angle2) / 2, (endLatlng.longitude + firstLatlng.longitude) / 2);
-        MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(firstLatlng, smallZoom);
-        mapView.getMap().setMapStatus(u);
-    }
+//    private void computeMapSie() {
+//        LatLngBounds.Builder latLngBounds = new LatLngBounds.Builder();
+//        int height = (int) (139 * DisplayUtil.getScreenInfo().density + 0.5);//mapViewContainer 高为 139dp
+//        int width = DisplayUtil.getScreenInfo().widthPixels;
+//        int zoom1 = BaiduTool.LatLngBoundsToZoom(firstLatlng, endLatlng, height);
+//        int zoom2 = BaiduTool.LatLngBoundsToZoom(firstLatlng, endLatlng, width);
+//
+//        float smallZoom = zoom1 < zoom2 ? zoom1 : zoom2;
+//        smallZoom = smallZoom - 1f;
+//        height = (int) (mapView.getHeight() * DisplayUtil.getScreenInfo().density - height + 0.5);
+//        height -= 80;
+//        double angle2 = BaiduTool.pixelsToAngle(smallZoom, height);
+//        centerLatlng = new LatLng((endLatlng.latitude + firstLatlng.latitude - angle2) / 2, (endLatlng.longitude + firstLatlng.longitude) / 2);
+//        MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(firstLatlng, smallZoom);
+//        mapView.getMap().setMapStatus(u);
+//    }
 
     @Override
     public void onResume() {
