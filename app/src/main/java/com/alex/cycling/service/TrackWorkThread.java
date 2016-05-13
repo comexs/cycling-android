@@ -103,6 +103,7 @@ public class TrackWorkThread extends Thread {
         while (true) {
             synchronized (TrackWorkThread.class) {
                 long minTime = SystemClock.elapsedRealtime() + lastTime;
+                LogUtil.e("aaaa");
                 if (minTime - tempTime > 1000) {
                     tempTime = minTime;
                     if (startTime == 0) {

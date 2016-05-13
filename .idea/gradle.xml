@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/db" />
             <option value="$PROJECT_DIR$/gson" />
+            <option value="$PROJECT_DIR$/marsdaemonlib" />
             <option value="$PROJECT_DIR$/mpchartlib" />
             <option value="$PROJECT_DIR$/thirdlib" />
           </set>
@@ -22,6 +23,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/db" />
             <option value="$PROJECT_DIR$/gson" />
+            <option value="$PROJECT_DIR$/marsdaemonlib" />
             <option value="$PROJECT_DIR$/mpchartlib" />
             <option value="$PROJECT_DIR$/thirdlib" />
           </set>

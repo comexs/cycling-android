@@ -41,4 +41,5 @@ dependencies {
     compile project(':mpchartlib')
     compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
     compile 'com.yalantis:contextmenu:1.0.6'
+    compile project(':marsdaemonlib')
 }

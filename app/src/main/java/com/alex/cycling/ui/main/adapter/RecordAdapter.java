@@ -45,6 +45,7 @@ public class RecordAdapter extends SimpleAdapter<TrackInfo, RecordAdapter.ViewHo
         } else {
             TrackManager.vacuate(trackInfo.getTrackUUID());
         }
+        holder.distance.setText(trackInfo.getTotalDis() + "");
         holder.itemMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

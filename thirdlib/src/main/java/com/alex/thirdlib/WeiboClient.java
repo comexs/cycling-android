@@ -51,7 +51,6 @@ public class WeiboClient implements IWeiboHandler.Request{
      * 授权时，当授权结束后，该回调就会被执行。 当授权成功后，请保存该 access_token、expires_in、uid 等信息到
      * SharedPreferences 中。
      */
-
     private WeiboAuthListener authListener = new WeiboAuthListener() {
         @Override
         public void onComplete(Bundle values) {

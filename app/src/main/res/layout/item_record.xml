@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/tools"
+    android:id="@+id/itemMain"
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:layout_marginLeft="5dp"
@@ -12,8 +13,7 @@
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
     app:cardCornerRadius="3dp"
-    app:cardMaxElevation="3dp"
-    android:id="@+id/itemMain">
+    app:cardMaxElevation="3dp">
 
 
     <com.facebook.drawee.view.SimpleDraweeView
@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
         android:layout_marginLeft="90dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="30dp"
         android:layout_marginTop="10dp"
         android:singleLine="true"
         android:text="bbb"

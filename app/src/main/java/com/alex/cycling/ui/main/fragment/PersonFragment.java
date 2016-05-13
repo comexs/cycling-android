@@ -33,7 +33,7 @@ public class PersonFragment extends BaseFragment {
         return main;
     }
 
-//    @OnClick(R.id.button)
+    @OnClick(R.id.statics)
     void click(View v) {
 //        TestFragment testFragment = new TestFragment();
 //        testFragment.show(getFragmentManager(), "aaa");

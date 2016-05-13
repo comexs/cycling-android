@@ -70,7 +70,6 @@ public class TrackDetailFragment extends BaseFragment {
         }
 //        maxClimb.setText(trackInfo.get);
 //        climbup.setTex
-
     }
 
     @Override

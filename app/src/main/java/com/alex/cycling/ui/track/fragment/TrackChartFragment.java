@@ -13,6 +13,7 @@ import com.alex.cycling.db.DbUtil;
 import com.alex.cycling.service.TrackManager;
 import com.alex.cycling.ui.widget.SpeedLineChart;
 import com.alex.cycling.utils.LogUtil;
+import com.alex.cycling.utils.MathUtil;
 import com.alex.cycling.utils.VacuateUtil;
 import com.alex.cycling.utils.thread.ExecutUtils;
 import com.alex.greendao.TrackInfo;
@@ -22,6 +23,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.github.mikephil.charting.charts.LineChart;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,6 +101,9 @@ public class TrackChartFragment extends BaseFragment {
         ExecutUtils.runInBack(new Runnable() {
             @Override
             public void run() {
+                firstLatLng = null;
+                allDistance = 0;
+                climbup = 0;
                 for (WorkPoint workPoint : workPointList) {
                     if (null == firstLatLng) {
                         firstLatLng = new LatLng(workPoint.getLat(), workPoint.getLon());
@@ -110,13 +115,15 @@ public class TrackChartFragment extends BaseFragment {
                         firstLatLng = latLng;
                         if (workPoint.getAlt() - climbup > 0) {
                             climbup += (workPoint.getAlt() - climbup);
-
                         }
                     }
                 }
-                trackInfo.setTotalDis(allDistance);
+                LogUtil.e(MathUtil.decimal(allDistance) + "");
+                trackInfo.setTotalDis(MathUtil.decimal(allDistance));
                 trackInfo.setAverageSpeed(allDistance / (workPointList.get(0).getTime() - workPointList.get(workPointList.size() - 1).getTime()));
+                trackInfo.setTotalTime(workPointList.get(workPointList.size() - 1).getTime() - workPointList.get(0).getTime());
                 trackInfo.setClimbUp(climbup);
+                DbUtil.getTrackInfoService().update(trackInfo);
             }
         });
     }

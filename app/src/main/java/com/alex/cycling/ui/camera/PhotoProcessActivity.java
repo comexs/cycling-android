@@ -38,6 +38,7 @@ import com.alex.cycling.utils.FileUtil;
 import com.alex.cycling.utils.ImageUtils;
 import com.alex.cycling.utils.LogUtil;
 import com.alex.cycling.utils.ToastUtil;
+import com.alex.cycling.utils.thread.ExecutUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -267,6 +268,7 @@ public class PhotoProcessActivity extends BaseActivity {
     }
 
     private class SavePicToFileTask extends AsyncTask<Bitmap, Void, String> {
+
         Bitmap bitmap;
 
         @Override
@@ -280,11 +282,15 @@ public class PhotoProcessActivity extends BaseActivity {
             String fileName = null;
             try {
                 bitmap = params[0];
-                String picName = DateUtil.currentDate();
-                fileName = ImageUtils.saveToFile(FileUtil.getCacheImgDir() + "/" + picName, bitmap);
+                fileName = ImageUtils.saveToFile(FileUtil.getImgDir(), bitmap);
             } catch (Exception e) {
                 e.printStackTrace();
-                ToastUtil.showToast("图片处理错误，请退出相机并重试");
+                ExecutUtils.runInMain(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtil.showToast("图片处理错误，请退出相机并重试");
+                    }
+                });
             }
             return fileName;
         }
@@ -302,7 +308,6 @@ public class PhotoProcessActivity extends BaseActivity {
             for (LabelView label : labels) {
                 tagInfoList.add(label.getTagInfo());
             }
-
             //将图片信息通过EventBus发送到MainActivity
 //            FeedItem feedItem = new FeedItem(tagInfoList, fileName);
 //            EventBus.getDefault().post(feedItem);

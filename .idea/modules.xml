@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/cycling.iml" filepath="$PROJECT_DIR$/cycling.iml" />
       <module fileurl="file://$PROJECT_DIR$/db/db.iml" filepath="$PROJECT_DIR$/db/db.iml" />
       <module fileurl="file://$PROJECT_DIR$/gson/gson.iml" filepath="$PROJECT_DIR$/gson/gson.iml" />
+      <module fileurl="file://$PROJECT_DIR$/marsdaemonlib/marsdaemonlib.iml" filepath="$PROJECT_DIR$/marsdaemonlib/marsdaemonlib.iml" />
       <module fileurl="file://$PROJECT_DIR$/mpchartlib/mpchartlib.iml" filepath="$PROJECT_DIR$/mpchartlib/mpchartlib.iml" />
       <module fileurl="file://$PROJECT_DIR$/thirdlib/thirdlib.iml" filepath="$PROJECT_DIR$/thirdlib/thirdlib.iml" />
     </modules>

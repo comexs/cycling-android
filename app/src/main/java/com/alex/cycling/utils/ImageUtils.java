@@ -66,7 +66,7 @@ public class ImageUtils {
     }
 
     //保存图片文件
-    public static String saveToFile(String fileFolderStr, Bitmap croppedImage) throws FileNotFoundException, IOException {
+    public static String saveToFile(String fileFolderStr, Bitmap croppedImage) throws IOException {
         File jpgFile;
         File fileFolder = new File(fileFolderStr);
         Date date = new Date();

@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="160dp"
-    android:orientation="vertical"
-    android:paddingLeft="13dp">
+    android:layout_height="140dp"
+    android:background="@color/black"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/tag_input_tips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:gravity="center"
         android:padding="10dp"
         android:text="常用标签"
-        android:textColor="#9b6b6c"
+        android:textColor="@color/white"
         android:textSize="16sp" />
 
     <View
@@ -20,7 +21,7 @@
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="2dp"
-        android:background="#9b6b6c" />
+        android:background="@color/blue" />
 
     <com.alex.cycling.ui.camera.widget.FlowLayout
         android:layout_width="wrap_content"
@@ -33,11 +34,11 @@
 
         <TextView
             style="@style/text_default"
-            android:text="nice" />
+            android:text="认真骑行中~" />
 
         <TextView
             style="@style/text_default"
-            android:text="cute" />
+            android:text="搞笑中" />
 
         <TextView
             style="@style/text_default"
@@ -45,15 +46,15 @@
 
         <TextView
             style="@style/text_default"
-            android:text="我也不知道该推荐什么" />
+            android:text="加速中" />
 
         <TextView
             style="@style/text_default"
-            android:text="\@达达达达sky" />
+            android:text="\@comexs" />
 
         <TextView
             style="@style/text_default"
-            android:text="你好,夏天" />
+            android:text="一起骑啊" />
 
     </com.alex.cycling.ui.camera.widget.FlowLayout>
 

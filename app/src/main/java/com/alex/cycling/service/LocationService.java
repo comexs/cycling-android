@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 import com.alex.cycling.utils.LogUtil;
+import com.alex.cycling.utils.ToastUtil;
 
 /**
  * Created by comexs on 16/3/28.
@@ -47,6 +48,7 @@ public class LocationService extends Service {
             }
         }
         initService(intent);
+        ToastUtil.showToast("服务起来了");
         return START_STICKY;
     }
 

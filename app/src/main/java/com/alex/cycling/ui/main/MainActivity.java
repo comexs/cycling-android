@@ -8,6 +8,7 @@ import com.alex.cycling.base.BaseActivity;
 import com.alex.cycling.ui.main.fragment.CyclingFragment;
 import com.alex.cycling.ui.main.fragment.PersonFragment;
 import com.alex.cycling.ui.main.fragment.RecordFragment;
+import com.alex.cycling.utils.LogUtil;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 
@@ -19,18 +20,15 @@ public class MainActivity extends BaseActivity {
     @Bind(R.id.bottom_navigation_bar)
     BottomNavigationBar bottomBar;
 
-
     PersonFragment personFragment;
     CyclingFragment cyclingFragment;
     RecordFragment recordFragment;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         bottomBar.addItem(new BottomNavigationItem(R.mipmap.ic_launcher, "Home"))
                 .addItem(new BottomNavigationItem(R.mipmap.ic_run, "跑步"))

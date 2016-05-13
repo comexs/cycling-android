@@ -14,6 +14,7 @@ import com.alex.cycling.R;
 import com.alex.cycling.ui.camera.bean.Addon;
 import com.alex.cycling.ui.camera.util.FilterEffect;
 import com.alex.cycling.ui.camera.util.GPUImageFilterTools;
+import com.alex.cycling.utils.LogUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
     private int selectFilter = 0;
     OnItemClickListener listener;
 
-    public FilterAdapter( List<FilterEffect> effects, Bitmap backgroud) {
+    public FilterAdapter(List<FilterEffect> effects, Bitmap backgroud) {
         filterUris = effects;
         this.background = backgroud;
     }
@@ -68,8 +69,8 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
         FilterEffect effect = filterUris.get(position);
         holder.filteredImg.setImage(background);
         holder.filterName.setText(effect.getTitle());
-//        GPUImageFilter filter = GPUImageFilterTools.createFilterForType(holder.filteredImg.getContext(), effect.getType());
-//        holder.filteredImg.setFilter(filter);
+        GPUImageFilter filter = GPUImageFilterTools.createFilterForType(holder.filteredImg.getContext(), effect.getType());
+        holder.filteredImg.setFilter(filter);
         holder.filteredImg.setTag(position);
         holder.filteredImg.setOnClickListener(clickListener);
     }
@@ -86,7 +87,6 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
 
     @Override
     public void onViewRecycled(ViewHolder holder) {
-
         super.onViewRecycled(holder);
     }
 

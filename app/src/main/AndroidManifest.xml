@@ -59,7 +59,19 @@
         </activity>
 
 
-        <service android:name=".service.LocationService" />
+        <service
+            android:name=".service.LocationService"
+            android:process=":remote" />
+        <receiver
+            android:name=".base.Receiver1"
+            android:process=":remote" />
+        <service
+            android:name=".base.DomeaService"
+            android:process=":process2" />
+        <receiver
+            android:name=".base.Receiver2"
+            android:process=":process2" />
+
         <service
             android:name="com.baidu.location.f"
             android:enabled="true">

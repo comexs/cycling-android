@@ -11,6 +11,7 @@
         android:id="@+id/iv_tag_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="10.0dip"
         android:src="@mipmap/tip" />
 
     <ImageView

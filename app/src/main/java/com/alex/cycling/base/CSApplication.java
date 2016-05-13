@@ -1,21 +1,25 @@
 package com.alex.cycling.base;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.alex.cycling.db.DbCore;
+import com.alex.cycling.service.LocationService;
 import com.alex.cycling.utils.FileUtil;
 import com.baidu.mapapi.SDKInitializer;
 import com.facebook.cache.disk.DiskCacheConfig;
 import com.facebook.common.util.ByteConstants;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.marswin89.marsdaemon.DaemonApplication;
+import com.marswin89.marsdaemon.DaemonConfigurations;
 
 import java.io.File;
 
 /**
  * Created by comexs on 16/3/27.
  */
-public class CSApplication extends Application {
+public class CSApplication extends DaemonApplication {
 
 
     private static CSApplication application;
@@ -55,4 +59,36 @@ public class CSApplication extends Application {
                 .setMainDiskCacheConfig(diskCacheConfig).build();//磁盘缓存配置（总，三级缓存）
         Fresco.initialize(this, configBuilder);
     }
+
+    @Override
+    protected DaemonConfigurations getDaemonConfigurations() {
+        DaemonConfigurations.DaemonConfiguration configuration1 = new DaemonConfigurations.DaemonConfiguration(
+                "com.marswin89.marsdaemon.demo:process1",
+                LocationService.class.getCanonicalName(),
+                Receiver1.class.getCanonicalName());
+
+        DaemonConfigurations.DaemonConfiguration configuration2 = new DaemonConfigurations.DaemonConfiguration(
+                "com.marswin89.marsdaemon.demo:process2",
+                DomeaService.class.getCanonicalName(),
+                Receiver2.class.getCanonicalName());
+
+        DaemonConfigurations.DaemonListener listener = new MyDaemonListener();
+        //return new DaemonConfigurations(configuration1, configuration2);//listener can be null
+        return new DaemonConfigurations(configuration1, configuration2, listener);
+    }
+
+    class MyDaemonListener implements DaemonConfigurations.DaemonListener {
+        @Override
+        public void onPersistentStart(Context context) {
+        }
+
+        @Override
+        public void onDaemonAssistantStart(Context context) {
+        }
+
+        @Override
+        public void onWatchDaemonDaed() {
+        }
+    }
+
 }

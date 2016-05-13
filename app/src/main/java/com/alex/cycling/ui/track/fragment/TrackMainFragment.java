@@ -7,14 +7,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
 import com.alex.cycling.db.DbUtil;
 import com.alex.cycling.service.TrackManager;
-import com.alex.cycling.utils.BaiduTool;
-import com.alex.cycling.utils.DisplayUtil;
-import com.alex.cycling.utils.SystemUtil;
+import com.alex.cycling.utils.MathUtil;
 import com.alex.greendao.TrackInfo;
 import com.alex.greendao.TrackInfoDao;
 import com.baidu.mapapi.map.BaiduMap;
@@ -41,6 +40,14 @@ public class TrackMainFragment extends BaseFragment {
 
     @Bind(R.id.frg_map)
     MapView mapView;
+    @Bind(R.id.distance)
+    TextView distance;
+    @Bind(R.id.allTime)
+    TextView allTime;
+    @Bind(R.id.clumbup)
+    TextView clumbup;
+    @Bind(R.id.calorie)
+    TextView calorie;
 
     private String trackUUID;
     private TrackInfo trackInfo;
@@ -98,14 +105,11 @@ public class TrackMainFragment extends BaseFragment {
         for (LatLng latLng : bdpts) {
             boundBuilder.include(latLng);
         }
-//        boundBuilder.include(bdpts.get(0));
-//        boundBuilder.include(bdpts.get(bdpts.size() - 1));
-//        bounds = boundBuilder.build();
-
         PolylineOptions polyline = new PolylineOptions();
         if (bdpts.size() > 1) {
             polyline.points(bdpts);
             polyline.color(Color.RED);
+            polyline.width(8);
             mapView.getMap().addOverlay(polyline);
         }
         firstLatlng = bdpts.get(0);
@@ -122,12 +126,14 @@ public class TrackMainFragment extends BaseFragment {
             end.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_location_stop));
             mapView.getMap().addOverlay(end);
         }
-//        MapStatusUpdate update = MapStatusUpdateFactory.zoomTo(19);
-//        mapView.getMap().setMapStatus(update);
         MapStatusUpdate u = MapStatusUpdateFactory.newLatLngBounds(boundBuilder.build());
         mapView.getMap().animateMapStatus(u);
-//        MapStatusUpdate u = MapStatusUpdateFactory.newLatLngBounds(bounds);
-//        mapView.getMap().animateMapStatus(u);
+
+
+        distance.setText(trackInfo.getTotalDis() + "");
+        allTime.setText(MathUtil.getTimeIntervalFormat(trackInfo.getTotalTime()));
+        clumbup.setText(trackInfo.getClimbUp() + "");
+        calorie.setText(trackInfo.getCalorie() + "");
     }
 
 

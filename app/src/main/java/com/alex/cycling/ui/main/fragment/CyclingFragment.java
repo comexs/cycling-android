@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
 import com.alex.cycling.service.TrackManager;
+import com.alex.cycling.utils.MathUtil;
 import com.jni.ActInfo;
 import com.alex.cycling.client.TrackClient;
 import com.alex.cycling.ui.main.MapActivity;
@@ -78,24 +79,13 @@ public class CyclingFragment extends BaseFragment {
 
         @Override
         public void onNewLocation(Location pt, long time, int signal) {
-            CyclingFragment.this.time.setText(getTimeIntervalFormat(time));
+            CyclingFragment.this.time.setText(MathUtil.getTimeIntervalFormat(time));
             if (null == pt) {
                 return;
             }
             speed.setText(String.format("%.2f", pt.getSpeed() * 3.6));
         }
     };
-
-    private String getTimeIntervalFormat(long diff) {
-        long time = diff;
-        int h = (int) (time / (60 * 60));
-        time = time % (60 * 60);
-        int m = (int) (time / (60));
-        time = time % (60);
-        int s = (int) time;
-        return String.format("%02d:%02d:%02d", h, m, s);
-    }
-
 
     @OnClick({R.id.start, R.id.map, R.id.end})
     void click(View v) {

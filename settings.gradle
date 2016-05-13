@@ -1,1 +1,1 @@
-include ':app', ':db', ':gson', ':mpchartlib', ':thirdlib'
+include ':app', ':db', ':gson', ':mpchartlib', ':thirdlib', ':marsdaemonlib'
