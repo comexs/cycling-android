@@ -103,7 +103,6 @@ public class TrackWorkThread extends Thread {
         while (true) {
             synchronized (TrackWorkThread.class) {
                 long minTime = SystemClock.elapsedRealtime() + lastTime;
-                LogUtil.e("aaaa");
                 if (minTime - tempTime > 1000) {
                     tempTime = minTime;
                     if (startTime == 0) {
@@ -113,8 +112,9 @@ public class TrackWorkThread extends Thread {
                         end();
                         return;
                     }
-                    if (null != handlerListener)
+                    if (null != handlerListener) {
                         handlerListener.onPostData(mLocation, (tempTime - startTime) / 1000, mSignal, actInfo);
+                    }
                 }
             }
         }

@@ -48,7 +48,7 @@ public class LocationService extends Service {
             }
         }
         initService(intent);
-        ToastUtil.showToast("服务起来了");
+        LogUtil.e("服务起来了");
         return START_STICKY;
     }
 
@@ -58,10 +58,18 @@ public class LocationService extends Service {
         super.onDestroy();
         dissWW();
         LogUtil.e("服务被销毁");
+        if (null != workHandler) {
+            workHandler.end();
+        }
     }
 
     private void initService(Intent intent) {
-        if (null == intent) {
+        if (null == intent) {   //恢复时走这里
+            if (null == workHandler) {
+                workHandler = new TrackWorkThread(getBaseContext());
+                workHandler.recoveryTrack();
+                LogUtil.e("恢复服务..");
+            }
             return;
         }
         if (null == workHandler) {

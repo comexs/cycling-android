@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="camera_gallery">
+        <item>相机</item>
+        <item>图片</item>
+    </string-array>
+
+    <string-array name="picture_select">
+        <item>保存到本地</item>
+    </string-array>
+
+</resources>

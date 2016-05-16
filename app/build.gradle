@@ -42,4 +42,6 @@ dependencies {
     compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
     compile 'com.yalantis:contextmenu:1.0.6'
     compile project(':marsdaemonlib')
+    compile 'me.yokeyword:fragmentation:0.5.5'
+    compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'
 }

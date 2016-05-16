@@ -30,20 +30,37 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import butterknife.ButterKnife;
+import me.yokeyword.fragmentation.SupportActivity;
+import me.yokeyword.fragmentation.anim.FragmentAnimator;
 
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends SupportActivity {
 
     protected Toolbar mToolbar;
     protected DialogHelper dialogHelper;
 
-    /************************
-     * Activity LifeCycle For Debug
-     *******************/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getOverflowMenu();
         initWindow();
+    }
+
+    @Override
+    protected int setContainerId() {
+        return 0;
+    }
+
+    /**
+     * 设置全局动画，在SupportFragment可以自由更改其动画
+     */
+    @Override
+    protected FragmentAnimator onCreateFragmentAnimator() {
+        // 默认竖向(和安卓5.0以上的动画相同)
+        return super.onCreateFragmentAnimator();
+        // 设置横向(和安卓4.x动画相同)
+        // return new DefaultHorizontalAnimator();
+        // 设置自定义动画
+        // return new FragmentAnimator(enter,exit,popEnter,popExit);
     }
 
     @Override
@@ -134,27 +151,27 @@ public class BaseActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void reload() {
-        Intent intent = getIntent();
-        overridePendingTransition(0, 0);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        finish();
-        overridePendingTransition(0, 0);
-        startActivity(intent);
-    }
+//    public void reload() {
+//        Intent intent = getIntent();
+//        overridePendingTransition(0, 0);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//        finish();
+//        overridePendingTransition(0, 0);
+//        startActivity(intent);
+//    }
 
-    protected void initActionBar(String title) {
-        if (null != mToolbar) {
-            ActionBar actionBar = getSupportActionBar();
-            if (null != actionBar) {
-                int mask = ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_CUSTOM;
-                actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, mask);
-                actionBar.setDefaultDisplayHomeAsUpEnabled(true);
-                actionBar.setHomeButtonEnabled(true);
-                actionBar.setTitle(title);
-            }
-        }
-    }
+//    protected void initActionBar(String title) {
+//        if (null != mToolbar) {
+//            ActionBar actionBar = getSupportActionBar();
+//            if (null != actionBar) {
+//                int mask = ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_CUSTOM;
+//                actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, mask);
+//                actionBar.setDefaultDisplayHomeAsUpEnabled(true);
+//                actionBar.setHomeButtonEnabled(true);
+//                actionBar.setTitle(title);
+//            }
+//        }
+//    }
 
     //强制出现overflow(三个点的设置)按钮
     protected void getOverflowMenu() {

@@ -11,8 +11,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import me.yokeyword.fragmentation.SupportFragment;
 
-public abstract class BaseFragment extends Fragment {
+
+public abstract class BaseFragment extends SupportFragment {
 
     private boolean isVisibleToUser;
     private boolean isPrepare;
@@ -104,9 +106,7 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
-    /********************************
-     * OpenActivity
-     ***********************/
+    //********************************* OpenActivity ***********************/
 
     protected void openActivity(Activity activity, Class<?> pClass) {
         openActivity(activity, pClass, null);

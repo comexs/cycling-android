@@ -5,14 +5,12 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
 import com.alex.cycling.ui.camera.CameraActivity;
-import com.alex.cycling.ui.track.TestFragment;
+import com.alex.cycling.ui.person.PersonActivity;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -33,13 +31,19 @@ public class PersonFragment extends BaseFragment {
         return main;
     }
 
-    @OnClick(R.id.statics)
+    @OnClick({R.id.statics, R.id.person_info})
     void click(View v) {
+        switch (v.getId()) {
+            case R.id.person_info:
+                openActivity(getActivity(), PersonActivity.class);
+                break;
+            case R.id.statics:
+                openActivity(getActivity(), CameraActivity.class);
+                break;
+        }
 //        TestFragment testFragment = new TestFragment();
 //        testFragment.show(getFragmentManager(), "aaa");
-        openActivity(getActivity(), CameraActivity.class);
     }
-
 
     @Override
     public void onDestroyView() {
