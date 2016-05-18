@@ -36,7 +36,7 @@ public class TrackInfoActivity extends BaseActivity implements OnMenuItemClickLi
     @Bind(R.id.tab)
     TabLayout tab;
     @Bind(R.id.viewPager)
-    ViewPager viewPager;
+    CustomViewPager viewPager;
 
     private TabFragmentPagerAdapter mTabAdapter;
     private String trackUUID;
@@ -74,6 +74,7 @@ public class TrackInfoActivity extends BaseActivity implements OnMenuItemClickLi
         tab.setTabGravity(TabLayout.GRAVITY_FILL);
         tab.setTabMode(TabLayout.MODE_FIXED);
         tab.setTabTextColors(getResources().getColor(R.color.white), getResources().getColor(R.color.cmm_main_red));
+        viewPager.setNoScroll(true);
     }
 
     private void initMenuFragment() {

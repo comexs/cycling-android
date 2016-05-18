@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by comexs on 16/4/12.
@@ -28,6 +29,59 @@ public class SystemUtil {
         }
         return false;
     }
+
+    /**
+     * 判断服务是否启动, 注意只要名称相同, 会检测任何服务.
+     *
+     * @param context      上下文
+     * @param serviceClass 服务类
+     * @return 是否启动服务
+     */
+    public static boolean isServiceRunning(Context context, Class<?> serviceClass) {
+        if (context == null) {
+            return false;
+        }
+        Context appContext = context.getApplicationContext();
+        ActivityManager manager = (ActivityManager) appContext.getSystemService(Context.ACTIVITY_SERVICE);
+        if (manager != null) {
+            List<ActivityManager.RunningServiceInfo> infos = manager.getRunningServices(Integer.MAX_VALUE);
+            if (infos != null && !infos.isEmpty()) {
+                for (ActivityManager.RunningServiceInfo service : infos) {
+                    // 添加Uid验证, 防止服务重名, 当前服务无法启动
+                    if (getUid(context) == service.uid&&serviceClass.getName().equals(service.service.getClassName())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 获取应用的Uid, 用于验证服务是否启动
+     *
+     * @param context 上下文
+     * @return uid
+     */
+    public static int getUid(Context context) {
+        if (context == null) {
+            return -1;
+        }
+        int pid = android.os.Process.myPid();
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        if (manager != null) {
+            List<ActivityManager.RunningAppProcessInfo> infos = manager.getRunningAppProcesses();
+            if (infos != null && !infos.isEmpty()) {
+                for (ActivityManager.RunningAppProcessInfo processInfo : infos) {
+                    if (processInfo.pid == pid) {
+                        return processInfo.uid;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
 
     /**
      * 获取当前机器的屏幕信息对象<br/>

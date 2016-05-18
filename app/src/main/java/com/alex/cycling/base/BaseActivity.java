@@ -66,12 +66,7 @@ public class BaseActivity extends SupportActivity {
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-        //透明状态栏
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            getRootView().setFitsSystemWindows(true);
-        }
+        getRootView().setFitsSystemWindows(true);
         mToolbar = (Toolbar) findViewById(R.id.common_toolbar);
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
@@ -83,7 +78,7 @@ public class BaseActivity extends SupportActivity {
     private void initWindow() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintColor(getStatusBarColor());
             tintManager.setStatusBarTintEnabled(true);
@@ -144,7 +139,6 @@ public class BaseActivity extends SupportActivity {
         super.onDestroy();
         ButterKnife.unbind(this);
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -78,7 +78,14 @@ public class TrackDaoGenerator {
         trackInfo.addStringProperty("imageUrl");
         trackInfo.addStringProperty("device");
         trackInfo.addIntProperty("status").notNull();
+    }
 
+    private static void addPersonInfo(Schema schema) {
+        Entity personInfo = schema.addEntity("PersonInfo");
+        personInfo.addLongProperty("userId").primaryKeyAsc().autoincrement();
+        personInfo.addStringProperty("username").notNull();
+        personInfo.addStringProperty("address");
+//        personInfo.addStringProperty()
     }
 
 }

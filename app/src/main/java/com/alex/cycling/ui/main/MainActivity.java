@@ -2,13 +2,14 @@ package com.alex.cycling.ui.main;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseActivity;
 import com.alex.cycling.ui.main.fragment.CyclingFragment;
 import com.alex.cycling.ui.main.fragment.PersonFragment;
 import com.alex.cycling.ui.main.fragment.RecordFragment;
-import com.alex.cycling.utils.LogUtil;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 
@@ -82,6 +83,26 @@ public class MainActivity extends BaseActivity {
                 localFragmentTransaction.commit();
                 break;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.actionbar_setting:
+//                openActivity(SettingActivity.class);
+                break;
+            case R.id.actionbar_about:
+//                openActivity(AboutActivity.class);
+
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

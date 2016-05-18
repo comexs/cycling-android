@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alex.cycling.R;
@@ -31,6 +32,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by comexs on 16/4/24.
@@ -48,6 +50,8 @@ public class TrackMainFragment extends BaseFragment {
     TextView clumbup;
     @Bind(R.id.calorie)
     TextView calorie;
+    @Bind(R.id.fullscreen_switch)
+    ImageView fullscreenSwitch;
 
     private String trackUUID;
     private TrackInfo trackInfo;
@@ -134,6 +138,15 @@ public class TrackMainFragment extends BaseFragment {
         allTime.setText(MathUtil.getTimeIntervalFormat(trackInfo.getTotalTime()));
         clumbup.setText(trackInfo.getClimbUp() + "");
         calorie.setText(trackInfo.getCalorie() + "");
+    }
+
+    @OnClick(R.id.fullscreen_switch)
+    void click(View v) {
+        switch (v.getId()) {
+            case R.id.fullscreen_switch:
+
+                break;
+        }
     }
 
 
