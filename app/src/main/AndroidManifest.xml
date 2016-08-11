@@ -50,7 +50,7 @@
 
         <activity
             android:name=".ui.main.MainActivity"
-            android:label="骑行"
+            android:label="Run"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -59,19 +59,14 @@
             </intent-filter>
         </activity>
 
-
-        <service
-            android:name=".service.LocationService"
-            android:process=":remote" />
-        <receiver
-            android:name=".base.Receiver1"
-            android:process=":remote" />
+        <service android:name=".service.LocationService" />
+        <receiver android:name=".base.Receiver1" />
         <service
             android:name=".base.DomeaService"
-            android:process=":process2" />
+            android:process=":remote" />
         <receiver
             android:name=".base.Receiver2"
-            android:process=":process2" />
+            android:process=":remote" />
 
         <service
             android:name="com.baidu.location.f"
@@ -106,8 +101,14 @@
             android:theme="@style/Main.Theme.FullScreen" />
 
         <activity
-            android:name=".ui.person.PersonActivity"
+            android:name=".ui.setting.PersonActivity"
             android:label="个人资料"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.setting.SettingActivity"
+            android:label="设置"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 

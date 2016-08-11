@@ -9,6 +9,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 
+import com.alex.cycling.utils.permission.PermissionsChecker;
+
 /**
  * Created by comexs on 16/3/28.
  */
@@ -42,7 +44,6 @@ public class LocationSersor implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         if (null != listener) listener.onLocationChange(location, 1);
-
     }
 
     @Override

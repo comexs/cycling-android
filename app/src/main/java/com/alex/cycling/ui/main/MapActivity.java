@@ -62,7 +62,6 @@ public class MapActivity extends BaseActivity implements BDLocationListener {
         BaiduLocationUtils.instance.start(this);
         BaiduLocationUtils.instance.setListener(this);
         TrackClient.getInstance().addTrackListener(onCyclingListener);
-
     }
 
 

@@ -11,98 +11,54 @@ import android.os.Parcelable;
  * 
  * @author Philipp Jahoda
  */
-public class Entry implements Parcelable {
+public class Entry extends BaseEntry implements Parcelable {
 
-    /** the actual value */
-    private float mVal = 0f;
+    /** the x value */
+    private float x = 0f;
 
-    /** the index on the x-axis */
-    private int mXIndex = 0;
+    public Entry() {
 
-    /** optional spot for additional data this Entry represents */
-    private Object mData = null;
-
-    /**
-     * A Entry represents one single entry in the chart.
-     * 
-     * @param val the y value (the actual value of the entry)
-     * @param xIndex the corresponding index in the x value array (index on the
-     *            x-axis of the chart, must NOT be higher than the length of the
-     *            x-values String array)
-     */
-    public Entry(float val, int xIndex) {
-        mVal = val;
-        mXIndex = xIndex;
     }
 
     /**
      * A Entry represents one single entry in the chart.
-     * 
-     * @param val the y value (the actual value of the entry)
-     * @param xIndex the corresponding index in the x value array (index on the
-     *            x-axis of the chart, must NOT be higher than the length of the
-     *            x-values String array)
+     *
+     * @param x the x value
+     * @param y the y value (the actual value of the entry)
+     */
+    public Entry(float x, float y) {
+        super(y);
+        this.x = x;
+    }
+
+    /**
+     * A Entry represents one single entry in the chart.
+     *
+     * @param x the x value
+     * @param y the y value (the actual value of the entry)
      * @param data Spot for additional data this Entry represents.
      */
-    public Entry(float val, int xIndex, Object data) {
-        this(val, xIndex);
-
-        this.mData = data;
+    public Entry(float x, float y, Object data) {
+        super(y, data);
+        this.x = x;
     }
 
     /**
-     * returns the x-index the value of this object is mapped to
+     * Returns the x-value of this Entry object.
      * 
      * @return
      */
-    public int getXIndex() {
-        return mXIndex;
+    public float getX() {
+        return x;
     }
 
     /**
-     * sets the x-index for the entry
+     * Sets the x-value of this Entry object.
      * 
      * @param x
      */
-    public void setXIndex(int x) {
-        this.mXIndex = x;
-    }
-
-    /**
-     * Returns the total value the entry represents.
-     * 
-     * @return
-     */
-    public float getVal() {
-        return mVal;
-    }
-
-    /**
-     * Sets the value for the entry.
-     * 
-     * @param val
-     */
-    public void setVal(float val) {
-        this.mVal = val;
-    }
-
-    /**
-     * Returns the data, additional information that this Entry represents, or
-     * null, if no data has been specified.
-     * 
-     * @return
-     */
-    public Object getData() {
-        return mData;
-    }
-
-    /**
-     * Sets additional data this Entry should represent.
-     * 
-     * @param data
-     */
-    public void setData(Object data) {
-        this.mData = data;
+    public void setX(float x) {
+        this.x = x;
     }
 
     /**
@@ -111,7 +67,7 @@ public class Entry implements Parcelable {
      * @return
      */
     public Entry copy() {
-        Entry e = new Entry(mVal, mXIndex, mData);
+        Entry e = new Entry(x, getY(), getData());
         return e;
     }
 
@@ -128,12 +84,13 @@ public class Entry implements Parcelable {
         if (e == null)
             return false;
 
-        if (e.mData != this.mData)
-            return false;
-        if (e.mXIndex != this.mXIndex)
+        if (e.getData() != this.getData())
             return false;
 
-        if (Math.abs(e.mVal - this.mVal) > 0.00001f)
+        if (Math.abs(e.x - this.x) > 0.000001f)
+            return false;
+
+        if (Math.abs(e.getY() - this.getY()) > 0.000001f)
             return false;
 
         return true;
@@ -144,7 +101,7 @@ public class Entry implements Parcelable {
      */
     @Override
     public String toString() {
-        return "Entry, xIndex: " + mXIndex + " val (sum): " + getVal();
+        return "Entry, x: " + x + " y: " + getY();
     }
 
     @Override
@@ -154,12 +111,12 @@ public class Entry implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeFloat(this.mVal);
-        dest.writeInt(this.mXIndex);
-        if (mData != null) {
-            if (mData instanceof Parcelable) {
+        dest.writeFloat(this.x);
+        dest.writeFloat(this.getY());
+        if (getData() != null) {
+            if (getData() instanceof Parcelable) {
                 dest.writeInt(1);
-                dest.writeParcelable((Parcelable) this.mData, flags);
+                dest.writeParcelable((Parcelable) this.getData(), flags);
             } else {
                 throw new ParcelFormatException("Cannot parcel an Entry with non-parcelable data");
             }
@@ -169,10 +126,10 @@ public class Entry implements Parcelable {
     }
 
     protected Entry(Parcel in) {
-        this.mVal = in.readFloat();
-        this.mXIndex = in.readInt();
+        this.x = in.readFloat();
+        this.setY(in.readFloat());
         if (in.readInt() == 1) {
-            this.mData = in.readParcelable(Object.class.getClassLoader());
+            this.setData(in.readParcelable(Object.class.getClassLoader()));
         }
     }
 

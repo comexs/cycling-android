@@ -23,7 +23,7 @@
         android:id="@+id/common_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/black"
+        android:background="@color/holo_black"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:minHeight="?attr/actionBarSize"

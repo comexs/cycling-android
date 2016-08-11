@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 
+import com.alex.cycling.utils.LogUtil;
 import com.jni.ActInfo;
 import com.alex.cycling.service.LocationService;
 import com.alex.cycling.service.TrackManager;
@@ -24,7 +25,6 @@ public class TrackClient implements TClient {
     TrackWorkThread trackWorkHandler;
 
     List<OnCyclingListener> listenerList = new ArrayList<OnCyclingListener>();
-
 
     private TrackClient() {
 
@@ -65,7 +65,11 @@ public class TrackClient implements TClient {
 
     @Override
     public void saveTrack() {
-        if (null != trackWorkHandler) trackWorkHandler.saveTrack();
+        if (null != trackWorkHandler) {
+            trackWorkHandler.saveTrack();
+        } else {
+            TrackManager.closeTrackDB();
+        }
     }
 
     @Override
@@ -119,11 +123,8 @@ public class TrackClient implements TClient {
                         listener.onCycling(actInfo);
                     }
                 });
-
             }
         }
-
-
     };
 
 

@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.util.Log;
 
+import com.github.mikephil.charting.formatter.AxisValueFormatter;
+import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter;
 import com.github.mikephil.charting.utils.Utils;
 
 import java.util.ArrayList;
@@ -17,6 +19,11 @@ import java.util.List;
  */
 public abstract class AxisBase extends ComponentBase {
 
+    /**
+     * custom formatter that is used instead of the auto-formatter if set
+     */
+    protected AxisValueFormatter mAxisValueFormatter;
+
     private int mGridColor = Color.GRAY;
 
     private float mGridLineWidth = 1f;
@@ -24,6 +31,49 @@ public abstract class AxisBase extends ComponentBase {
     private int mAxisLineColor = Color.GRAY;
 
     private float mAxisLineWidth = 1f;
+
+    /**
+     * the actual array of entries
+     */
+    public float[] mEntries = new float[]{};
+
+    /**
+     * axis label entries only used for centered labels
+     */
+    public float[] mCenteredEntries = new float[]{};
+
+    /**
+     * the number of entries the legend contains
+     */
+    public int mEntryCount;
+
+    /**
+     * the number of decimal digits to use
+     */
+    public int mDecimals;
+
+    /**
+     * the number of label entries the axis should have, default 6
+     */
+    private int mLabelCount = 6;
+
+    /**
+     * the minimum interval between axis values
+     */
+    protected float mGranularity = 1.0f;
+
+    /**
+     * When true, axis labels are controlled by the `granularity` property.
+     * When false, axis values could possibly be repeated.
+     * This could happen if two adjacent axis values are rounded to same value.
+     * If using granularity this could be avoided by having fewer axis values visible.
+     */
+    protected boolean mGranularityEnabled = false;
+
+    /**
+     * if true, the set number of y-labels will be forced
+     */
+    protected boolean mForceLabels = false;
 
     /**
      * flag indicating if the grid lines for this axis should be drawn
@@ -39,6 +89,8 @@ public abstract class AxisBase extends ComponentBase {
      * flag that indicates of the labels of this axis should be drawn or not
      */
     protected boolean mDrawLabels = true;
+
+    protected boolean mCenterAxisLabels = false;
 
     /**
      * the path effect of the grid lines that makes dashed lines possible
@@ -124,6 +176,14 @@ public abstract class AxisBase extends ComponentBase {
      */
     public boolean isDrawAxisLineEnabled() {
         return mDrawAxisLine;
+    }
+
+    public void setCenterAxisLabels(boolean enabled) {
+        mCenterAxisLabels = enabled;
+    }
+
+    public boolean isCenterAxisLabelsEnabled() {
+        return mCenterAxisLabels && mEntryCount > 1;
     }
 
     /**
@@ -222,6 +282,94 @@ public abstract class AxisBase extends ComponentBase {
     }
 
     /**
+     * Sets the number of label entries for the y-axis max = 25, min = 2, default: 6, be aware
+     * that this number is not fixed.
+     *
+     * @param count the number of y-axis labels that sould be displayed
+     */
+    public void setLabelCount(int count) {
+
+        if (count > 25)
+            count = 25;
+        if (count < 2)
+            count = 2;
+
+        mLabelCount = count;
+        mForceLabels = false;
+    }
+
+    /**
+     * sets the number of label entries for the y-axis max = 25, min = 2, default: 6, be aware
+     * that this number is not
+     * fixed (if force == false) and can only be approximated.
+     *
+     * @param count the number of y-axis labels that sould be displayed
+     * @param force if enabled, the set label count will be forced, meaning that the exact
+     *              specified count of labels will
+     *              be drawn and evenly distributed alongside the axis - this might cause labels
+     *              to have uneven values
+     */
+    public void setLabelCount(int count, boolean force) {
+
+        setLabelCount(count);
+        mForceLabels = force;
+    }
+
+    /**
+     * Returns true if focing the y-label count is enabled. Default: false
+     *
+     * @return
+     */
+    public boolean isForceLabelsEnabled() {
+        return mForceLabels;
+    }
+
+    /**
+     * Returns the number of label entries the y-axis should have
+     *
+     * @return
+     */
+    public int getLabelCount() {
+        return mLabelCount;
+    }
+
+    /**
+     * @return true if granularity is enabled
+     */
+    public boolean isGranularityEnabled() {
+        return mGranularityEnabled;
+    }
+
+    /**
+     * Enabled/disable granularity control on axis value intervals. If enabled, the axis
+     * interval is not allowed to go below a certain granularity. Default: false
+     *
+     * @param enabled
+     */
+    public void setGranularityEnabled(boolean enabled) {
+        mGranularityEnabled = enabled;
+    }
+
+    /**
+     * @return the minimum interval between axis values
+     */
+    public float getGranularity() {
+        return mGranularity;
+    }
+
+    /**
+     * Set a minimum interval for the axis when zooming in. The axis is not allowed to go below
+     * that limit. This can be used to avoid label duplicating when zooming in.
+     *
+     * @param granularity
+     */
+    public void setGranularity(float granularity) {
+        mGranularity = granularity;
+        // set this to true if it was disabled, as it makes no sense to call this method with granularity disabled
+        mGranularityEnabled = true;
+    }
+
+    /**
      * Adds a new LimitLine to this axis.
      *
      * @param l
@@ -281,7 +429,61 @@ public abstract class AxisBase extends ComponentBase {
      *
      * @return
      */
-    public abstract String getLongestLabel();
+    public String getLongestLabel() {
+
+        String longest = "";
+
+        for (int i = 0; i < mEntries.length; i++) {
+            String text = getFormattedLabel(i);
+
+            if (text != null && longest.length() < text.length())
+                longest = text;
+        }
+
+        return longest;
+    }
+
+    public String getFormattedLabel(int index) {
+
+        if (index < 0 || index >= mEntries.length)
+            return "";
+        else
+            return getValueFormatter().getFormattedValue(mEntries[index], this);
+    }
+
+    /**
+     * Sets the formatter to be used for formatting the axis labels. If no formatter is set, the
+     * chart will
+     * automatically determine a reasonable formatting (concerning decimals) for all the values
+     * that are drawn inside
+     * the chart. Use chart.getDefaultValueFormatter() to use the formatter calculated by the chart.
+     *
+     * @param f
+     */
+    public void setValueFormatter(AxisValueFormatter f) {
+
+        if (f == null)
+            mAxisValueFormatter = new DefaultAxisValueFormatter(mDecimals);
+        else
+            mAxisValueFormatter = f;
+    }
+
+    /**
+     * Returns the formatter used for formatting the axis labels.
+     *
+     * @return
+     */
+    public AxisValueFormatter getValueFormatter() {
+
+        if (mAxisValueFormatter == null) {
+            mAxisValueFormatter = new DefaultAxisValueFormatter(mDecimals);
+        } else if (mAxisValueFormatter.getDecimalDigits() != mDecimals && mAxisValueFormatter instanceof
+                DefaultAxisValueFormatter) {
+            mAxisValueFormatter = new DefaultAxisValueFormatter(mDecimals);
+        }
+
+        return mAxisValueFormatter;
+    }
 
     /**
      * Enables the grid line to be drawn in dashed mode, e.g. like this
@@ -383,6 +585,7 @@ public abstract class AxisBase extends ComponentBase {
     public void setAxisMinValue(float min) {
         mCustomAxisMin = true;
         mAxisMinimum = min;
+        this.mAxisRange = Math.abs(mAxisMaximum - min);
     }
 
     /**
@@ -395,5 +598,35 @@ public abstract class AxisBase extends ComponentBase {
     public void setAxisMaxValue(float max) {
         mCustomAxisMax = true;
         mAxisMaximum = max;
+        this.mAxisRange = Math.abs(max - mAxisMinimum);
+    }
+
+    /**
+     * Calculates the minimum / maximum  and range values of the axis with the given
+     * minimum and maximum values from the chart data.
+     *
+     * @param dataMin the min value according to chart data
+     * @param dataMax the max value according to chart data
+     */
+    public void calculate(float dataMin, float dataMax) {
+
+        // if custom, use value as is, else use data value
+        float min = mCustomAxisMin ? mAxisMinimum : dataMin;
+        float max = mCustomAxisMax ? mAxisMaximum : dataMax;
+
+        // temporary range (before calculations)
+        float range = Math.abs(max - min);
+
+        // in case all values are equal
+        if (range == 0f) {
+            max = max + 1f;
+            min = min - 1f;
+        }
+
+        this.mAxisMinimum = min;
+        this.mAxisMaximum = max;
+
+        // actual range
+        this.mAxisRange = Math.abs(max - min);
     }
 }

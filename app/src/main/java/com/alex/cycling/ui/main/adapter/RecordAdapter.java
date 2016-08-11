@@ -1,77 +1,39 @@
 package com.alex.cycling.ui.main.adapter;
 
 import android.net.Uri;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.alex.cycling.R;
 import com.alex.cycling.service.TrackManager;
-import com.alex.cycling.ui.track.TrackInfoActivity;
 import com.alex.cycling.utils.DateUtil;
-import com.alex.cycling.utils.adapter.SimpleAdapter;
-import com.alex.cycling.utils.adapter.ViewUtils;
+import com.alex.cycling.utils.adapter.CustomBaseQuickAdapter;
 import com.alex.greendao.TrackInfo;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
 /**
  * Created by comexs on 16/3/20.
  */
-public class RecordAdapter extends SimpleAdapter<TrackInfo, RecordAdapter.ViewHolder> {
+public class RecordAdapter extends CustomBaseQuickAdapter<TrackInfo> {
 
-    public RecordAdapter(List<TrackInfo> list) {
-        super(list);
+    public RecordAdapter(List<TrackInfo> data) {
+        super(R.layout.item_record, data);
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(ViewUtils.inflate(R.layout.item_record, parent));
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        final TrackInfo trackInfo = getItem(position);
-        holder.trackName.setText(trackInfo.getTrackUUID());
-        holder.time.setText(DateUtil.parseDateLineToBlurStr(trackInfo.getStartTime() * 1000));
+    protected void convert(BaseViewHolder helper, TrackInfo trackInfo) {
+        helper.setText(R.id.track_name, trackInfo.getTrackName());
+        helper.setText(R.id.distance, trackInfo.getTotalDis() + "km");
+        helper.setText(R.id.time, DateUtil.parseDateLineToBlurStr(trackInfo.getStartTime() * 1000));
+        SimpleDraweeView trackImage = helper.getView(R.id.track_image);
         if (!TextUtils.isEmpty(trackInfo.getImageUrl())) {
-            holder.trackImage.setImageURI(Uri.parse(TrackManager.getBaiduUrlByDes(trackInfo.getImageUrl(), 100, 100)));
+            trackImage.setImageURI(Uri.parse(TrackManager.getBaiduUrlByDes(trackInfo.getImageUrl(), 720, 200)));
         } else {
             TrackManager.vacuate(trackInfo.getTrackUUID());
         }
-        holder.distance.setText(trackInfo.getTotalDis() + "");
-        holder.itemMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TrackInfoActivity.newInstance(v.getContext(), trackInfo.getTrackUUID());
-            }
-        });
-
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
-
-        @Bind(R.id.track_image)
-        SimpleDraweeView trackImage;
-        @Bind(R.id.track_name)
-        public TextView trackName;
-        @Bind(R.id.time)
-        public TextView time;
-        @Bind(R.id.distance)
-        public TextView distance;
-        @Bind(R.id.itemMain)
-        View itemMain;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
 
 }

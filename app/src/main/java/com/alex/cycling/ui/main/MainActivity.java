@@ -1,5 +1,6 @@
 package com.alex.cycling.ui.main;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
@@ -31,14 +32,17 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        bottomBar.addItem(new BottomNavigationItem(R.mipmap.ic_launcher, "Home"))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_run, "跑步"))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_bottom_menu, "记录"))
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
+        getSupportActionBar().setTitle("");
+        bottomBar.addItem(new BottomNavigationItem(R.mipmap.ic_person, "").setInactiveIconResource(R.mipmap.ic_person))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_run, "").setInactiveIconResource(R.mipmap.ic_run))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_record, "").setInactiveIconResource(R.mipmap.ic_record))
                 .initialise();
-        bottomBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
-        bottomBar.setMode(BottomNavigationBar.MODE_CLASSIC);
-        bottomBar.setActiveColor(R.color.blue).setInActiveColor(R.color.white);
-        bottomBar.setBarBackgroundColor(R.color.colorPrimary);
+        bottomBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_RIPPLE);
+        bottomBar.setMode(BottomNavigationBar.MODE_FIXED);
+//        bottomBar.setActiveColor("#000000")
+//                .setInActiveColor("#000000")
+//                .setBarBackgroundColor("#000000");
         bottomBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
             @Override
             public void onTabSelected(int position) {
@@ -85,26 +89,25 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.actionbar_setting:
-//                openActivity(SettingActivity.class);
-                break;
-            case R.id.actionbar_about:
-//                openActivity(AboutActivity.class);
-
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.actionbar_setting:
+////                openActivity(SettingActivity.class);
+//                break;
+//            case R.id.actionbar_about:
+////                openActivity(AboutActivity.class);
+//
+//                break;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     protected void onStop() {

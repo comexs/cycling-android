@@ -39,6 +39,11 @@ public interface ILineDataSet extends ILineRadarDataSet<Entry> {
     float getCircleRadius();
 
     /**
+     * Returns the hole radius of the drawn circles.
+     */
+    float getCircleHoleRadius();
+
+    /**
      * Returns the color at the given index of the DataSet's circle-color array.
      * Performs a IndexOutOfBounds check by modulus.
      *
@@ -46,6 +51,13 @@ public interface ILineDataSet extends ILineRadarDataSet<Entry> {
      * @return
      */
     int getCircleColor(int index);
+
+    /**
+     * Returns the number of colors in this DataSet's circle-color array.
+     *
+     * @return
+     */
+    int getCircleColorCount();
 
     /**
      * Returns true if drawing circles for this DataSet is enabled, false if not

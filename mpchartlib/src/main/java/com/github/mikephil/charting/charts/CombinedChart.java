@@ -11,12 +11,7 @@ import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.ScatterData;
 import com.github.mikephil.charting.highlight.CombinedHighlighter;
-import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider;
-import com.github.mikephil.charting.interfaces.dataprovider.BubbleDataProvider;
-import com.github.mikephil.charting.interfaces.dataprovider.CandleDataProvider;
-import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
-import com.github.mikephil.charting.interfaces.dataprovider.ScatterDataProvider;
-import com.github.mikephil.charting.interfaces.datasets.IBubbleDataSet;
+import com.github.mikephil.charting.interfaces.dataprovider.CombinedDataProvider;
 import com.github.mikephil.charting.renderer.CombinedChartRenderer;
 
 /**
@@ -25,19 +20,19 @@ import com.github.mikephil.charting.renderer.CombinedChartRenderer;
  *
  * @author Philipp Jahoda
  */
-public class CombinedChart extends BarLineChartBase<CombinedData> implements LineDataProvider,
-        BarDataProvider, ScatterDataProvider, CandleDataProvider, BubbleDataProvider {
-
-    /**
-     * flag that enables or disables the highlighting arrow
-     */
-    private boolean mDrawHighlightArrow = false;
+public class CombinedChart extends BarLineChartBase<CombinedData> implements CombinedDataProvider {
 
     /**
      * if set to true, all values are drawn above their bars, instead of below
      * their top
      */
     private boolean mDrawValueAboveBar = true;
+
+
+    /**
+     * flag that indicates whether the highlight should be full-bar oriented, or single-value?
+     */
+    protected boolean mHighlightFullBarEnabled = false;
 
     /**
      * if set to true, a grey area is drawn behind each bar that indicates the
@@ -73,41 +68,15 @@ public class CombinedChart extends BarLineChartBase<CombinedData> implements Lin
     protected void init() {
         super.init();
 
-        setHighlighter(new CombinedHighlighter(this));
+        setHighlighter(new CombinedHighlighter(this, this));
 
-        // mRenderer = new CombinedChartRenderer(this, mAnimator,
-        // mViewPortHandler);
+        // Old default behaviour
+        setHighlightFullBarEnabled(true);
     }
 
     @Override
-    protected void calcMinMax() {
-        super.calcMinMax();
-
-        if (getBarData() != null || getCandleData() != null || getBubbleData() != null) {
-            mXAxis.mAxisMinimum = -0.5f;
-            mXAxis.mAxisMaximum = mData.getXVals().size() - 0.5f;
-
-            if (getBubbleData() != null) {
-
-                for (IBubbleDataSet set : getBubbleData().getDataSets()) {
-
-                    final float xmin = set.getXMin();
-                    final float xmax = set.getXMax();
-
-                    if (xmin < mXAxis.mAxisMinimum)
-                        mXAxis.mAxisMinimum = xmin;
-
-                    if (xmax > mXAxis.mAxisMaximum)
-                        mXAxis.mAxisMaximum = xmax;
-                }
-            }
-        }
-
-        mXAxis.mAxisRange = Math.abs(mXAxis.mAxisMaximum - mXAxis.mAxisMinimum);
-
-        if (mXAxis.mAxisRange == 0.f && getLineData() != null && getLineData().getYValCount() > 0) {
-            mXAxis.mAxisRange = 1.f;
-        }
+    public CombinedData getCombinedData() {
+        return mData;
     }
 
     @Override
@@ -115,6 +84,7 @@ public class CombinedChart extends BarLineChartBase<CombinedData> implements Lin
         mData = null;
         mRenderer = null;
         super.setData(data);
+        setHighlighter(new CombinedHighlighter(this, this));
         mRenderer = new CombinedChartRenderer(this, mAnimator, mViewPortHandler);
         mRenderer.initBuffers();
     }
@@ -164,20 +134,6 @@ public class CombinedChart extends BarLineChartBase<CombinedData> implements Lin
         return mDrawValueAboveBar;
     }
 
-    @Override
-    public boolean isDrawHighlightArrowEnabled() {
-        return mDrawHighlightArrow;
-    }
-
-    /**
-     * set this to true to draw the highlightning arrow
-     *
-     * @param enabled
-     */
-    public void setDrawHighlightArrow(boolean enabled) {
-        mDrawHighlightArrow = enabled;
-    }
-
     /**
      * If set to true, all values are drawn above their bars, instead of below
      * their top.
@@ -197,6 +153,24 @@ public class CombinedChart extends BarLineChartBase<CombinedData> implements Lin
      */
     public void setDrawBarShadow(boolean enabled) {
         mDrawBarShadow = enabled;
+    }
+
+    /**
+     * Set this to true to make the highlight operation full-bar oriented,
+     * false to make it highlight single values (relevant only for stacked).
+     *
+     * @param enabled
+     */
+    public void setHighlightFullBarEnabled(boolean enabled) {
+        mHighlightFullBarEnabled = enabled;
+    }
+
+    /**
+     * @return true the highlight operation is be full-bar oriented, false if single-value
+     */
+    @Override
+    public boolean isHighlightFullBarEnabled() {
+        return mHighlightFullBarEnabled;
     }
 
     /**

@@ -66,7 +66,7 @@ public class StreamLineChart {
         xAxis.setDrawGridLines(false);
         xAxis.setDrawAxisLine(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setSpaceBetweenLabels(0);
+//        xAxis.setSpaceBetweenLabels(0);
 
 
         YAxis axisLeft = mChart.getAxisLeft();
@@ -106,8 +106,8 @@ public class StreamLineChart {
 
         if (mChart.getData() != null && mChart.getData().getDataSetCount() > 0) {
             set1 = (LineDataSet) mChart.getData().getDataSetByIndex(0);
-            set1.setYVals(yVals);
-            mChart.getData().setXVals(xVals);
+//            set1.setYVals(yVals);
+//            mChart.getData().setXVals(xVals);
             mChart.notifyDataSetChanged();
         } else {
             // create a dataset and give it a type
@@ -133,10 +133,10 @@ public class StreamLineChart {
             ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
             dataSets.add(set1); // add the datasets
             // create a data object with the datasets
-            LineData data = new LineData(xVals, dataSets);
+//            LineData data = new LineData(xVals, dataSets);
 
             // set data
-            mChart.setData(data);
+//            mChart.setData(data);
         }
     }
 

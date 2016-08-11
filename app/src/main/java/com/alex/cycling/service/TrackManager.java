@@ -16,6 +16,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.jni.ActInfo;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ public class TrackManager {
         });
     }
 
+
     //最后一条进入时，关闭数据库，插入最后一个点
     public static void closeTrackDB() {
         isFirst = true;
@@ -66,16 +68,11 @@ public class TrackManager {
         if (trackInfos.size() == 0) {
             return;
         }
-        TrackInfo trackInfo = trackInfos.get(0);
-        trackInfo.setStatus(1);  //对应的轨迹为完成状态
-        DbUtil.getTrackInfoService().update(trackInfo);
-//        ExecutUtils.runInMain(new Runnable() {
-//            @Override
-//            public void run() {
-//                BaiduTool.geoAddress(new LatLng(workPoint.getLat(), workPoint.getLon()), listener);
-//            }
-//        });
-        vacuate();
+        for (TrackInfo trackInfo : trackInfos) {
+            trackInfo.setStatus(1);  //对应的轨迹为完成状态
+            DbUtil.getTrackInfoService().update(trackInfo);
+//            vacuate();
+        }
     }
 
     private static OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
@@ -116,6 +113,7 @@ public class TrackManager {
         workPoints.add(workPoint);
         if (workPoints.size() == 5) {
             DbUtil.creTrackDb(getCurrentUUID()).save(workPoints);
+//            saveTrackInfo(workPoints);
             workPoints.clear();
         }
         if (isEnd) {
@@ -127,6 +125,17 @@ public class TrackManager {
             return;
         }
     }
+
+//    public static void saveTrackInfo(List<WorkPoint> workPoints) {
+//        ActInfo actInfo = new ActInfo();
+//        double distance = BaiduTool.getDis(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()), new LatLng(location.getLatitude(), location.getLongitude())) / 1000;
+//        actInfo.setDistance((actInfo.getDistance() + distance));
+//        actInfo.setClimbed(actInfo.getClimbed() + Math.abs(actInfo.getClimbed() - location.getAltitude()));
+//        if (0 != (tempTime - startTime) / 1000) {
+//            double aSpeed = actInfo.getDistance() / ((tempTime - startTime) / 1000) * 1000;
+//            actInfo.setAverSpeed(aSpeed * 3.6);
+//        }
+//    }
 
 
     //恢复最后轨迹最后一个点
@@ -254,7 +263,7 @@ public class TrackManager {
         sb.append("&copyright=1");
         sb.append("&paths=");
         sb.append(bdpath);
-        sb.append("&pathStyles=0xff0000,3,1");
+        sb.append("&pathStyles=0x2CAF61,3,1");
         return sb.toString();
     }
 

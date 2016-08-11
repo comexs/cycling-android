@@ -23,5 +23,20 @@
         <attr name="android:layout_gravity" />
     </declare-styleable>
 
+    <declare-styleable name="ArcProgressBar">
+        <attr name="arcDistance" format="integer" />
+        <attr name="arcBgColor" format="color" />
+        <attr name="dottedDefaultColor" format="color" />
+        <attr name="dottedRunColor" format="color" />
+        <attr name="dottedLineCount" format="integer" />
+        <attr name="dottedLineWidth" format="integer" />
+        <attr name="dottedLineHeight" format="integer" />
+        <attr name="lineDistance" format="integer" />
+        <attr name="progressMax" format="integer" />
+        <attr name="progressTextSize" format="integer" />
+        <attr name="progressDesc" format="string" />
+        <attr name="arcText" format="string" />
+    </declare-styleable>
+
 
 </resources>

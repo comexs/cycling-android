@@ -6,34 +6,31 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 public class HorizontalBarBuffer extends BarBuffer {
 
-    public HorizontalBarBuffer(int size, float groupspace, int dataSetCount, boolean containsStacks) {
-        super(size, groupspace, dataSetCount, containsStacks);
+    public HorizontalBarBuffer(int size, int dataSetCount, boolean containsStacks) {
+        super(size, dataSetCount, containsStacks);
     }
 
     @Override
     public void feed(IBarDataSet data) {
 
         float size = data.getEntryCount() * phaseX;
-
-        int dataSetOffset = (mDataSetCount - 1);
-        float barSpaceHalf = mBarSpace / 2f;
-        float groupSpaceHalf = mGroupSpace / 2f;
-        float barWidth = 0.5f;
+        float barWidthHalf = mBarWidth / 2f;
 
         for (int i = 0; i < size; i++) {
 
             BarEntry e = data.getEntryForIndex(i);
 
-            // calculate the x-position, depending on datasetcount
-            float x = e.getXIndex() + e.getXIndex() * dataSetOffset + mDataSetIndex
-                    + mGroupSpace * e.getXIndex() + groupSpaceHalf;
-            float y = e.getVal();
-            float[] vals = e.getVals();
+            if(e == null)
+                continue;
+
+            float x = e.getX();
+            float y = e.getY();
+            float[] vals = e.getYVals();
 
             if (!mContainsStacks || vals == null) {
 
-                float bottom = x - barWidth + barSpaceHalf;
-                float top = x + barWidth - barSpaceHalf;
+                float bottom = x - barWidthHalf;
+                float top = x + barWidthHalf;
                 float left, right;
                 if (mInverted) {
                     left = y >= 0 ? y : 0;
@@ -72,8 +69,8 @@ public class HorizontalBarBuffer extends BarBuffer {
                         negY += Math.abs(value);
                     }
 
-                    float bottom = x - barWidth + barSpaceHalf;
-                    float top = x + barWidth - barSpaceHalf;
+                    float bottom = x - barWidthHalf;
+                    float top = x + barWidthHalf;
                     float left, right;
                     if (mInverted) {
                         left = y >= yStart ? y : yStart;

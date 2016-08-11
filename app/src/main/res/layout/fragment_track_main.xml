@@ -4,38 +4,28 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <com.baidu.mapapi.map.MapView
+        android:id="@+id/frg_map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:visibility="visible" />
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="150dp">
-
-        <com.baidu.mapapi.map.MapView
-            android:id="@+id/frg_map"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            android:visibility="visible" />
-
-        <ImageView
-            android:id="@+id/fullscreen_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:layout_marginBottom="20dp"
-            android:layout_marginRight="20dp"
-            android:src="@mipmap/ic_fullscreen_icon" />
-
-    </FrameLayout>
-
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_gravity="bottom"
-        android:background="@android:color/darker_gray"
+        android:layout_margin="20dp"
+        android:background="@color/transparent"
         android:orientation="vertical"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.8"
+            android:background="@color/holo_black" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,11 +44,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0.00"
+                    android:textColor="@color/white"
                     android:textSize="30sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="里程(km)" />
 
             </LinearLayout>
@@ -75,11 +67,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0.00"
+                    android:textColor="@color/white"
                     android:textSize="30sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="总时间(t)" />
 
             </LinearLayout>
@@ -105,11 +99,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0.00"
+                    android:textColor="@color/white"
                     android:textSize="30sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="爬升(m)" />
 
             </LinearLayout>
@@ -126,18 +122,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0.00"
+                    android:textColor="@color/white"
                     android:textSize="30sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="卡路里(kCal)" />
 
             </LinearLayout>
 
         </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+    </FrameLayout>
 
 
 </FrameLayout>

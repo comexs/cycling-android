@@ -3,65 +3,54 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/holo_black"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:text="0.00"
+        android:textColor="@color/white"
+        android:textSize="60sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="时间(t)"
+        android:text="里程(km)"
         android:textColor="@color/cmm_main_text_gray"
-        android:textSize="14sp" />
-
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="00:00:00"
-        android:textColor="@color/holo_black"
-        android:textSize="50sp" />
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="实时速度(km/h)"
-        android:textColor="@color/cmm_main_text_gray"
-        android:textSize="14sp" />
+        android:text="00:00:00"
+        android:textColor="@color/white"
+        android:textSize="40sp" />
 
     <TextView
-        android:id="@+id/speed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0.00"
-        android:textColor="@color/holo_black"
-        android:textSize="80sp" />
-
+        android:text="时间(t)"
+        android:textColor="@color/cmm_main_text_gray"
+        android:textSize="12sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
-
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="30dp"
             android:gravity="center"
             android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="平均速度(km/h)"
-                android:textColor="@color/cmm_main_text_gray"
-                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/aveage_speed"
@@ -69,61 +58,68 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="0.00"
-                android:textColor="@color/holo_black"
-                android:textSize="50sp" />
+                android:textColor="@color/white"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="平均速度(km/h)"
+                android:textColor="@color/cmm_main_text_gray"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
             android:gravity="center"
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="里程(km)"
-                android:textColor="@color/cmm_main_text_gray"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/distance"
+                android:id="@+id/speed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="0.00"
-                android:textColor="@color/holo_black"
-                android:textSize="50sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:gravity="center"
-            android:orientation="vertical">
+                android:textColor="@color/white"
+                android:textSize="30sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="攀升"
+                android:text="  实时速度(km/h)"
                 android:textColor="@color/cmm_main_text_gray"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/climbup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="0.00"
-                android:textColor="@color/holo_black"
-                android:textSize="50sp" />
+                android:textSize="12sp" />
 
         </LinearLayout>
+
+        <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:gravity="center"-->
+        <!--android:orientation="vertical">-->
+
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="20dp"-->
+        <!--android:text="攀升"-->
+        <!--android:textColor="@color/cmm_main_text_gray"-->
+        <!--android:textSize="14sp" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/climbup"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:text="0.00"-->
+        <!--android:textColor="@color/holo_black"-->
+        <!--android:textSize="50sp" />-->
+
+        <!--</LinearLayout>-->
 
     </LinearLayout>
 
@@ -132,16 +128,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="40dp">
 
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/end"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_marginRight="100dp"
             android:src="@mipmap/ic_finish_black"
+            android:visibility="gone"
             app:backgroundTint="@color/white"
             app:elevation="6dp"
             app:pressedTranslationZ="12dp"
@@ -154,18 +151,18 @@
             android:layout_height="60dp"
             android:layout_gravity="center"
             android:src="@mipmap/ic_play_white"
-            app:backgroundTint="@android:color/holo_red_dark"
+            app:backgroundTint="@android:color/holo_green_dark"
             app:elevation="6dp"
             app:pressedTranslationZ="12dp" />
 
-
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/map"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_marginLeft="100dp"
             android:src="@mipmap/ico_map"
+            android:visibility="gone"
             app:backgroundTint="@color/white"
             app:rippleColor="@color/white" />
 

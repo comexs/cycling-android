@@ -6,28 +6,28 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 public class BarBuffer extends AbstractBuffer<IBarDataSet> {
 
-    protected float mBarSpace = 0f;
-    protected float mGroupSpace = 0f;
     protected int mDataSetIndex = 0;
     protected int mDataSetCount = 1;
     protected boolean mContainsStacks = false;
     protected boolean mInverted = false;
 
-    public BarBuffer(int size, float groupspace, int dataSetCount, boolean containsStacks) {
+    /** width of the bar on the x-axis, in values (not pixels) */
+    protected float mBarWidth = 1f;
+
+    public BarBuffer(int size, int dataSetCount, boolean containsStacks) {
         super(size);
-        this.mGroupSpace = groupspace;
         this.mDataSetCount = dataSetCount;
         this.mContainsStacks = containsStacks;
     }
 
-    public void setBarSpace(float barspace) {
-        this.mBarSpace = barspace;
+    public void setBarWidth(float barWidth) {
+        this.mBarWidth = barWidth;
     }
 
     public void setDataSet(int index) {
         this.mDataSetIndex = index;
     }
-    
+
     public void setInverted(boolean inverted) {
         this.mInverted = inverted;
     }
@@ -44,27 +44,25 @@ public class BarBuffer extends AbstractBuffer<IBarDataSet> {
     public void feed(IBarDataSet data) {
 
         float size = data.getEntryCount() * phaseX;
-
-        int dataSetOffset = (mDataSetCount - 1);
-        float barSpaceHalf = mBarSpace / 2f;
-        float groupSpaceHalf = mGroupSpace / 2f;
-        float barWidth = 0.5f;
+        float barWidthHalf = mBarWidth / 2f;
 
         for (int i = 0; i < size; i++) {
 
             BarEntry e = data.getEntryForIndex(i);
 
-            // calculate the x-position, depending on datasetcount
-            float x = e.getXIndex() + e.getXIndex() * dataSetOffset + mDataSetIndex
-                    + mGroupSpace * e.getXIndex() + groupSpaceHalf;
-            float y = e.getVal();
-            float [] vals = e.getVals();
-                
+            if(e == null)
+                continue;
+
+            float x = e.getX();
+            float y = e.getY();
+            float[] vals = e.getYVals();
+
             if (!mContainsStacks || vals == null) {
 
-                float left = x - barWidth + barSpaceHalf;
-                float right = x + barWidth - barSpaceHalf;
+                float left = x - barWidthHalf;
+                float right = x + barWidthHalf;
                 float bottom, top;
+
                 if (mInverted) {
                     bottom = y >= 0 ? y : 0;
                     top = y <= 0 ? y : 0;
@@ -92,7 +90,7 @@ public class BarBuffer extends AbstractBuffer<IBarDataSet> {
 
                     float value = vals[k];
 
-                    if(value >= 0f) {
+                    if (value >= 0f) {
                         y = posY;
                         yStart = posY + value;
                         posY = yStart;
@@ -102,9 +100,10 @@ public class BarBuffer extends AbstractBuffer<IBarDataSet> {
                         negY += Math.abs(value);
                     }
 
-                    float left = x - barWidth + barSpaceHalf;
-                    float right = x + barWidth - barSpaceHalf;
+                    float left = x - barWidthHalf;
+                    float right = x + barWidthHalf;
                     float bottom, top;
+
                     if (mInverted) {
                         bottom = y >= yStart ? y : yStart;
                         top = y <= yStart ? y : yStart;

@@ -91,7 +91,6 @@ public class TrackWorkThread extends Thread {
         mLocation.setTime(workPoint.getTime());
         mLocation.setSpeed(workPoint.getSpeed());
         lastTime = TrackManager.getLastTrackMillTime();
-        LogUtil.e("间隔" + lastTime);
         startTime = SystemClock.elapsedRealtime();
         startWork();
     }
@@ -164,6 +163,7 @@ public class TrackWorkThread extends Thread {
         }
     }
 
+
     //保留6位小数
     private double round(double old) {
         BigDecimal bg = new BigDecimal(old);
@@ -185,7 +185,6 @@ public class TrackWorkThread extends Thread {
     public void setOnHandlerListener(OnHandlerListener listener) {
         this.handlerListener = listener;
     }
-
 
     public interface OnHandlerListener {
         void onPostData(Location location, long time, int signal, ActInfo actInfo);

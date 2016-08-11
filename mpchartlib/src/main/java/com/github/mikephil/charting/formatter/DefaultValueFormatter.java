@@ -14,16 +14,31 @@ import java.text.DecimalFormat;
  */
 public class DefaultValueFormatter implements ValueFormatter {
 
-    /** decimalformat for formatting */
-    private DecimalFormat mFormat;
+    /**
+     * FormattedStringCache for formatting and caching.
+     */
+    protected FormattedStringCache.Generic<Integer, Float> mFormattedStringCache;
+
+    protected int mDecimalDigits;
 
     /**
      * Constructor that specifies to how many digits the value should be
      * formatted.
-     * 
+     *
      * @param digits
      */
     public DefaultValueFormatter(int digits) {
+        setup(digits);
+    }
+
+    /**
+     * Sets up the formatter with a given number of decimal digits.
+     *
+     * @param digits
+     */
+    public void setup(int digits) {
+
+        this.mDecimalDigits = digits;
 
         StringBuffer b = new StringBuffer();
         for (int i = 0; i < digits; i++) {
@@ -32,15 +47,21 @@ public class DefaultValueFormatter implements ValueFormatter {
             b.append("0");
         }
 
-        mFormat = new DecimalFormat("###,###,###,##0" + b.toString());
+        mFormattedStringCache = new FormattedStringCache.Generic<>(new DecimalFormat("###,###,###,##0" + b.toString()));
+
     }
 
     @Override
     public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+        return mFormattedStringCache.getFormattedValue(value, dataSetIndex);
+    }
 
-        // put more logic here ...
-        // avoid memory allocations here (for performance reasons)
-
-        return mFormat.format(value);
+    /**
+     * Returns the number of decimal digits this formatter uses.
+     *
+     * @return
+     */
+    public int getDecimalDigits() {
+        return mDecimalDigits;
     }
 }

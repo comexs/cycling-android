@@ -11,6 +11,7 @@ import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
 import com.alex.cycling.db.DbUtil;
 import com.alex.cycling.service.TrackManager;
+import com.alex.cycling.ui.widget.ArcProgressBar;
 import com.alex.cycling.ui.widget.SpeedLineChart;
 import com.alex.cycling.utils.LogUtil;
 import com.alex.cycling.utils.MathUtil;
@@ -23,7 +24,6 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.github.mikephil.charting.charts.LineChart;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,11 +37,10 @@ public class TrackChartFragment extends BaseFragment {
 
     @Bind(R.id.speedChart)
     LineChart speedChart;
-    @Bind(R.id.climbChart)
-    LineChart climbChart;
+    @Bind(R.id.arcProgressBar)
+    ArcProgressBar arcProgressBar;
 
     private SpeedLineChart speedLineChart;
-    private SpeedLineChart climbLineChart;
 
     private String trackUUID;
     private TrackInfo trackInfo;
@@ -92,9 +91,7 @@ public class TrackChartFragment extends BaseFragment {
         test(workPointList);
 
         speedLineChart = new SpeedLineChart();
-        climbLineChart = new SpeedLineChart();
         speedLineChart.initChart(speedChart);
-        climbLineChart.initChart(climbChart);
     }
 
     private void test(final List<WorkPoint> workPointList) {
@@ -136,7 +133,7 @@ public class TrackChartFragment extends BaseFragment {
     public void onPageStart() {
         super.onPageStart();
         speedLineChart.setData(speedChart, cacheList);
-        climbLineChart.setData(climbChart, cacheList);
+        arcProgressBar.startAnimation(50);
     }
 
     @Override

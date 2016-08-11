@@ -1,9 +1,14 @@
 
 package com.github.mikephil.charting.data;
 
-import com.github.mikephil.charting.charts.ScatterChart.ScatterShape;
+import android.graphics.drawable.shapes.Shape;
+
+import com.github.mikephil.charting.charts.ScatterChart;
 import com.github.mikephil.charting.interfaces.datasets.IScatterDataSet;
+import com.github.mikephil.charting.renderer.scatter.ShapeRenderer;
+import com.github.mikephil.charting.renderer.scatter.SquareShapeRenderer;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.ShapeRendererHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +21,9 @@ public class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
     private float mShapeSize = 15f;
 
     /**
-     * the type of shape that is set to be drawn where the values are at,
-     * default ScatterShape.SQUARE
+     * Renderer responsible for rendering this DataSet, default: square
      */
-    private ScatterShape mScatterShape = ScatterShape.SQUARE;
+    protected ShapeRenderer mShapeRenderer = new SquareShapeRenderer();
 
     /**
      * The radius of the hole in the shape (applies to Square, Circle and Triangle)
@@ -48,18 +52,21 @@ public class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
 
         List<Entry> yVals = new ArrayList<Entry>();
 
-        for (int i = 0; i < mYVals.size(); i++) {
-            yVals.add(mYVals.get(i).copy());
+        for (int i = 0; i < mValues.size(); i++) {
+            yVals.add(mValues.get(i).copy());
         }
 
         ScatterDataSet copied = new ScatterDataSet(yVals, getLabel());
+        copied.mDrawValues = mDrawValues;
+        copied.mValueColors = mValueColors;
         copied.mColors = mColors;
         copied.mShapeSize = mShapeSize;
-        copied.mScatterShape = mScatterShape;
+        copied.mShapeRenderer = mShapeRenderer;
         copied.mScatterShapeHoleRadius = mScatterShapeHoleRadius;
         copied.mScatterShapeHoleColor = mScatterShapeHoleColor;
-        //copied.mCustomScatterPath = mCustomScatterPath;
+        copied.mHighlightLineWidth = mHighlightLineWidth;
         copied.mHighLightColor = mHighLightColor;
+        copied.mHighlightDashPathEffect = mHighlightDashPathEffect;
 
         return copied;
     }
@@ -80,17 +87,30 @@ public class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry> impleme
     }
 
     /**
-     * Sets the shape that is drawn on the position where the values are at.
+     * Sets the ScatterShape this DataSet should be drawn with. This will search for an available ShapeRenderer and set this
+     * renderer for the DataSet.
      *
      * @param shape
      */
-    public void setScatterShape(ScatterShape shape) {
-        mScatterShape = shape;
+    public void setScatterShape(ScatterChart.ScatterShape shape) {
+
+        ShapeRendererHandler handler = new ShapeRendererHandler();
+        mShapeRenderer = handler.getShapeRenderer(shape);
+    }
+
+    /**
+     * Sets a new ShapeRenderer responsible for drawing this DataSet.
+     * This can also be used to set a custom ShapeRenderer aside from the default ones.
+     *
+     * @param shapeRenderer
+     */
+    public void setShapeRenderer(ShapeRenderer shapeRenderer) {
+        mShapeRenderer = shapeRenderer;
     }
 
     @Override
-    public ScatterShape getScatterShape() {
-        return mScatterShape;
+    public ShapeRenderer getShapeRenderer() {
+        return mShapeRenderer;
     }
 
     /**

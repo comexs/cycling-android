@@ -1,6 +1,7 @@
 
 package com.github.mikephil.charting.data;
 
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
 
 import java.util.ArrayList;
@@ -20,26 +21,8 @@ public class PieData extends ChartData<IPieDataSet> {
         super();
     }
 
-    public PieData(List<String> xVals) {
-        super(xVals);
-    }
-
-    public PieData(String[] xVals) {
-        super(xVals);
-    }
-
-    public PieData(List<String> xVals, IPieDataSet dataSet) {
-        super(xVals, toList(dataSet));
-    }
-
-    public PieData(String[] xVals, IPieDataSet dataSet) {
-        super(xVals, toList(dataSet));
-    }
-
-    private static List<IPieDataSet> toList(IPieDataSet dataSet) {
-        List<IPieDataSet> sets = new ArrayList<IPieDataSet>();
-        sets.add(dataSet);
-        return sets;
+    public PieData(IPieDataSet dataSet) {
+        super(dataSet);
     }
 
     /**
@@ -80,6 +63,11 @@ public class PieData extends ChartData<IPieDataSet> {
                 : null : label.equals(mDataSets.get(0).getLabel()) ? mDataSets.get(0) : null;
     }
 
+    @Override
+    public Entry getEntryForHighlight(Highlight highlight) {
+        return getDataSet().getEntryForIndex((int) highlight.getX());
+    }
+
     /**
      * Returns the sum of all values in this PieData object.
      *
@@ -90,7 +78,7 @@ public class PieData extends ChartData<IPieDataSet> {
         float sum = 0;
 
         for (int i = 0; i < getDataSet().getEntryCount(); i++)
-            sum += getDataSet().getEntryForIndex(i).getVal();
+            sum += getDataSet().getEntryForIndex(i).getY();
 
 
         return sum;

@@ -2,6 +2,7 @@ package com.alex.cycling.utils;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
@@ -48,7 +49,7 @@ public class SystemUtil {
             if (infos != null && !infos.isEmpty()) {
                 for (ActivityManager.RunningServiceInfo service : infos) {
                     // 添加Uid验证, 防止服务重名, 当前服务无法启动
-                    if (getUid(context) == service.uid&&serviceClass.getName().equals(service.service.getClassName())) {
+                    if (getUid(context) == service.uid && serviceClass.getName().equals(service.service.getClassName())) {
                         return true;
                     }
                 }
@@ -126,7 +127,7 @@ public class SystemUtil {
                 public boolean accept(File pathname) {
                     String filePath = pathname.getAbsolutePath();
                     return (filePath.endsWith(".png") || filePath.endsWith(".jpg") || filePath
-                            .endsWith(".jepg"));
+                            .endsWith(".jpeg"));
                 }
             })) {
                 photos.add(new PhotoItem(file.getAbsolutePath(), file.lastModified()));
@@ -149,4 +150,24 @@ public class SystemUtil {
         return DisplayUtil.getScreenWidth() / 4 - DisplayUtil.dip2px(2);
     }
 
+    public static int getVersionCode() {
+        int versionCode = 0;
+        try {
+            versionCode = CSApplication.getInstance().getPackageManager().getPackageInfo(CSApplication.getInstance().getPackageName(), 0).versionCode;
+
+        } catch (PackageManager.NameNotFoundException e) {
+
+        }
+        return versionCode;
+    }
+
+    public static String getVersionName() {
+        String versionName = "";
+        try {
+            versionName = CSApplication.getInstance().getPackageManager().getPackageInfo(CSApplication.getInstance().getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+
+        }
+        return versionName;
+    }
 }

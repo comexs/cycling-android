@@ -2,6 +2,8 @@ package com.alex.cycling.utils;
 
 import android.os.Environment;
 
+import com.alex.cycling.base.CSApplication;
+
 import java.io.File;
 
 /**

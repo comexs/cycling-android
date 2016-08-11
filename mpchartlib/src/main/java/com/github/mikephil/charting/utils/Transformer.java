@@ -5,10 +5,8 @@ import android.graphics.Matrix;
 import android.graphics.Path;
 import android.graphics.RectF;
 
-import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.CandleEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.IBubbleDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ICandleDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
@@ -54,12 +52,10 @@ public class Transformer {
         float scaleX = (float) ((mViewPortHandler.contentWidth()) / deltaX);
         float scaleY = (float) ((mViewPortHandler.contentHeight()) / deltaY);
 
-        if (Float.isInfinite(scaleX))
-        {
+        if (Float.isInfinite(scaleX)) {
             scaleX = 0;
         }
-        if (Float.isInfinite(scaleY))
-        {
+        if (Float.isInfinite(scaleY)) {
             scaleY = 0;
         }
 
@@ -88,14 +84,9 @@ public class Transformer {
                     .setTranslate(mViewPortHandler.offsetLeft(), -mViewPortHandler.offsetTop());
             mMatrixOffset.postScale(1.0f, -1.0f);
         }
-
-        // mMatrixOffset.set(offset);
-
-        // mMatrixOffset.reset();
-        //
-        // mMatrixOffset.postTranslate(mOffsetLeft, getHeight() -
-        // mOffsetBottom);
     }
+
+    protected float[] valuePointsForGenerateTransformedValuesScatter = new float[1];
 
     /**
      * Transforms an List of Entry into a float array containing the x and
@@ -104,18 +95,26 @@ public class Transformer {
      * @param data
      * @return
      */
-    public float[] generateTransformedValuesScatter(IScatterDataSet data,
-                                                    float phaseY) {
+    public float[] generateTransformedValuesScatter(IScatterDataSet data, float phaseX,
+                                                    float phaseY, int from, int to) {
 
-        float[] valuePoints = new float[data.getEntryCount() * 2];
+        final int count = (int) ((to - from) * phaseX + 1) * 2;
 
-        for (int j = 0; j < valuePoints.length; j += 2) {
+        if (valuePointsForGenerateTransformedValuesScatter.length != count) {
+            valuePointsForGenerateTransformedValuesScatter = new float[count];
+        }
+        float[] valuePoints = valuePointsForGenerateTransformedValuesScatter;
 
-            Entry e = data.getEntryForIndex(j / 2);
+        for (int j = 0; j < count; j += 2) {
+
+            Entry e = data.getEntryForIndex(j / 2 + from);
 
             if (e != null) {
-                valuePoints[j] = e.getXIndex();
-                valuePoints[j + 1] = e.getVal() * phaseY;
+                valuePoints[j] = e.getX();
+                valuePoints[j + 1] = e.getY() * phaseY;
+            } else {
+                valuePoints[j] = 0;
+                valuePoints[j + 1] = 0;
             }
         }
 
@@ -123,6 +122,8 @@ public class Transformer {
 
         return valuePoints;
     }
+
+    protected float[] valuePointsForGenerateTransformedValuesBubble = new float[1];
 
     /**
      * Transforms an List of Entry into a float array containing the x and
@@ -131,20 +132,25 @@ public class Transformer {
      * @param data
      * @return
      */
-    public float[] generateTransformedValuesBubble(IBubbleDataSet data,
-                                                   float phaseX, float phaseY, int from, int to) {
+    public float[] generateTransformedValuesBubble(IBubbleDataSet data, float phaseY, int from, int to) {
 
-        final int count = (int) Math.ceil(to - from) * 2; // (int) Math.ceil((to - from) * phaseX) * 2;
+        final int count = (to - from + 1) * 2; // (int) Math.ceil((to - from) * phaseX) * 2;
 
-        float[] valuePoints = new float[count];
+        if (valuePointsForGenerateTransformedValuesBubble.length != count) {
+            valuePointsForGenerateTransformedValuesBubble = new float[count];
+        }
+        float[] valuePoints = valuePointsForGenerateTransformedValuesBubble;
 
         for (int j = 0; j < count; j += 2) {
 
             Entry e = data.getEntryForIndex(j / 2 + from);
 
             if (e != null) {
-                valuePoints[j] = (float) (e.getXIndex() - from) * phaseX + from;
-                valuePoints[j + 1] = e.getVal() * phaseY;
+                valuePoints[j] = e.getX();
+                valuePoints[j + 1] = e.getY() * phaseY;
+            } else {
+                valuePoints[j] = 0;
+                valuePoints[j + 1] = 0;
             }
         }
 
@@ -152,6 +158,8 @@ public class Transformer {
 
         return valuePoints;
     }
+
+    protected float[] valuePointsForGenerateTransformedValuesLine = new float[1];
 
     /**
      * Transforms an List of Entry into a float array containing the x and
@@ -163,17 +171,23 @@ public class Transformer {
     public float[] generateTransformedValuesLine(ILineDataSet data,
                                                  float phaseX, float phaseY, int from, int to) {
 
-        final int count = (int) Math.ceil((to - from) * phaseX) * 2;
+        final int count = (int) ((to - from) * phaseX + 1) * 2;
 
-        float[] valuePoints = new float[count];
+        if (valuePointsForGenerateTransformedValuesLine.length != count) {
+            valuePointsForGenerateTransformedValuesLine = new float[count];
+        }
+        float[] valuePoints = valuePointsForGenerateTransformedValuesLine;
 
         for (int j = 0; j < count; j += 2) {
 
             Entry e = data.getEntryForIndex(j / 2 + from);
 
             if (e != null) {
-                valuePoints[j] = e.getXIndex();
-                valuePoints[j + 1] = e.getVal() * phaseY;
+                valuePoints[j] = e.getX();
+                valuePoints[j + 1] = e.getY() * phaseY;
+            } else {
+                valuePoints[j] = 0;
+                valuePoints[j + 1] = 0;
             }
         }
 
@@ -181,6 +195,8 @@ public class Transformer {
 
         return valuePoints;
     }
+
+    protected float[] valuePointsForGenerateTransformedValuesCandle = new float[1];
 
     /**
      * Transforms an List of Entry into a float array containing the x and
@@ -192,90 +208,24 @@ public class Transformer {
     public float[] generateTransformedValuesCandle(ICandleDataSet data,
                                                    float phaseX, float phaseY, int from, int to) {
 
-        final int count = (int) Math.ceil((to - from) * phaseX) * 2;
+        final int count = (int) ((to - from) * phaseX + 1) * 2;
 
-        float[] valuePoints = new float[count];
+        if (valuePointsForGenerateTransformedValuesCandle.length != count) {
+            valuePointsForGenerateTransformedValuesCandle = new float[count];
+        }
+        float[] valuePoints = valuePointsForGenerateTransformedValuesCandle;
 
         for (int j = 0; j < count; j += 2) {
 
             CandleEntry e = data.getEntryForIndex(j / 2 + from);
 
             if (e != null) {
-                valuePoints[j] = e.getXIndex();
+                valuePoints[j] = e.getX();
                 valuePoints[j + 1] = e.getHigh() * phaseY;
+            } else {
+                valuePoints[j] = 0;
+                valuePoints[j + 1] = 0;
             }
-        }
-
-        getValueToPixelMatrix().mapPoints(valuePoints);
-
-        return valuePoints;
-    }
-
-    /**
-     * Transforms an List of Entry into a float array containing the x and
-     * y values transformed with all matrices for the BARCHART.
-     *
-     * @param data
-     * @param dataSetIndex the dataset index
-     * @param bd
-     * @param phaseY
-     * @return
-     */
-    public float[] generateTransformedValuesBarChart(IBarDataSet data,
-                                                     int dataSetIndex, BarData bd, float phaseY) {
-
-        float[] valuePoints = new float[data.getEntryCount() * 2];
-
-        int setCount = bd.getDataSetCount();
-        float space = bd.getGroupSpace();
-
-        for (int j = 0; j < valuePoints.length; j += 2) {
-
-            Entry e = data.getEntryForIndex(j / 2);
-            int i = e.getXIndex();
-
-            // calculate the x-position, depending on datasetcount
-            float x = e.getXIndex() + i * (setCount - 1) + dataSetIndex + space * i
-                    + space / 2f;
-            float y = e.getVal();
-
-            valuePoints[j] = x;
-            valuePoints[j + 1] = y * phaseY;
-        }
-
-        getValueToPixelMatrix().mapPoints(valuePoints);
-
-        return valuePoints;
-    }
-
-    /**
-     * Transforms an List of Entry into a float array containing the x and
-     * y values transformed with all matrices for the BARCHART.
-     *
-     * @param data
-     * @param dataSet the dataset index
-     * @return
-     */
-    public float[] generateTransformedValuesHorizontalBarChart(IBarDataSet data,
-                                                               int dataSet, BarData bd, float phaseY) {
-
-        float[] valuePoints = new float[data.getEntryCount() * 2];
-
-        int setCount = bd.getDataSetCount();
-        float space = bd.getGroupSpace();
-
-        for (int j = 0; j < valuePoints.length; j += 2) {
-
-            Entry e = data.getEntryForIndex(j / 2);
-            int i = e.getXIndex();
-
-            // calculate the x-position, depending on datasetcount
-            float x = i + i * (setCount - 1) + dataSet + space * i
-                    + space / 2f;
-            float y = e.getVal();
-
-            valuePoints[j] = y * phaseY;
-            valuePoints[j + 1] = x;
         }
 
         getValueToPixelMatrix().mapPoints(valuePoints);
@@ -339,11 +289,22 @@ public class Transformer {
      * @param r
      * @param phaseY
      */
-    public void rectValueToPixel(RectF r, float phaseY) {
+    public void rectToPixelPhase(RectF r, float phaseY) {
 
         // multiply the height of the rect with the phase
         r.top *= phaseY;
         r.bottom *= phaseY;
+
+        mMatrixValueToPx.mapRect(r);
+        mViewPortHandler.getMatrixTouch().mapRect(r);
+        mMatrixOffset.mapRect(r);
+    }
+
+    public void rectToPixelPhaseHorizontal(RectF r, float phaseY) {
+
+        // multiply the height of the rect with the phase
+        r.left *= phaseY;
+        r.right *= phaseY;
 
         mMatrixValueToPx.mapRect(r);
         mViewPortHandler.getMatrixTouch().mapRect(r);
@@ -392,6 +353,8 @@ public class Transformer {
             m.mapRect(rects.get(i));
     }
 
+    protected Matrix mPixelsToValueMatrixBuffer = new Matrix();
+
     /**
      * Transforms the given array of touch positions (pixels) (x, y, x, y, ...)
      * into values on the chart.
@@ -400,7 +363,8 @@ public class Transformer {
      */
     public void pixelsToValue(float[] pixels) {
 
-        Matrix tmp = new Matrix();
+        Matrix tmp = mPixelsToValueMatrixBuffer;
+        tmp.reset();
 
         // invert all matrixes to convert back to the original value
         mMatrixOffset.invert(tmp);
@@ -414,8 +378,14 @@ public class Transformer {
     }
 
     /**
-     * Returns the x and y values in the chart at the given touch point
-     * (encapsulated in a PointD). This method transforms pixel coordinates to
+     * buffer for performance
+     */
+    float[] ptsBuffer = new float[2];
+
+    /**
+     * Returns a recyclable MPPointD instance.
+     * returns the x and y values in the chart at the given touch point
+     * (encapsulated in a MPPointD). This method transforms pixel coordinates to
      * coordinates / values in the chart. This is the opposite method to
      * getPixelsForValues(...).
      *
@@ -423,19 +393,43 @@ public class Transformer {
      * @param y
      * @return
      */
-    public PointD getValuesByTouchPoint(float x, float y) {
+    public MPPointD getValuesByTouchPoint(float x, float y) {
 
-        // create an array of the touch-point
-        float[] pts = new float[2];
-        pts[0] = x;
-        pts[1] = y;
+        MPPointD result = MPPointD.getInstance(0, 0);
+        getValuesByTouchPoint(x, y, result);
+        return result;
+    }
 
-        pixelsToValue(pts);
+    public void getValuesByTouchPoint(float x, float y, MPPointD outputPoint) {
 
-        double xTouchVal = pts[0];
-        double yTouchVal = pts[1];
+        ptsBuffer[0] = x;
+        ptsBuffer[1] = y;
 
-        return new PointD(xTouchVal, yTouchVal);
+        pixelsToValue(ptsBuffer);
+
+        outputPoint.x = ptsBuffer[0];
+        outputPoint.y = ptsBuffer[1];
+    }
+
+    /**
+     * Returns a recyclable MPPointD instance.
+     * Returns the x and y coordinates (pixels) for a given x and y value in the chart.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public MPPointD getPixelsForValues(float x, float y) {
+
+        ptsBuffer[0] = x;
+        ptsBuffer[1] = y;
+
+        pointValuesToPixel(ptsBuffer);
+
+        double xPx = ptsBuffer[0];
+        double yPx = ptsBuffer[1];
+
+        return MPPointD.getInstance(xPx, yPx);
     }
 
     public Matrix getValueMatrix() {

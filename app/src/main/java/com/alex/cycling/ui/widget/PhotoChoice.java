@@ -4,17 +4,19 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alex.cycling.R;
 import com.alex.cycling.utils.FileUtil;
 import com.alex.cycling.utils.ToastUtil;
+import com.alex.cycling.utils.permission.PermissionsChecker;
+import com.alex.cycling.utils.permission.PermissionsType;
 
 import java.io.File;
 
@@ -34,9 +36,19 @@ public class PhotoChoice {
 
     ChoiceListener listener;
 
+    private PermissionsChecker mPermissionsChecker; // 权限检测器
+
+    // 所需的全部权限
+    static final String[] PERMISSIONS = new String[]{
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
     public PhotoChoice(Activity activity, ChoiceListener listener) {
         mContext = activity;
         this.listener = listener;
+        if (null == mPermissionsChecker) {
+            mPermissionsChecker = new PermissionsChecker(mContext);
+        }
     }
 
     //创建图片的地址
@@ -68,6 +80,14 @@ public class PhotoChoice {
                         if (!FileUtil.isSDExist()) {
                             ToastUtil.showToast("SD卡不存在");
                             return;
+                        }
+                        //6.0权限检测
+                        if (PermissionsChecker.isMarshmallowOrHigher()) {
+                            String[] permissions = PERMISSIONS;
+                            if (mPermissionsChecker.lacksPermissions(permissions)) {
+                                mContext.requestPermissions(permissions, PermissionsType.WRITE_EXTERNAL_STORAGE_CODE);
+                                return;
+                            }
                         }
                         if (which == 0) {
                             createPath();
@@ -146,6 +166,25 @@ public class PhotoChoice {
 
     public interface ChoiceListener {
         void choiceSuccess(String uri);
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == PermissionsType.WRITE_EXTERNAL_STORAGE_CODE) {
+            for (int i = 0; i < permissions.length; i++) {
+                String permission = permissions[i];
+                int grantResult = grantResults[i];
+
+                if (permission.equals(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                        //选择允许后采取的动作
+
+                    } else {
+                        ToastUtil.showToast("需要存储权限");
+                    }
+                }
+            }
+        }
     }
 
 }

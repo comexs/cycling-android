@@ -48,7 +48,7 @@ public class DBContext extends ContextWrapper {
             if (TextUtils.isEmpty(path)) {
                 return createFile(FileUtil.getDbDir(), name);
             } else {
-                return createFile(FileUtil.getTrackDir(), name+".db");
+                return createFile(FileUtil.getTrackDir(), name + ".db");
             }
         }
         return null;
@@ -73,10 +73,11 @@ public class DBContext extends ContextWrapper {
             isFileCreateSuccess = true;
         }
         //返回数据库文件对象
-        if (isFileCreateSuccess)
+        if (isFileCreateSuccess) {
             return dbFile;
-        else
+        } else {
             return null;
+        }
     }
 
     /**
@@ -87,8 +88,7 @@ public class DBContext extends ContextWrapper {
      * @param factory
      */
     @Override
-    public SQLiteDatabase openOrCreateDatabase(String name, int mode,
-                                               SQLiteDatabase.CursorFactory factory) {
+    public SQLiteDatabase openOrCreateDatabase(String name, int mode, SQLiteDatabase.CursorFactory factory) {
         SQLiteDatabase result = SQLiteDatabase.openOrCreateDatabase(getDatabasePath(name), null);
         return result;
     }
@@ -105,8 +105,7 @@ public class DBContext extends ContextWrapper {
      * android.database.DatabaseErrorHandler)
      */
     @Override
-    public SQLiteDatabase openOrCreateDatabase(String name, int mode, SQLiteDatabase.CursorFactory factory,
-                                               DatabaseErrorHandler errorHandler) {
+    public SQLiteDatabase openOrCreateDatabase(String name, int mode, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler) {
         SQLiteDatabase result = SQLiteDatabase.openOrCreateDatabase(getDatabasePath(name), null);
         return result;
     }

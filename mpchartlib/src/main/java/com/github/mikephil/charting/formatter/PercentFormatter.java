@@ -1,7 +1,7 @@
 
 package com.github.mikephil.charting.formatter;
 
-import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
@@ -13,12 +13,14 @@ import java.text.DecimalFormat;
  *
  * @author Philipp Jahoda
  */
-public class PercentFormatter implements ValueFormatter, YAxisValueFormatter {
+public class PercentFormatter implements ValueFormatter, AxisValueFormatter {
 
-    protected DecimalFormat mFormat;
+    protected FormattedStringCache.Generic<Integer, Float> mFormattedStringCache;
+    protected FormattedStringCache.PrimFloat mFormattedStringCacheAxis;
 
     public PercentFormatter() {
-        mFormat = new DecimalFormat("###,###,##0.0");
+        mFormattedStringCache = new FormattedStringCache.Generic<>(new DecimalFormat("###,###,##0.0"));
+        mFormattedStringCacheAxis = new FormattedStringCache.PrimFloat(new DecimalFormat("###,###,##0.0"));
     }
 
     /**
@@ -27,18 +29,25 @@ public class PercentFormatter implements ValueFormatter, YAxisValueFormatter {
      * @param format
      */
     public PercentFormatter(DecimalFormat format) {
-        this.mFormat = format;
+        mFormattedStringCache = new FormattedStringCache.Generic<>(format);
+        mFormattedStringCacheAxis = new FormattedStringCache.PrimFloat(format);
     }
 
     // ValueFormatter
     @Override
     public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-        return mFormat.format(value) + " %";
+        return mFormattedStringCache.getFormattedValue(value, dataSetIndex) + " %";
     }
 
-    // YAxisValueFormatter
+    // AxisValueFormatter
     @Override
-    public String getFormattedValue(float value, YAxis yAxis) {
-        return mFormat.format(value) + " %";
+    public String getFormattedValue(float value, AxisBase axis) {
+        // TODO: Find a better way to do this.  Float isn't the best key...
+        return mFormattedStringCacheAxis.getFormattedValue(value) + " %";
+    }
+
+    @Override
+    public int getDecimalDigits() {
+        return 1;
     }
 }

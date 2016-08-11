@@ -1,8 +1,9 @@
-package com.alex.cycling.ui.person;
+package com.alex.cycling.ui.setting;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -111,5 +112,11 @@ public class PersonActivity extends BaseActivity implements DatePickerDialog.OnD
     @Override
     public void choiceSuccess(String uri) {
         avatar.setImageURI(Uri.parse("file://" + uri));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (null != photoChoice) photoChoice.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

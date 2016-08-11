@@ -1,7 +1,6 @@
 package com.alex.cycling.ui.main.fragment;
 
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,8 +11,9 @@ import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
 import com.alex.cycling.db.DbUtil;
 import com.alex.cycling.ui.main.adapter.RecordAdapter;
-import com.alex.cycling.utils.adapter.LoadMoreAdapter;
+import com.alex.cycling.ui.track.TrackInfoActivity;
 import com.alex.greendao.TrackInfo;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +27,10 @@ import butterknife.ButterKnife;
 public class RecordFragment extends BaseFragment {
 
     @Bind(R.id.record_list)
-    RecyclerView recordList;
-    @Bind(R.id.swipe_refresh)
-    SwipeRefreshLayout swipeRefresh;
+    RecyclerView mRecyclerView;
 
     private RecordAdapter recordAdapter;
-    private LoadMoreAdapter loadMoreAdapter;
+    private View notLoadingView;
 
     List<TrackInfo> trackInfos = new ArrayList<TrackInfo>();
 
@@ -52,39 +50,38 @@ public class RecordFragment extends BaseFragment {
     private void init() {
         trackInfos.clear();
         trackInfos.addAll(DbUtil.getTrackInfoService().queryAll());
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recordAdapter = new RecordAdapter(trackInfos);
+        recordAdapter.openLoadMore(5, true);
+        mRecyclerView.setAdapter(recordAdapter);
+        recordAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
-            public void onRefresh() {
-                recordList.postDelayed(new Runnable() {
+            public void onLoadMoreRequested() {
+                if (mRecyclerView == null) {
+                    return;
+                }
+                mRecyclerView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (null != swipeRefresh)
-                            swipeRefresh.setRefreshing(false);
+                        recordAdapter.showNotLoading(mRecyclerView);
                     }
-                }, 3000);
+                }, 2000);
             }
         });
-        recordList.setHasFixedSize(true);
-        recordList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recordAdapter = new RecordAdapter(trackInfos);
-        loadMoreAdapter = new LoadMoreAdapter(recordAdapter);
-        recordList.setAdapter(loadMoreAdapter);
 
-//        for (TrackInfo trackInfo : trackInfos) {
-//            if (TextUtils.isEmpty(trackInfo.getImageUrl())) {
-//                TrackManager.vacuate(trackInfo.getTrackUUID());
-//            } else {
-//                LogUtil.e(TrackManager.getBaiduUrlByDes(trackInfo.getImageUrl(), 100, 100).toString());
-//            }
-//        }
-
+        recordAdapter.setOnRecyclerViewItemClickListener(new BaseQuickAdapter.OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                TrackInfoActivity.newInstance(getActivity(), trackInfos.get(position).getTrackUUID());
+            }
+        });
+        recordAdapter.showCommonLoadingView(mRecyclerView);
     }
 
     private void setRefreshing(boolean refreshing, boolean loadMore) {
-        swipeRefresh.setEnabled(refreshing);
-        swipeRefresh.setRefreshing(false);
 //        ViewUtils.setVisibleOrGone(progress,loadMore);
-        loadMoreAdapter.setProgressVisible(loadMore);
+//        loadMoreAdapter.setProgressVisible(loadMore);
     }
 
 

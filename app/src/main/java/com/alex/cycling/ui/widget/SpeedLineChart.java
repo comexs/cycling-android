@@ -44,7 +44,7 @@ public class SpeedLineChart {
         mChart.setPinchZoom(true);
 
         // set an alternative background color
-        mChart.setBackgroundColor(Color.LTGRAY);
+        mChart.setBackgroundColor(mChart.getResources().getColor(R.color.black));
 
         // add data
 
@@ -65,11 +65,11 @@ public class SpeedLineChart {
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setTextSize(12f);
-        xAxis.setTextColor(Color.BLACK);
+        xAxis.setTextColor(mChart.getResources().getColor(R.color.cmm_main_text_gray));
         xAxis.setDrawGridLines(true);
         xAxis.setDrawAxisLine(true);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setSpaceBetweenLabels(0);
+//        xAxis.setSpaceBetweenLabels(0);
 
 
         YAxis axisLeft = mChart.getAxisLeft();
@@ -78,6 +78,7 @@ public class SpeedLineChart {
         axisLeft.setDrawZeroLine(true);
         axisLeft.setDrawGridLines(true);
         axisLeft.setDrawAxisLine(true);
+        axisLeft.setTextColor(mChart.getResources().getColor(R.color.cmm_main_text_gray));
         axisLeft.setEnabled(true);
 
 
@@ -89,32 +90,22 @@ public class SpeedLineChart {
         if (workPointList.size() == 0) {
             return;
         }
-
-        ArrayList<String> xVals = new ArrayList<String>();
-        for (int i = 0; i < workPointList.size()-1; i++) {
-            xVals.add(i+ "");
+        ArrayList<Entry> values = new ArrayList<Entry>();
+        for (int i = 0; i < workPointList.size() - 1; i++) {
+//            yVals.add(new Entry(workPointList.get(i).getSpeed(), i));
+            float val = (float) (Math.random() * 50) + 3;
+            values.add(new Entry(i, val));
         }
-
-        ArrayList<Entry> yVals = new ArrayList<Entry>();
-
-        for (int i = 0; i < workPointList.size()-1; i++) {
-//            float mult = (range + 1);
-//            float val = (float) (Math.random() * mult) + 20;// + (float)
-            yVals.add(new Entry(workPointList.get(i).getSpeed(), i));
-        }
-
         LineDataSet set1;
-
-        if (mChart.getData() != null &&
-                mChart.getData().getDataSetCount() > 0) {
+        if (mChart.getData() != null && mChart.getData().getDataSetCount() > 0) {
             set1 = (LineDataSet) mChart.getData().getDataSetByIndex(0);
-            set1.setYVals(yVals);
-            mChart.getData().setXVals(xVals);
+            set1.setValues(values);
+            mChart.getData().notifyDataChanged();
             mChart.notifyDataSetChanged();
         } else {
             // create a dataset and give it a type
-            set1 = new LineDataSet(yVals, "里程");
-            set1.setDrawCubic(true);
+            set1 = new LineDataSet(values, "里程");
+//            set1.setDrawCubic(true);
             set1.setCubicIntensity(0.2f);
             //set1.setDrawFilled(true);
             set1.setDrawCircles(false);
@@ -122,7 +113,7 @@ public class SpeedLineChart {
             set1.setCircleRadius(4f);
             set1.setCircleColor(Color.WHITE);
             set1.setHighLightColor(Color.rgb(244, 117, 117));
-            set1.setColor(Color.RED);
+            set1.setColor(mChart.getResources().getColor(R.color.green));
             set1.setFillColor(Color.WHITE);
             set1.setFillAlpha(100);
             set1.setDrawHorizontalHighlightIndicator(false);
@@ -134,7 +125,7 @@ public class SpeedLineChart {
             });
 
             // create a data object with the datasets
-            LineData data = new LineData(xVals, set1);
+            LineData data = new LineData(set1);
             data.setValueTextSize(9f);
             data.setDrawValues(false);
             // set data

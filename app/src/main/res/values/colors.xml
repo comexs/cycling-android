@@ -19,26 +19,9 @@
     <color name="act_abstract_gray">#D62d3037</color>
     <color name="act_abstract_item_name">#a6a6a6</color>
     <color name="act_details_data_back">#15161b</color>
-    <!--#15161b!-->
-    <color name="act_details_data_text">#6f7781</color>
-    <color name="act_details_chart_speed">#0099c5</color>
-    <color name="act_details_chart_climb">#51eb99</color>
-    <color name="act_details_chart_back">#22242a</color>
-    <color name="act_chart_text_2">#d2d2d2</color>
-    <color name="act_chart_ranking_1">#c4c239</color>
-    <color name="act_chart_ranking_2">#c4a239</color>
-    <color name="act_chart_ranking_3">#c45d39</color>
-    <color name="dlg_push_msg">#f2f2f2</color>
-
 
     <color name="axis">#ffffff</color>
     <color name="label">#ffffff</color>
-
-
-    <!--个人界面的颜色-->
-    <color name="act_person_back">#2A2D34</color>
-    <color name="action_person_back_2">#3A3D46</color>
-
 
     <color name="white">#ffffff</color>
     <color name="share_press">#eeeeee</color>
@@ -65,6 +48,7 @@
 
 
     <color name="blue">#2196F3</color>
+    <color name="green">#2CAF61</color>
 
 
 </resources>

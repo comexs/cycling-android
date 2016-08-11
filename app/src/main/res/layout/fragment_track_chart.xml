@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/holo_black"
@@ -6,9 +6,17 @@
     android:padding="10dp">
 
 
+    <com.alex.cycling.ui.widget.ArcProgressBar
+        android:id="@+id/arcProgressBar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="100dp"
+        android:layout_above="@+id/text"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -22,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="最高速度"
+                android:text="卡路里"
                 android:textColor="@color/white" />
 
             <TextView
@@ -31,8 +39,15 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
                 android:text="00"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textColor="@color/green"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="cal"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 
@@ -47,7 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="最高海拔"
+                android:text="平均速度"
                 android:textColor="@color/white" />
 
             <TextView
@@ -56,18 +71,58 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
                 android:text="00"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textColor="@color/green"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="km/h"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="耗时"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:text="00"
+                android:textColor="@color/green"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="t"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
 
     <TextView
+        android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/speedChart"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="10dp"
         android:text="平均速度(km/h)"
@@ -77,21 +132,23 @@
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/speedChart"
         android:layout_width="match_parent"
-        android:layout_height="150dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="20dp"
-        android:text="海拔(m)"
-        android:textColor="@color/white"
-        android:textSize="14dp" />
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/climbChart"
-        android:layout_width="match_parent"
-        android:layout_height="150dp" />
+        android:layout_height="150dp"
+        android:layout_alignParentBottom="true" />
 
 
-</LinearLayout>
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="5dp"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:text="海拔(m)"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textSize="14dp" />-->
+
+    <!--<com.github.mikephil.charting.charts.LineChart-->
+    <!--android:id="@+id/climbChart"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="150dp" />-->
+
+
+</RelativeLayout>

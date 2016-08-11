@@ -11,11 +11,6 @@ import java.util.List;
 public class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> implements IBarDataSet {
 
     /**
-     * space indicator between the bars 0.1f == 10 %
-     */
-    private float mBarSpace = 0.15f;
-
-    /**
      * the maximum number of bars that are stacked upon each other, this value
      * is calculated from the Entries that are added to the DataSet
      */
@@ -60,15 +55,15 @@ public class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
     public DataSet<BarEntry> copy() {
 
         List<BarEntry> yVals = new ArrayList<BarEntry>();
+        yVals.clear();
 
-        for (int i = 0; i < mYVals.size(); i++) {
-            yVals.add(((BarEntry) mYVals.get(i)).copy());
+        for (int i = 0; i < mValues.size(); i++) {
+            yVals.add(mValues.get(i).copy());
         }
 
         BarDataSet copied = new BarDataSet(yVals, getLabel());
         copied.mColors = mColors;
         copied.mStackSize = mStackSize;
-        copied.mBarSpace = mBarSpace;
         copied.mBarShadowColor = mBarShadowColor;
         copied.mStackLabels = mStackLabels;
         copied.mHighLightColor = mHighLightColor;
@@ -87,7 +82,7 @@ public class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
 
         for (int i = 0; i < yVals.size(); i++) {
 
-            float[] vals = yVals.get(i).getVals();
+            float[] vals = yVals.get(i).getYVals();
 
             if (vals == null)
                 mEntryCountStacks++;
@@ -104,7 +99,7 @@ public class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
 
         for (int i = 0; i < yVals.size(); i++) {
 
-            float[] vals = yVals.get(i).getVals();
+            float[] vals = yVals.get(i).getYVals();
 
             if (vals != null && vals.length > mStackSize)
                 mStackSize = vals.length;
@@ -112,39 +107,27 @@ public class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
     }
 
     @Override
-    public void calcMinMax(int start, int end) {
+    public void calcMinMax() {
 
-        if (mYVals == null)
+        if (mValues == null || mValues.isEmpty())
             return;
 
-        final int yValCount = mYVals.size();
-
-        if (yValCount == 0)
-            return;
-
-        int endValue;
-
-        if (end == 0 || end >= yValCount)
-            endValue = yValCount - 1;
-        else
-            endValue = end;
-
-        mYMin = Float.MAX_VALUE;
         mYMax = -Float.MAX_VALUE;
+        mYMin = Float.MAX_VALUE;
+        mXMax = -Float.MAX_VALUE;
+        mXMin = Float.MAX_VALUE;
 
-        for (int i = start; i <= endValue; i++) {
+        for (BarEntry e : mValues) {
 
-            BarEntry e = mYVals.get(i);
+            if (e != null && !Float.isNaN(e.getY())) {
 
-            if (e != null && !Float.isNaN(e.getVal())) {
+                if (e.getYVals() == null) {
 
-                if (e.getVals() == null) {
+                    if (e.getY() < mYMin)
+                        mYMin = e.getY();
 
-                    if (e.getVal() < mYMin)
-                        mYMin = e.getVal();
-
-                    if (e.getVal() > mYMax)
-                        mYMax = e.getVal();
+                    if (e.getY() > mYMax)
+                        mYMax = e.getY();
                 } else {
 
                     if (-e.getNegativeSum() < mYMin)
@@ -153,12 +136,13 @@ public class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
                     if (e.getPositiveSum() > mYMax)
                         mYMax = e.getPositiveSum();
                 }
-            }
-        }
 
-        if (mYMin == Float.MAX_VALUE) {
-            mYMin = 0.f;
-            mYMax = 0.f;
+                if (e.getX() < mXMin)
+                    mXMin = e.getX();
+
+                if (e.getX() > mXMax)
+                    mXMax = e.getX();
+            }
         }
     }
 
@@ -180,29 +164,6 @@ public class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
      */
     public int getEntryCountStacks() {
         return mEntryCountStacks;
-    }
-
-    /**
-     * returns the space between bars in percent of the whole width of one value
-     *
-     * @return
-     */
-    public float getBarSpacePercent() {
-        return mBarSpace * 100f;
-    }
-
-    @Override
-    public float getBarSpace() {
-        return mBarSpace;
-    }
-
-    /**
-     * sets the space between the bars in percent (0-100) of the total bar width
-     *
-     * @param percent
-     */
-    public void setBarSpacePercent(float percent) {
-        mBarSpace = percent / 100f;
     }
 
     /**

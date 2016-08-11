@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
 import com.alex.cycling.service.TrackManager;
+import com.alex.cycling.utils.LogUtil;
 import com.alex.cycling.utils.MathUtil;
 import com.jni.ActInfo;
 import com.alex.cycling.client.TrackClient;
@@ -41,14 +45,13 @@ public class CyclingFragment extends BaseFragment {
     FloatingActionButton end;
     @Bind(R.id.aveage_speed)
     TextView aveageSpeed;
-    @Bind(R.id.climbup)
-    TextView climbup;
+//    @Bind(R.id.climbup)
+//    TextView climbup;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TrackClient.getInstance().addTrackListener(onCyclingListener);
     }
 
     @Override
@@ -133,11 +136,44 @@ public class CyclingFragment extends BaseFragment {
         }
     };
 
+    @Override
+    public void onPageStart() {
+        super.onPageStart();
+        TrackClient.getInstance().addTrackListener(onCyclingListener);
+    }
+
+    @Override
+    public void onPageEnd() {
+        super.onPageEnd();
+        TrackClient.getInstance().removeTranckListener(onCyclingListener);
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        TrackClient.getInstance().removeTranckListener(onCyclingListener);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_comm, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem setting = menu.findItem(R.id.menu_common);
+        setting.setTitle("地图");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_common:
+                openActivity(getActivity(), MapActivity.class);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

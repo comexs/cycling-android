@@ -50,8 +50,6 @@ public class TrackMainFragment extends BaseFragment {
     TextView clumbup;
     @Bind(R.id.calorie)
     TextView calorie;
-    @Bind(R.id.fullscreen_switch)
-    ImageView fullscreenSwitch;
 
     private String trackUUID;
     private TrackInfo trackInfo;
@@ -133,21 +131,20 @@ public class TrackMainFragment extends BaseFragment {
         MapStatusUpdate u = MapStatusUpdateFactory.newLatLngBounds(boundBuilder.build());
         mapView.getMap().animateMapStatus(u);
 
-
         distance.setText(trackInfo.getTotalDis() + "");
         allTime.setText(MathUtil.getTimeIntervalFormat(trackInfo.getTotalTime()));
         clumbup.setText(trackInfo.getClimbUp() + "");
         calorie.setText(trackInfo.getCalorie() + "");
     }
 
-    @OnClick(R.id.fullscreen_switch)
-    void click(View v) {
-        switch (v.getId()) {
-            case R.id.fullscreen_switch:
-
-                break;
-        }
-    }
+//    @OnClick(R.id.fullscreen_switch)
+//    void click(View v) {
+//        switch (v.getId()) {
+//            case R.id.fullscreen_switch:
+//
+//                break;
+//        }
+//    }
 
 
 //    private void computeMapSie() {

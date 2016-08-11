@@ -97,7 +97,7 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * Use this method to tell the data set that the underlying data has changed.
      */
     public void notifyDataSetChanged() {
-        calcMinMax(0, getEntryCount() - 1);
+        calcMinMax();
     }
 
 
@@ -110,7 +110,9 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         return mColors;
     }
 
-    public List<Integer> getValueColors() { return mValueColors; }
+    public List<Integer> getValueColors() {
+        return mValueColors;
+    }
 
     @Override
     public int getColor() {
@@ -148,7 +150,7 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      *
      * @param colors
      */
-    public void setColors(int[] colors) {
+    public void setColors(int... colors) {
         this.mColors = ColorTemplate.createColors(colors);
     }
 
@@ -164,13 +166,15 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      */
     public void setColors(int[] colors, Context c) {
 
-        List<Integer> clrs = new ArrayList<Integer>();
-
-        for (int color : colors) {
-            clrs.add(c.getResources().getColor(color));
+        if(mColors == null){
+            mColors = new ArrayList<>();
         }
 
-        mColors = clrs;
+        mColors.clear();
+
+        for (int color : colors) {
+            mColors.add(c.getResources().getColor(color));
+        }
     }
 
     /**
@@ -222,10 +226,15 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      * Resets all colors of this DataSet and recreates the colors array.
      */
     public void resetColors() {
-        mColors = new ArrayList<Integer>();
+        if(mColors == null) {
+            mColors = new ArrayList<Integer>();
+        }
+        mColors.clear();
     }
 
-    /** ###### ###### OTHER STYLING RELATED METHODS ##### ###### */
+    /**
+     * ###### ###### OTHER STYLING RELATED METHODS ##### ######
+     */
 
     @Override
     public void setLabel(String label) {
@@ -258,9 +267,14 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
     @Override
     public ValueFormatter getValueFormatter() {
-        if (mValueFormatter == null)
+        if (needsFormatter())
             return new DefaultValueFormatter(1);
         return mValueFormatter;
+    }
+
+    @Override
+    public boolean needsFormatter() {
+        return mValueFormatter == null;
     }
 
     @Override
@@ -335,13 +349,15 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     }
 
 
-    /** ###### ###### DATA RELATED METHODS ###### ###### */
+    /**
+     * ###### ###### DATA RELATED METHODS ###### ######
+     */
 
     @Override
     public int getIndexInEntries(int xIndex) {
 
         for (int i = 0; i < getEntryCount(); i++) {
-            if (xIndex == getEntryForIndex(i).getXIndex())
+            if (xIndex == getEntryForIndex(i).getX())
                 return i;
         }
 
@@ -351,29 +367,44 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     @Override
     public boolean removeFirst() {
 
-        T entry = getEntryForIndex(0);
-        return removeEntry(entry);
+        if (getEntryCount() > 0) {
+
+            T entry = getEntryForIndex(0);
+            return removeEntry(entry);
+        } else
+            return false;
     }
 
     @Override
     public boolean removeLast() {
 
-        T entry = getEntryForIndex(getEntryCount() - 1);
-        return removeEntry(entry);
+        if (getEntryCount() > 0) {
+
+            T e = getEntryForIndex(getEntryCount() - 1);
+            return removeEntry(e);
+        } else
+            return false;
     }
 
     @Override
-    public boolean removeEntry(int xIndex) {
+    public boolean removeEntryByXPos(float xPos) {
 
-        T e = getEntryForXIndex(xIndex);
+        T e = getEntryForXPos(xPos);
+        return removeEntry(e);
+    }
+
+    @Override
+    public boolean removeEntry(int index) {
+
+        T e = getEntryForIndex(index);
         return removeEntry(e);
     }
 
     @Override
     public boolean contains(T e) {
 
-        for(int i = 0; i < getEntryCount(); i++) {
-            if(getEntryForIndex(i).equals(e))
+        for (int i = 0; i < getEntryCount(); i++) {
+            if (getEntryForIndex(i).equals(e))
                 return true;
         }
 
