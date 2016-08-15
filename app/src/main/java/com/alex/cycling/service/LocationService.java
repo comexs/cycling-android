@@ -58,9 +58,9 @@ public class LocationService extends Service {
         super.onDestroy();
         dissWW();
         LogUtil.e("服务被销毁");
-        if (null != workHandler) {
-            workHandler.end();
-        }
+//        if (null != workHandler) {
+//            workHandler.end();
+//        }
     }
 
     private void initService(Intent intent) {

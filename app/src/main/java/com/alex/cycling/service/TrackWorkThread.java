@@ -69,7 +69,7 @@ public class TrackWorkThread extends Thread {
                 ttsUtils.stop();
                 context.stopService(new Intent(context, LocationService.class));
             }
-        }, 5000);
+        }, 3000);
     }
 
     //保存轨迹

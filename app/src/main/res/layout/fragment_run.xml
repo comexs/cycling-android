@@ -151,7 +151,7 @@
             android:layout_height="60dp"
             android:layout_gravity="center"
             android:src="@mipmap/ic_play_white"
-            app:backgroundTint="@android:color/holo_green_dark"
+            app:backgroundTint="@color/green"
             app:elevation="6dp"
             app:pressedTranslationZ="12dp" />
 

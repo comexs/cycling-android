@@ -11,13 +11,15 @@ public interface TClient {
 
     void pause(); //暂停
 
-    void saveTrack(); //保存
+    void saveTrack(Context context); //保存
 
-    void endTrack(); //结束
+    void endTrack(Context context); //结束
 
     void recoveryTrack(Context context); //恢复
 
     void addTrackListener(TrackClient.OnCyclingListener listener);
 
     void removeTranckListener(TrackClient.OnCyclingListener listener);
+
+    boolean isRun(Context context);  //是否在运行中
 }

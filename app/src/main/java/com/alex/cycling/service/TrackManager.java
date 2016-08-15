@@ -228,8 +228,7 @@ public class TrackManager {
             @Override
             public void run() {
                 StringBuffer stringBuffer = new StringBuffer();
-                List<WorkPoint> list = DbUtil.creTrackDb(getCurrentUUID()).queryAll();
-                LogUtil.e(list.size() + "");
+                List<WorkPoint> list = DbUtil.creTrackDb(trackName).queryAll();
                 VacuateUtil vacuateUtil = new VacuateUtil();
                 vacuateUtil.vacuate(list, 3);
                 List<WorkPoint> resultList = vacuateUtil.getResult();
@@ -246,6 +245,7 @@ public class TrackManager {
                 trackInfo.setImageUrl(stringBuffer.toString());
                 DbUtil.getTrackInfoService().update(trackInfo);
                 LogUtil.e("抽稀完了!");
+                LogUtil.e(TrackManager.getBaiduUrlByDes(trackInfo.getImageUrl(), 720, 200));
             }
         });
     }

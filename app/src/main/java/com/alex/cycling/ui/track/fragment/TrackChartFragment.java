@@ -115,7 +115,9 @@ public class TrackChartFragment extends BaseFragment {
                         }
                     }
                 }
-                LogUtil.e(MathUtil.decimal(allDistance) + "");
+                if (workPointList.size() < 2) {
+                    return;
+                }
                 trackInfo.setTotalDis(MathUtil.decimal(allDistance));
                 trackInfo.setAverageSpeed(allDistance / (workPointList.get(0).getTime() - workPointList.get(workPointList.size() - 1).getTime()));
                 trackInfo.setTotalTime(workPointList.get(workPointList.size() - 1).getTime() - workPointList.get(0).getTime());

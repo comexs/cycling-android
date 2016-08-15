@@ -62,8 +62,6 @@ public class ExecutUtils {
 
     public static void runInBack(Runnable runnable, int delayTime) {
         scheduler.schedule(runnable, delayTime, TimeUnit.MILLISECONDS);
-        scheduler.shutdown();
     }
-
 
 }

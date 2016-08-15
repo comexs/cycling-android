@@ -1,6 +1,8 @@
 package com.alex.cycling.ui.main.fragment;
 
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -96,28 +98,45 @@ public class CyclingFragment extends BaseFragment {
             case R.id.start:
                 //可以恢复
                 if (TrackManager.hasRevovery()) {
-                    showDiloag();
+                    showRecoveryDialoag();
                 } else {
-                    TrackClient.getInstance().start(getActivity());
+                    if (TrackClient.getInstance().isRun(getContext())) {
+                        showSaveDialog();
+                    } else {
+                        TrackClient.getInstance().start(getActivity());
+                        start.setImageResource(R.mipmap.ic_pause);
+                        start.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.cmm_main_red)));
+                    }
                 }
                 break;
             case R.id.map:
                 openActivity(getActivity(), MapActivity.class);
                 break;
             case R.id.end:
-                TrackClient.getInstance().saveTrack();
+//                TrackClient.getInstance().saveTrack(getContext());
                 break;
         }
     }
 
 
-    public void showDiloag() {
+    public void showRecoveryDialoag() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("是否继续上次未完成的骑行记录");
+        builder.setMessage("是否继续上次未完成的跑步记录");
         builder.setPositiveButton("继续", dialog_click);
         builder.setNegativeButton("保存", dialog_click);
         builder.setCancelable(false);
         builder.show();
+    }
+
+    public void showSaveDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("是否保存跑步记录");
+        builder.setPositiveButton("继续", save_dialog_click);
+        builder.setNegativeButton("保存", save_dialog_click);
+        builder.setCancelable(false);
+        builder.show();
+
+        // TrackClient.getInstance().saveTrack(getContext());
     }
 
     private DialogInterface.OnClickListener dialog_click = new DialogInterface.OnClickListener() {
@@ -126,9 +145,26 @@ public class CyclingFragment extends BaseFragment {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
                     TrackClient.getInstance().recoveryTrack(getActivity());
+                    start.setImageResource(R.mipmap.ic_pause);
+                    start.setBackgroundColor(getResources().getColor(R.color.cmm_main_red));
                     break;
                 case DialogInterface.BUTTON_NEGATIVE:
-                    TrackClient.getInstance().saveTrack();
+                    TrackClient.getInstance().saveTrack(getContext());
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    private DialogInterface.OnClickListener save_dialog_click = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    TrackClient.getInstance().saveTrack(getContext());
                     break;
                 default:
                     break;

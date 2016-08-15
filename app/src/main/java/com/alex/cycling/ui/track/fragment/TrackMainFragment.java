@@ -135,6 +135,9 @@ public class TrackMainFragment extends BaseFragment {
         allTime.setText(MathUtil.getTimeIntervalFormat(trackInfo.getTotalTime()));
         clumbup.setText(trackInfo.getClimbUp() + "");
         calorie.setText(trackInfo.getCalorie() + "");
+
+        TrackManager.vacuate(trackInfo.getTrackUUID());
+
     }
 
 //    @OnClick(R.id.fullscreen_switch)

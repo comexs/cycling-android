@@ -3,6 +3,7 @@ package com.alex.cycling.ui.main.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import com.alex.cycling.base.BaseFragment;
 import com.alex.cycling.db.DbUtil;
 import com.alex.cycling.ui.main.adapter.RecordAdapter;
 import com.alex.cycling.ui.track.TrackInfoActivity;
+import com.alex.cycling.utils.LogUtil;
 import com.alex.greendao.TrackInfo;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 
@@ -47,9 +49,14 @@ public class RecordFragment extends BaseFragment {
         return mainView;
     }
 
+    private String lastUUID;
+
     private void init() {
         trackInfos.clear();
         trackInfos.addAll(DbUtil.getTrackInfoService().queryAll());
+        for (TrackInfo trackInfo : DbUtil.getTrackInfoService().queryAll()) {
+            LogUtil.e(trackInfo.getTrackUUID());
+        }
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recordAdapter = new RecordAdapter(trackInfos);

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.location.Location;
 
 import com.alex.cycling.utils.LogUtil;
+import com.alex.cycling.utils.SystemUtil;
 import com.jni.ActInfo;
 import com.alex.cycling.service.LocationService;
 import com.alex.cycling.service.TrackManager;
@@ -64,7 +65,7 @@ public class TrackClient implements TClient {
     }
 
     @Override
-    public void saveTrack() {
+    public void saveTrack(Context context) {
         if (null != trackWorkHandler) {
             trackWorkHandler.saveTrack();
         } else {
@@ -73,7 +74,7 @@ public class TrackClient implements TClient {
     }
 
     @Override
-    public void endTrack() {
+    public void endTrack(Context context) {
         listenerList.clear();
     }
 
@@ -82,13 +83,6 @@ public class TrackClient implements TClient {
         Intent intent = new Intent(context, LocationService.class);
         intent.setAction(TrackManager.RECOVERY);
         context.startService(intent);
-//        if (!SystemUtil.hasLocationServiceRun(context)) {
-//            Intent intent = new Intent(context, LocationService.class);
-//            intent.setAction(TrackManager.RECOVERY);
-//            context.startService(intent);
-//        } else {
-//            LogUtil.e("服务已启动");
-//        }
     }
 
     @Override
@@ -102,6 +96,11 @@ public class TrackClient implements TClient {
     @Override
     public void removeTranckListener(OnCyclingListener listener) {
         listenerList.remove(listener);
+    }
+
+    @Override
+    public boolean isRun(Context context) {
+        return SystemUtil.hasLocationServiceRun(context);
     }
 
     public void setWorkHandler(TrackWorkThread handler) {

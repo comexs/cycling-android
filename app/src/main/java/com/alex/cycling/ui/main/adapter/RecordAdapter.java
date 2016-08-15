@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.alex.cycling.R;
 import com.alex.cycling.service.TrackManager;
 import com.alex.cycling.utils.DateUtil;
+import com.alex.cycling.utils.LogUtil;
 import com.alex.cycling.utils.adapter.CustomBaseQuickAdapter;
 import com.alex.greendao.TrackInfo;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -29,6 +30,7 @@ public class RecordAdapter extends CustomBaseQuickAdapter<TrackInfo> {
         helper.setText(R.id.time, DateUtil.parseDateLineToBlurStr(trackInfo.getStartTime() * 1000));
         SimpleDraweeView trackImage = helper.getView(R.id.track_image);
         if (!TextUtils.isEmpty(trackInfo.getImageUrl())) {
+            LogUtil.e(TrackManager.getBaiduUrlByDes(trackInfo.getImageUrl(), 720, 200));
             trackImage.setImageURI(Uri.parse(TrackManager.getBaiduUrlByDes(trackInfo.getImageUrl(), 720, 200)));
         } else {
             TrackManager.vacuate(trackInfo.getTrackUUID());
