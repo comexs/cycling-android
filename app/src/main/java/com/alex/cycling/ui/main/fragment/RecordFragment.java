@@ -11,10 +11,12 @@ import android.view.ViewGroup;
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
 import com.alex.cycling.db.DbUtil;
+import com.alex.cycling.service.TrackManager;
 import com.alex.cycling.ui.main.adapter.RecordAdapter;
 import com.alex.cycling.ui.track.TrackInfoActivity;
 import com.alex.cycling.utils.LogUtil;
 import com.alex.greendao.TrackInfo;
+import com.alex.greendao.TrackInfoDao;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 
 import java.util.ArrayList;
@@ -36,6 +38,8 @@ public class RecordFragment extends BaseFragment {
 
     List<TrackInfo> trackInfos = new ArrayList<TrackInfo>();
 
+    int page = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,13 +53,25 @@ public class RecordFragment extends BaseFragment {
         return mainView;
     }
 
+    private List<TrackInfo> queryTrack(int page) {
+        return DbUtil.getTrackInfoService().queryBuilder().where(TrackInfoDao.Properties.Status.eq("1")).orderDesc(TrackInfoDao.Properties.StartTime).limit(5).offset(page * 5).list();
+    }
+
     private String lastUUID;
 
     private void init() {
         trackInfos.clear();
-        trackInfos.addAll(DbUtil.getTrackInfoService().queryAll());
+        page = 0;
+        trackInfos.addAll(queryTrack(page));
         for (TrackInfo trackInfo : DbUtil.getTrackInfoService().queryAll()) {
-            LogUtil.e(trackInfo.getTrackUUID());
+            if (TextUtils.isEmpty(lastUUID)) {
+                lastUUID = trackInfo.getTrackUUID();
+            } else {
+                if (lastUUID.equals(trackInfo.getTrackUUID())) {
+                    DbUtil.getTrackInfoService().delete(trackInfo);
+                }
+            }
+            lastUUID = trackInfo.getTrackUUID();
         }
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -71,7 +87,13 @@ public class RecordFragment extends BaseFragment {
                 mRecyclerView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        recordAdapter.showNotLoading(mRecyclerView);
+                        page++;
+                        if (queryTrack(page).size() > 0) {
+                            trackInfos.addAll(queryTrack(page));
+                            recordAdapter.notifyDataChangedAfterLoadMore(true);
+                        } else {
+                            recordAdapter.showNotLoading(mRecyclerView);
+                        }
                     }
                 }, 2000);
             }
@@ -84,18 +106,13 @@ public class RecordFragment extends BaseFragment {
             }
         });
         recordAdapter.showCommonLoadingView(mRecyclerView);
+        LogUtil.e(DbUtil.getTrackInfoService().queryBuilder().orderDesc(TrackInfoDao.Properties.StartTime).list().size() + "");
+//        TrackManager.openTrackDb();openTrackDb
     }
-
-    private void setRefreshing(boolean refreshing, boolean loadMore) {
-//        ViewUtils.setVisibleOrGone(progress,loadMore);
-//        loadMoreAdapter.setProgressVisible(loadMore);
-    }
-
 
     @Override
     public void onPageStart() {
         super.onPageStart();
-        setRefreshing(true, false);
     }
 
     @Override

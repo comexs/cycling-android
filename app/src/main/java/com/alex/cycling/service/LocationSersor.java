@@ -29,10 +29,10 @@ public class LocationSersor implements LocationListener {
     }
 
     public void end() {
+        if (null != cacheWorkThread) cacheWorkThread.quit();
         if (null == mLocationManager) {
             return;
         }
-        if (null != cacheWorkThread) cacheWorkThread.quit();
         mLocationManager.removeUpdates(this);
     }
 

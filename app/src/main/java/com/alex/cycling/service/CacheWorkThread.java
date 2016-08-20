@@ -32,6 +32,7 @@ public class CacheWorkThread extends Thread {
     public void quit() {
         mQuit = true;
         interrupt();
+        stop();
     }
 
     @Override

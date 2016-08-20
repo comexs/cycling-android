@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
@@ -39,6 +40,12 @@ public class TrackChartFragment extends BaseFragment {
     LineChart speedChart;
     @Bind(R.id.arcProgressBar)
     ArcProgressBar arcProgressBar;
+    @Bind(R.id.calorie)
+    TextView calorie;
+    @Bind(R.id.avage_speed)
+    TextView avageSpeed;
+    @Bind(R.id.time)
+    TextView time;
 
     private SpeedLineChart speedLineChart;
 
@@ -92,6 +99,8 @@ public class TrackChartFragment extends BaseFragment {
 
         speedLineChart = new SpeedLineChart();
         speedLineChart.initChart(speedChart);
+        avageSpeed.setText(MathUtil.decimal(trackInfo.getAverageSpeed()) + "");
+        time.setText(MathUtil.getTimeIntervalFormat(trackInfo.getTotalTime()));
     }
 
     private void test(final List<WorkPoint> workPointList) {

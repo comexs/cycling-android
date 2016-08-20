@@ -43,19 +43,19 @@ public class TTSUtils implements TextToSpeech.OnInitListener {
         String result = null;
         switch (status) {
             case start:
-                result = "开始骑行";
+                result = "开始跑步";
                 break;
             case pause:
-                result = "骑行暂停";
+                result = "跑步暂停";
                 break;
             case stop:
-                result = "骑行停止";
+                result = "跑步停止";
                 break;
             case end:
-                result = "骑行结束";
+                result = "跑步结束";
                 break;
             case recovery:
-                result = "恢复骑行";
+                result = "恢复跑步";
                 break;
         }
         return result;

@@ -28,7 +28,7 @@ import com.sina.weibo.sdk.utils.Utility;
 /**
  * Created by Administrator on 2015/9/21.
  */
-public class WeiboClient implements IWeiboHandler.Request{
+public class WeiboClient implements IWeiboHandler.Request {
 
     private AuthInfo mAuthInfo;
     private Activity context;
@@ -40,7 +40,7 @@ public class WeiboClient implements IWeiboHandler.Request{
     public void login(Activity activity, WBAuthListener listener) {
         this.context = activity;
         this.listener = listener;
-        mAuthInfo = new AuthInfo(context, Constants.SINA_APP_KEY, Constants.REDIRECT_URL, null);
+        mAuthInfo = new AuthInfo(context, ThirdConstants.SINA_APP_KEY, ThirdConstants.REDIRECT_URL, null);
         mSsoHandler = new SsoHandler(activity, mAuthInfo);
         mSsoHandler.authorize(authListener);
     }
@@ -125,16 +125,13 @@ public class WeiboClient implements IWeiboHandler.Request{
 
     private void onClickSina() {
         if (mWeiboShareAPI == null) {
-            mWeiboShareAPI = WeiboShareSDK.createWeiboAPI(context, Constants.SINA_APP_KEY);
+            mWeiboShareAPI = WeiboShareSDK.createWeiboAPI(context, ThirdConstants.SINA_APP_KEY);
             // 注册第三方应用到微博客户端中，注册成功后该应用将显示在微博的应用列表中。
             // 但该附件栏集成分享权限需要合作申请，详情请查看 Demo 提示
             // NOTE：请务必提前注册，即界面初始化的时候或是应用程序初始化时，进行注册
             mWeiboShareAPI.registerApp();
         }
-
         mWeiboShareAPI.handleWeiboRequest(context.getIntent(), this);
-        //mWeiboShareAPI.handleWeiboResponse(context.getIntent(), this);
-
         // 如果未安装微博客户端，设置下载微博对应的回调
         if (!mWeiboShareAPI.isWeiboAppInstalled()) {
             Toast.makeText(context, "您未安装微博客户端", Toast.LENGTH_SHORT).show();
@@ -161,27 +158,20 @@ public class WeiboClient implements IWeiboHandler.Request{
         // 1. 初始化微博的分享消息
         WeiboMultiMessage weiboMessage = new WeiboMultiMessage();
         weiboMessage.mediaObject = getWebpageObj();
-        // 2. 初始化从第三方到微博的消息请求
         SendMultiMessageToWeiboRequest request = new SendMultiMessageToWeiboRequest();
-        // 用transaction唯一标识一个请求
         request.transaction = String.valueOf(System.currentTimeMillis());
         request.multiMessage = weiboMessage;
-        // 3. 发送请求消息到微博，唤起微博分享界面
-        //mWeiboShareAPI.sendRequest(request);
         mWeiboShareAPI.sendRequest(context, request);
     }
 
     //微博分享图片
     public void shareWeiboImage(String path) {
-        // 2. 初始化从第三方到微博的消息请求
         WeiboMessage weiboMessage = new WeiboMessage();
         Bitmap bitmap = BitmapFactory.decodeFile(path);
         weiboMessage.mediaObject = getImageObj(bitmap);
         SendMessageToWeiboRequest request = new SendMessageToWeiboRequest();
-        // 用transaction唯一标识一个请求
         request.transaction = String.valueOf(System.currentTimeMillis());
         request.message = weiboMessage;
-        // 3. 发送请求消息到微博，唤起微博分享界面
         mWeiboShareAPI.sendRequest(context, request);
     }
 
@@ -193,13 +183,13 @@ public class WeiboClient implements IWeiboHandler.Request{
     private WebpageObject getWebpageObj() {
         WebpageObject mediaObject = new WebpageObject();
         mediaObject.identify = Utility.generateGUID();
-        mediaObject.title = Constants.SHARE_TITLE;
-        mediaObject.description = Constants.SHARE_CONTENT;
+        mediaObject.title = ThirdConstants.SHARE_TITLE;
+        mediaObject.description = ThirdConstants.SHARE_CONTENT;
         // 设置 Bitmap 类型的图片到视频对象里
 //        Bitmap thumb = BitmapFactory.decodeResource(context.getResources(), R.mipmap.icon);
 //        mediaObject.setThumbImage(thumb);
-        mediaObject.actionUrl = Constants.SHARE_URL;
-        mediaObject.defaultText = Constants.SHARE_CONTENT;
+        mediaObject.actionUrl = ThirdConstants.SHARE_URL;
+        mediaObject.defaultText = ThirdConstants.SHARE_CONTENT;
         return mediaObject;
     }
 

@@ -3,7 +3,7 @@ package com.alex.thirdlib;
 /**
  * Created by Administrator on 2016/5/12.
  */
-public class Constants {
+public class ThirdConstants {
 
     //******************************新浪微博部分*************************************/
     public static final String SINA_APP_KEY = "";

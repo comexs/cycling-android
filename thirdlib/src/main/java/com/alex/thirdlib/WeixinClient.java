@@ -27,15 +27,13 @@ public class WeixinClient implements IWXAPIEventHandler {
     public IWXAPI api;
     private static final int TIMELINE_SUPPORTED_VERSION = 0x21020001;
     private Activity context;
-    WXAuthListener listener = null;
     public static final String WX_WECHAT = "wechat";
     public static final String WX_WXCIRCLE = "wxcircle";
 
     public void initWX() {
-        api = WXAPIFactory.createWXAPI(context, Constants.WX_APP_KEY, false);
-        api.registerApp(Constants.WX_APP_KEY);
+        api = WXAPIFactory.createWXAPI(context, ThirdConstants.WX_APP_KEY, false);
+        api.registerApp(ThirdConstants.WX_APP_KEY);
         api.handleIntent(context.getIntent(), this);
-//        WXEntryActivity.weixinHandler = this;
     }
 
     private void wxLogin() {
@@ -59,30 +57,24 @@ public class WeixinClient implements IWXAPIEventHandler {
 
     private void shareToWeixin() {
         initWX();
-        if (api.isWXAppInstalled()) {
-            int wxSdkVersion = api.getWXAppSupportAPI();
-            if (wxSdkVersion >= TIMELINE_SUPPORTED_VERSION) {
-//                if (status == STATUS_SHARE_IMAGE) {
-////                    ShareImageWX(0, path);
-//                    ShareImageWXEx(path);
-//                } else {
-//                    ShareWX(0);
-//                }
-            } else {
-                Toast.makeText(context, "您当前的微信版本不支持分享", Toast.LENGTH_LONG).show();
-            }
-        } else {
+        if (!api.isWXAppInstalled()) {
             Toast.makeText(context, "请先安装微信", Toast.LENGTH_LONG).show();
+            return;
         }
+        if (!api.isWXAppSupportAPI()) {
+            Toast.makeText(context, "您当前的微信版本不支持分享", Toast.LENGTH_LONG).show();
+            return;
+        }
+
     }
 
     // 0表示为微信好友，1表示为微信朋友圈
     private void shareWX(int flag) {
         WXWebpageObject webpage = new WXWebpageObject();
-        webpage.webpageUrl = Constants.SHARE_URL;
+        webpage.webpageUrl = ThirdConstants.SHARE_URL;
         WXMediaMessage msg = new WXMediaMessage(webpage);
-        msg.title = Constants.SHARE_TITLE;
-        msg.description = Constants.SHARE_CONTENT;
+        msg.title = ThirdConstants.SHARE_TITLE;
+        msg.description = ThirdConstants.SHARE_CONTENT;
         //Bitmap thumb = BitmapFactory.decodeResource(context.getResources(), R.mipmap.icon);
         //msg.thumbData = Util.bmpToByteArray(thumb, false);
         SendMessageToWX.Req req = new SendMessageToWX.Req();
@@ -121,15 +113,13 @@ public class WeixinClient implements IWXAPIEventHandler {
     }
 
 
-    public void login(Activity context, WXAuthListener listener) {
+    public void login(Activity context) {
         this.context = context;
-        this.listener = listener;
         wxLogin();
     }
 
-    //微信的回调函数
     @Override
-    public void onReq(BaseReq baseReq) {
+    public void onReq(BaseReq baseReq) {     //微信的回调函数
 
     }
 
@@ -137,11 +127,9 @@ public class WeixinClient implements IWXAPIEventHandler {
     public void onResp(BaseResp resp) {
         switch (resp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
-                //登录回来
-                if (resp.getType() == ConstantsAPI.COMMAND_SENDAUTH) {
+                if (resp.getType() == ConstantsAPI.COMMAND_SENDAUTH) { //登录回来
                     if (null != ((SendAuth.Resp) resp).code) {
-//                        RtViewUtils.showProDialog(activity, ResUtils.getStringRes(R.string.logining));
-//                        LoginApi.getInstance().getWXToken(((SendAuth.Resp) resp).code, toString(), new TokenListener());
+
                     }
                 }
                 break;
@@ -157,22 +145,4 @@ public class WeixinClient implements IWXAPIEventHandler {
         }
     }
 
-    //微信登录请求
-//    class TokenListener implements Response.Listener<WXToken> {
-//        @Override
-//        public void onResponse(WXToken wxToken) {
-//            if (null != wxToken) {
-//                // 获取用户信息接口
-//                //LoginApi.getInstance().otherLogin(SettingPreference.getToken(), toString(), LoginApi.WXLOGIN, wxToken.getAccess_token(), wxToken.getOpenid(), new ResponseListener(), params);
-//                if (null != listener) {
-//                    listener.success(wxToken);
-//                    activity = null;
-//                }
-//            }
-//        }
-//    }
-
-    public interface WXAuthListener {
-        void success();
-    }
 }

@@ -45,11 +45,6 @@ public class BaseActivity extends SupportActivity {
         initWindow();
     }
 
-    @Override
-    protected int setContainerId() {
-        return 0;
-    }
-
     /**
      * 设置全局动画，在SupportFragment可以自由更改其动画
      */

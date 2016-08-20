@@ -23,9 +23,4 @@ public class FragmentContainerActivity extends SupportActivity {
         }
     }
 
-    @Override
-    protected int setContainerId() {
-        return R.id.fl_container;
-    }
-
 }

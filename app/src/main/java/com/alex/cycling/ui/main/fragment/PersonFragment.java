@@ -13,9 +13,12 @@ import android.widget.TextView;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
+import com.alex.cycling.db.DbUtil;
 import com.alex.cycling.ui.main.util.DayAxisValueFormatter;
 import com.alex.cycling.ui.setting.PersonActivity;
 import com.alex.cycling.ui.setting.SettingActivity;
+import com.alex.greendao.TrackInfo;
+import com.alex.greendao.TrackInfoDao;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -26,6 +29,7 @@ import com.github.mikephil.charting.formatter.AxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -91,6 +95,14 @@ public class PersonFragment extends BaseFragment {
         setData(6, 50);
     }
 
+    private void queryWeekDate() {  //查询一周的数据
+        List<TrackInfo> trackInfoList = DbUtil.getTrackInfoService().queryBuilder().where(TrackInfoDao.Properties.Status.eq("1")).orderDesc(TrackInfoDao.Properties.StartTime).list();
+        for (TrackInfo trackInfo : trackInfoList) {
+            long time = trackInfo.getStartTime();
+        }
+    }
+
+
     private void setData(int count, float range) {
 
         float start = 0f;
@@ -101,8 +113,7 @@ public class PersonFragment extends BaseFragment {
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
 
         for (int i = (int) start; i < start + count + 1; i++) {
-            float mult = (range + 1);
-            float val = (float) (Math.random() * mult);
+            float val = i;
             yVals1.add(new BarEntry(i + 1f, val));
         }
 
@@ -125,7 +136,7 @@ public class PersonFragment extends BaseFragment {
             BarData data = new BarData(dataSets);
             data.setValueTextSize(10f);
             data.setDrawValues(false);
-            data.setBarWidth(0.3f);
+            data.setBarWidth(0.2f);
             mChart.setData(data);
         }
     }

@@ -30,7 +30,6 @@ public class RecordAdapter extends CustomBaseQuickAdapter<TrackInfo> {
         helper.setText(R.id.time, DateUtil.parseDateLineToBlurStr(trackInfo.getStartTime() * 1000));
         SimpleDraweeView trackImage = helper.getView(R.id.track_image);
         if (!TextUtils.isEmpty(trackInfo.getImageUrl())) {
-            LogUtil.e(TrackManager.getBaiduUrlByDes(trackInfo.getImageUrl(), 720, 200));
             trackImage.setImageURI(Uri.parse(TrackManager.getBaiduUrlByDes(trackInfo.getImageUrl(), 720, 200)));
         } else {
             TrackManager.vacuate(trackInfo.getTrackUUID());

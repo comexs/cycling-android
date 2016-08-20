@@ -46,6 +46,7 @@ public class TrackManager {
         isFirst = false;
         TrackInfo trackInfo = new TrackInfo();
         trackInfo.setTrackUUID(getCurrentUUID());
+        LogUtil.e(getCurrentUUID());
         trackInfo.setStartLat(workPoint.getLat());
         trackInfo.setStartLon(workPoint.getLon());
         trackInfo.setStartTime(workPoint.getTime());
