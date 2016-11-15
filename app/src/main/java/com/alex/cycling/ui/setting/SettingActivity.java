@@ -9,7 +9,7 @@ import com.alex.cycling.R;
 import com.alex.cycling.base.BaseActivity;
 import com.alex.cycling.utils.SystemUtil;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -18,17 +18,17 @@ import butterknife.OnClick;
  */
 public class SettingActivity extends BaseActivity {
 
-    @Bind(R.id.version_info)
+    @BindView(R.id.version_info)
     TextView versionInfo;
-    @Bind(R.id.about_person)
+    @BindView(R.id.about_person)
     FrameLayout aboutPerson;
-    @Bind(R.id.about_comment)
+    @BindView(R.id.about_comment)
     FrameLayout aboutComment;
-    @Bind(R.id.about_connect)
+    @BindView(R.id.about_connect)
     FrameLayout aboutConnect;
-    @Bind(R.id.about_share)
+    @BindView(R.id.about_share)
     FrameLayout aboutShare;
-    @Bind(R.id.act_about_main)
+    @BindView(R.id.act_about_main)
     FrameLayout actAboutMain;
 
     @Override

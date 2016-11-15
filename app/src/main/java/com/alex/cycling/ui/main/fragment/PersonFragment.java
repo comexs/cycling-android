@@ -1,25 +1,25 @@
 package com.alex.cycling.ui.main.fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
 import com.alex.cycling.db.DbUtil;
 import com.alex.cycling.ui.main.util.DayAxisValueFormatter;
-import com.alex.cycling.ui.setting.PersonActivity;
 import com.alex.cycling.ui.setting.SettingActivity;
 import com.alex.greendao.TrackInfo;
 import com.alex.greendao.TrackInfoDao;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -31,23 +31,30 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * Created by comexs on 16/4/10.
  */
 public class PersonFragment extends BaseFragment {
 
-    @Bind(R.id.avatar)
-    SimpleDraweeView avatar;
-    @Bind(R.id.name)
-    TextView name;
-    @Bind(R.id.address)
-    TextView address;
-
-    @Bind(R.id.chart)
+//    @BindView(R.id.avatar)
+//    ImageView avatar;
+//    @BindView(R.id.name)
+//    TextView name;
+//    @BindView(R.id.address)
+//    TextView address;
+    @BindView(R.id.chart)
     BarChart mChart;
+//    @BindView(R.id.back_image)
+//    ImageView backImage;
+
+    static {   //vector兼容性问题
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
 
     @Nullable
     @Override
@@ -68,7 +75,14 @@ public class PersonFragment extends BaseFragment {
 
 
     private void initView() {
-        avatar.setImageURI(Uri.parse("https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png"));
+//        avatar.setImageURI(Uri.parse("https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png"));
+
+//        Glide.with(getContext())
+//                .load(R.mipmap.default_head)
+//                .bitmapTransform(new CropCircleTransformation(getContext()))
+//                .dontAnimate()
+//                .into(avatar);
+
         mChart.setDrawBarShadow(false);
         mChart.setDrawValueAboveBar(true);
         mChart.setDescription("");
@@ -165,7 +179,7 @@ public class PersonFragment extends BaseFragment {
         super.onPrepareOptionsMenu(menu);
         MenuItem setting = menu.findItem(R.id.menu_common);
         setting.setTitle("设置");
-        setting.setIcon(R.mipmap.ic_setting);
+        setting.setIcon(R.drawable.ic_main_nav_settings);
     }
 
     @Override
@@ -182,6 +196,5 @@ public class PersonFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 }

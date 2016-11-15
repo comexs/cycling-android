@@ -16,15 +16,15 @@ import java.util.List;
 public class CacheWorkThread extends Thread {
 
     private volatile boolean mQuit = false;
-    LocationSersor locationSersor;
+    LocationSensor locationSersor;
 
     List<WorkPoint> list = null;
     Context context;
 
-    public CacheWorkThread(Context context, LocationSersor locationSersor) {
+    public CacheWorkThread(Context context, LocationSensor locationSersor) {
         this.locationSersor = locationSersor;
         this.context = context;
-        list = DbUtil.creTrackDb("default10").queryAll();
+        list = DbUtil.creTrackDb("f0f7aa84-078b-420a-812a-e84f1ce39530").queryAll();  //f0f7aa84-078b-420a-812a-e84f1ce39530.db
     }
 
     int i = 0;
@@ -32,7 +32,7 @@ public class CacheWorkThread extends Thread {
     public void quit() {
         mQuit = true;
         interrupt();
-        stop();
+//        stop();
     }
 
     @Override

@@ -34,7 +34,6 @@ import com.alex.cycling.utils.FileUtil;
 import com.alex.cycling.utils.ImageUtils;
 import com.alex.cycling.utils.SystemUtil;
 import com.alex.cycling.utils.ToastUtil;
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -46,7 +45,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -74,23 +73,23 @@ public class CameraActivity extends BaseActivity {
 
     //    @Bind(R.id.masking)
 //    CameraGrid cameraGrid;
-    @Bind(R.id.photo_area)
+    @BindView(R.id.photo_area)
     LinearLayout photoArea;
-    @Bind(R.id.panel_take_photo)
+    @BindView(R.id.panel_take_photo)
     View takePhotoPanel;
-    @Bind(R.id.takepicture)
+    @BindView(R.id.takepicture)
     Button takePicture;
-    @Bind(R.id.flashBtn)
+    @BindView(R.id.flashBtn)
     ImageView flashBtn;
-    @Bind(R.id.change)
+    @BindView(R.id.change)
     ImageView changeBtn;
-    @Bind(R.id.back)
+    @BindView(R.id.back)
     ImageView backBtn;
-    @Bind(R.id.next)
+    @BindView(R.id.next)
     ImageView galleryBtn;
     //    @Bind(R.id.focus_index)
 //    View focusIndex;
-    @Bind(R.id.surfaceView)
+    @BindView(R.id.surfaceView)
     SurfaceView surfaceView;
 
 
@@ -133,33 +132,33 @@ public class CameraActivity extends BaseActivity {
     }
 
     private void addPhoto(final PhotoItem photoItem) {
-        SimpleDraweeView photo = new SimpleDraweeView(this);
-        if (!TextUtils.isEmpty(photoItem.getImageUri())) {
-            photo.setImageURI(Uri.parse("file://" + photoItem.getImageUri()));
-//            ImageLoaderUtils.displayLocalImage(photoItem.getImageUri(), photo, null);
-        } else {
-            photo.setImageResource(R.mipmap.default_img);
-        }
+//        SimpleDraweeView photo = new SimpleDraweeView(this);
+//        if (!TextUtils.isEmpty(photoItem.getImageUri())) {
+//            photo.setImageURI(Uri.parse("file://" + photoItem.getImageUri()));
+////            ImageLoaderUtils.displayLocalImage(photoItem.getImageUri(), photo, null);
+//        } else {
+//            photo.setImageResource(R.mipmap.default_img);
+//        }
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 photoWidth, photoWidth);
         params.leftMargin = photoMargin;
         params.rightMargin = photoMargin;
         params.gravity = Gravity.CENTER;
-        photo.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        photo.setTag(photoItem.getImageUri());
+       // photo.setScaleType(ImageView.ScaleType.CENTER_CROP);
+       // photo.setTag(photoItem.getImageUri());
 
         if (photoArea.getChildCount() >= photoNumber) {
             photoArea.removeViewAt(photoArea.getChildCount() - 1);
-            photoArea.addView(photo, 0, params);
+           // photoArea.addView(photo, 0, params);
         } else {
-            photoArea.addView(photo, 0, params);
+          //  photoArea.addView(photo, 0, params);
         }
-        photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PhotoProcessActivity.newInstance(v.getContext(), "file://" + photoItem.getImageUri());
-            }
-        });
+//        photo.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                PhotoProcessActivity.newInstance(v.getContext(), "file://" + photoItem.getImageUri());
+//            }
+//        });
 //        photo.setOnClickListener(v -> {
 //            if (v instanceof ImageView && v.getTag() instanceof String) {
 //                CameraManager.getInst().processPhotoItem(CameraActivity.this,

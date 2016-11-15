@@ -16,17 +16,7 @@
             <option value="$PROJECT_DIR$/thirdlib" />
           </set>
         </option>
-        <option name="myModules">
-          <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/db" />
-            <option value="$PROJECT_DIR$/gson" />
-            <option value="$PROJECT_DIR$/marsdaemonlib" />
-            <option value="$PROJECT_DIR$/mpchartlib" />
-            <option value="$PROJECT_DIR$/thirdlib" />
-          </set>
-        </option>
+        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

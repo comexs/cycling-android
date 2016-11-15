@@ -132,7 +132,6 @@ public class BaseActivity extends SupportActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
     }
 
     @Override

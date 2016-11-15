@@ -28,7 +28,7 @@ import com.github.mikephil.charting.charts.LineChart;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -36,15 +36,15 @@ import butterknife.ButterKnife;
  */
 public class TrackChartFragment extends BaseFragment {
 
-    @Bind(R.id.speedChart)
+    @BindView(R.id.speedChart)
     LineChart speedChart;
-    @Bind(R.id.arcProgressBar)
+    @BindView(R.id.arcProgressBar)
     ArcProgressBar arcProgressBar;
-    @Bind(R.id.calorie)
+    @BindView(R.id.calorie)
     TextView calorie;
-    @Bind(R.id.avage_speed)
+    @BindView(R.id.avage_speed)
     TextView avageSpeed;
-    @Bind(R.id.time)
+    @BindView(R.id.time)
     TextView time;
 
     private SpeedLineChart speedLineChart;
@@ -99,6 +99,8 @@ public class TrackChartFragment extends BaseFragment {
 
         speedLineChart = new SpeedLineChart();
         speedLineChart.initChart(speedChart);
+        trackInfo.setAverageSpeed(0.00);
+        DbUtil.getTrackInfoService().update(trackInfo);
         avageSpeed.setText(MathUtil.decimal(trackInfo.getAverageSpeed()) + "");
         time.setText(MathUtil.getTimeIntervalFormat(trackInfo.getTotalTime()));
     }
@@ -128,7 +130,7 @@ public class TrackChartFragment extends BaseFragment {
                     return;
                 }
                 trackInfo.setTotalDis(MathUtil.decimal(allDistance));
-                trackInfo.setAverageSpeed(allDistance / (workPointList.get(0).getTime() - workPointList.get(workPointList.size() - 1).getTime()));
+//                trackInfo.setAverageSpeed(allDistance / (workPointList.get(0).getTime() - workPointList.get(workPointList.size() - 1).getTime()));
                 trackInfo.setTotalTime(workPointList.get(workPointList.size() - 1).getTime() - workPointList.get(0).getTime());
                 trackInfo.setClimbUp(climbup);
                 DbUtil.getTrackInfoService().update(trackInfo);
@@ -150,6 +152,5 @@ public class TrackChartFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 }

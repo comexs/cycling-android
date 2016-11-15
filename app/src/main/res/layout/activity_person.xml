@@ -31,13 +31,13 @@
         <!--android:layout_marginLeft="20dp"-->
         <!--fresco:placeholderImage="@mipmap/default_head" />-->
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/avatar"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_gravity="right|center_vertical"
-            android:layout_marginRight="30dp"
-            fresco:placeholderImage="@mipmap/default_head" />
+        <!--<com.facebook.drawee.view.SimpleDraweeView-->
+            <!--android:id="@+id/avatar"-->
+            <!--android:layout_width="64dp"-->
+            <!--android:layout_height="64dp"-->
+            <!--android:layout_gravity="right|center_vertical"-->
+            <!--android:layout_marginRight="30dp"-->
+            <!--fresco:placeholderImage="@mipmap/default_head" />-->
 
     </FrameLayout>
 

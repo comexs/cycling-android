@@ -2,7 +2,6 @@ package com.alex.cycling.ui.main.fragment;
 
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
-import android.graphics.PorterDuff;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,14 +16,13 @@ import android.widget.TextView;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
+import com.alex.cycling.client.TrackClient;
 import com.alex.cycling.service.TrackManager;
-import com.alex.cycling.utils.LogUtil;
+import com.alex.cycling.ui.main.MapActivity;
 import com.alex.cycling.utils.MathUtil;
 import com.jni.ActInfo;
-import com.alex.cycling.client.TrackClient;
-import com.alex.cycling.ui.main.MapActivity;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -33,19 +31,19 @@ import butterknife.OnClick;
  */
 public class CyclingFragment extends BaseFragment {
 
-    @Bind(R.id.time)
+    @BindView(R.id.time)
     TextView time;
-    @Bind(R.id.speed)
+    @BindView(R.id.speed)
     TextView speed;
-    @Bind(R.id.distance)
+    @BindView(R.id.distance)
     TextView distance;
-    @Bind(R.id.start)
+    @BindView(R.id.start)
     FloatingActionButton start;
-    @Bind(R.id.map)
+    @BindView(R.id.map)
     FloatingActionButton map;
-    @Bind(R.id.end)
+    @BindView(R.id.end)
     FloatingActionButton end;
-    @Bind(R.id.aveage_speed)
+    @BindView(R.id.aveage_speed)
     TextView aveageSpeed;
 //    @Bind(R.id.climbup)
 //    TextView climbup;
@@ -215,6 +213,5 @@ public class CyclingFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 }

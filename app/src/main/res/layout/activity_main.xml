@@ -6,19 +6,31 @@
     android:orientation="vertical"
     tools:context=".ui.main.MainActivity">
 
-    <FrameLayout
-        android:id="@+id/realtabcontent"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="50dp"
-        android:layout_weight="1" />
+        android:orientation="vertical">
 
-    <com.ashokvarma.bottomnavigation.BottomNavigationBar
-        android:id="@+id/bottom_navigation_bar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom" />
+        <FrameLayout
+            android:id="@+id/realtabcontent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <View style="@style/line_horizontal" />
+
+        <com.alex.cycling.ui.widget.FragmentTabHost
+            android:id="@android:id/tabhost"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="0dp"
+                android:layout_height="0dp" />
+        </com.alex.cycling.ui.widget.FragmentTabHost>
+
+    </LinearLayout>
 
     <include layout="@layout/cmm_toolbar" />
 

@@ -3,7 +3,6 @@ package com.alex.cycling.ui.main.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.view.ViewGroup;
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseFragment;
 import com.alex.cycling.db.DbUtil;
-import com.alex.cycling.service.TrackManager;
 import com.alex.cycling.ui.main.adapter.RecordAdapter;
 import com.alex.cycling.ui.track.TrackInfoActivity;
 import com.alex.cycling.utils.LogUtil;
@@ -22,7 +20,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -30,7 +28,7 @@ import butterknife.ButterKnife;
  */
 public class RecordFragment extends BaseFragment {
 
-    @Bind(R.id.record_list)
+    @BindView(R.id.record_list)
     RecyclerView mRecyclerView;
 
     private RecordAdapter recordAdapter;
@@ -63,16 +61,16 @@ public class RecordFragment extends BaseFragment {
         trackInfos.clear();
         page = 0;
         trackInfos.addAll(queryTrack(page));
-        for (TrackInfo trackInfo : DbUtil.getTrackInfoService().queryAll()) {
-            if (TextUtils.isEmpty(lastUUID)) {
-                lastUUID = trackInfo.getTrackUUID();
-            } else {
-                if (lastUUID.equals(trackInfo.getTrackUUID())) {
-                    DbUtil.getTrackInfoService().delete(trackInfo);
-                }
-            }
-            lastUUID = trackInfo.getTrackUUID();
-        }
+//        for (TrackInfo trackInfo : DbUtil.getTrackInfoService().queryAll()) {
+//            if (TextUtils.isEmpty(lastUUID)) {
+//                lastUUID = trackInfo.getTrackUUID();
+//            } else {
+//                if (lastUUID.equals(trackInfo.getTrackUUID())) {
+//                    DbUtil.getTrackInfoService().delete(trackInfo);
+//                }
+//            }
+//            lastUUID = trackInfo.getTrackUUID();
+//        }
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recordAdapter = new RecordAdapter(trackInfos);
@@ -123,6 +121,5 @@ public class RecordFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 }

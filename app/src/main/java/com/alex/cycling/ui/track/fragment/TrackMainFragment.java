@@ -30,9 +30,8 @@ import com.baidu.mapapi.model.LatLngBounds;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by comexs on 16/4/24.
@@ -40,15 +39,15 @@ import butterknife.OnClick;
 public class TrackMainFragment extends BaseFragment {
 
 
-    @Bind(R.id.frg_map)
+    @BindView(R.id.frg_map)
     MapView mapView;
-    @Bind(R.id.distance)
+    @BindView(R.id.distance)
     TextView distance;
-    @Bind(R.id.allTime)
+    @BindView(R.id.allTime)
     TextView allTime;
-    @Bind(R.id.clumbup)
+    @BindView(R.id.clumbup)
     TextView clumbup;
-    @Bind(R.id.calorie)
+    @BindView(R.id.calorie)
     TextView calorie;
 
     private String trackUUID;
@@ -188,6 +187,5 @@ public class TrackMainFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 }

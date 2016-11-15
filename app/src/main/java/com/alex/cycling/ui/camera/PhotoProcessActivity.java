@@ -43,7 +43,7 @@ import com.alex.cycling.utils.thread.ExecutUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
@@ -64,24 +64,24 @@ public class PhotoProcessActivity extends BaseActivity {
     public static final int POST_TYPE_POI = 1;
 
     //滤镜图片
-    @Bind(R.id.gpuimage)
+    @BindView(R.id.gpuimage)
     GPUImageView mGPUImageView;
-    @Bind(R.id.title_left_area)
+    @BindView(R.id.title_left_area)
     View left;
     //绘图区域
-    @Bind(R.id.drawing_view_container)
+    @BindView(R.id.drawing_view_container)
     ViewGroup drawArea;
     //底部按钮
-    @Bind(R.id.sticker_btn)
+    @BindView(R.id.sticker_btn)
     TextView stickerBtn;
-    @Bind(R.id.filter_btn)
+    @BindView(R.id.filter_btn)
     TextView filterBtn;
-    @Bind(R.id.text_btn)
+    @BindView(R.id.text_btn)
     TextView labelBtn;
     //工具区
-    @Bind(R.id.list_tools)
+    @BindView(R.id.list_tools)
     RecyclerView mRecyclerView;
-    @Bind(R.id.toolbar_area)
+    @BindView(R.id.toolbar_area)
     ViewGroup toolArea;
     private MyImageViewDrawableOverlay mImageView;
     private LabelSelector labelSelector;

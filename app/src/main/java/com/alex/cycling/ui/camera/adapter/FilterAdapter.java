@@ -1,25 +1,20 @@
 package com.alex.cycling.ui.camera.adapter;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alex.cycling.R;
-import com.alex.cycling.ui.camera.bean.Addon;
 import com.alex.cycling.ui.camera.util.FilterEffect;
 import com.alex.cycling.ui.camera.util.GPUImageFilterTools;
-import com.alex.cycling.utils.LogUtil;
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
 import jp.co.cyberagent.android.gpuimage.GPUImageView;
@@ -104,9 +99,9 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
             ButterKnife.bind(this, itemView);
         }
 
-        @Bind(R.id.small_filter)
+        @BindView(R.id.small_filter)
         GPUImageView filteredImg;
-        @Bind(R.id.filter_name)
+        @BindView(R.id.filter_name)
         TextView filterName;
     }
 

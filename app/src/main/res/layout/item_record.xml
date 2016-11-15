@@ -10,13 +10,13 @@
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground">
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/track_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:adjustViewBounds="true"
-        fresco:roundingBorderColor="@color/cmm_main_divider"
-        fresco:roundingBorderWidth="1dp" />
+    <!--<com.facebook.drawee.view.SimpleDraweeView-->
+        <!--android:id="@+id/track_image"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:adjustViewBounds="true"-->
+        <!--fresco:roundingBorderColor="@color/cmm_main_divider"-->
+        <!--fresco:roundingBorderWidth="1dp" />-->
 
 
     <FrameLayout

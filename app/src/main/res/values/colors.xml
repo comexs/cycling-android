@@ -35,7 +35,7 @@
 
 
     <!--离线地图-->
-    <color name="divider_line">#000000</color>
+    <color name="divider_line">#999999</color>
     <color name="holo_black">#2A2A2A</color>
     <!-- 15161B  -->
 

@@ -1,30 +1,31 @@
 package com.alex.cycling.ui.main;
 
 import android.graphics.drawable.ColorDrawable;
+import android.hardware.Sensor;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TabHost;
 
 import com.alex.cycling.R;
 import com.alex.cycling.base.BaseActivity;
 import com.alex.cycling.ui.main.fragment.CyclingFragment;
 import com.alex.cycling.ui.main.fragment.PersonFragment;
 import com.alex.cycling.ui.main.fragment.RecordFragment;
-import com.ashokvarma.bottomnavigation.BottomNavigationBar;
-import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.alex.cycling.ui.widget.FragmentTabHost;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity {
 
-    @Bind(R.id.bottom_navigation_bar)
-    BottomNavigationBar bottomBar;
+    @BindView(android.R.id.tabhost)
+    FragmentTabHost tabHost;
 
-    PersonFragment personFragment;
-    CyclingFragment cyclingFragment;
-    RecordFragment recordFragment;
+    private String[] tags = {"记录", "跑步", "个人"};
+
+    private int[] imageArray = new int[]{R.drawable.bottom_menu_1, R.drawable.bottom_menu_2,
+            R.drawable.bottom_menu_3};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,80 +35,50 @@ public class MainActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
         getSupportActionBar().setTitle("");
-        bottomBar.addItem(new BottomNavigationItem(R.mipmap.ic_person, "").setInactiveIconResource(R.mipmap.ic_person))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_run, "").setInactiveIconResource(R.mipmap.ic_run))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_record, "").setInactiveIconResource(R.mipmap.ic_record))
-                .initialise();
-        bottomBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_RIPPLE);
-        bottomBar.setMode(BottomNavigationBar.MODE_FIXED);
-//        bottomBar.setActiveColor("#000000")
-//                .setInActiveColor("#000000")
-//                .setBarBackgroundColor("#000000");
-        bottomBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
+        initView();
+    }
+
+    private void initView() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setTitle("");
+
+        tabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
+        tabHost.getTabWidget().setDividerDrawable(null); //去分割线
+        TabHost.TabSpec spec;
+
+        spec = tabHost.newTabSpec(tags[0]).setIndicator(getTabItemView(0));
+        tabHost.addTab(spec, RecordFragment.class, null);
+
+        spec = tabHost.newTabSpec(tags[1]).setIndicator(getTabItemView(1));
+        tabHost.addTab(spec, CyclingFragment.class, null);
+
+        spec = tabHost.newTabSpec(tags[2]).setIndicator(getTabItemView(2));
+        tabHost.addTab(spec, PersonFragment.class, null);  //
+
+        tabHost.setCurrentTab(1);
+//        initTab();
+
+        tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
-            public void onTabSelected(int position) {
-                tableSelect(position);
-            }
-
-            @Override
-            public void onTabUnselected(int position) {
-
-            }
-
-            @Override
-            public void onTabReselected(int position) {
-
+            public void onTabChanged(String tabId) {
             }
         });
-        bottomBar.selectTab(1);
+
+//        Sensor.
+
     }
 
-    public void tableSelect(int position) {
-        FragmentTransaction localFragmentTransaction = getSupportFragmentManager().beginTransaction();
-        switch (position) {
-            case 0:
-                if (null == personFragment) {
-                    personFragment = new PersonFragment();
-                }
-                localFragmentTransaction.replace(R.id.realtabcontent, personFragment, "tab_one");
-                localFragmentTransaction.commit();
-                break;
-            case 1:
-                if (null == cyclingFragment) {
-                    cyclingFragment = new CyclingFragment();
-                }
-                localFragmentTransaction.replace(R.id.realtabcontent, cyclingFragment, "tab_two");
-                localFragmentTransaction.commit();
-                break;
-            case 2:
-                if (null == recordFragment) {
-                    recordFragment = new RecordFragment();
-                }
-                localFragmentTransaction.replace(R.id.realtabcontent, recordFragment, "tab_third");
-                localFragmentTransaction.commit();
-                break;
-        }
+    /**
+     * 给每个Tab按钮设置图标和文字
+     */
+    private View getTabItemView(int index) {
+        View view = getLayoutInflater().inflate(R.layout.item_main_tab, null);
+        ImageView imageView = (ImageView) view.findViewById(R.id.imageview);
+        imageView.setImageResource(imageArray[index]);
+//        TextView textView = (TextView) view.findViewById(R.id.textview);
+//        textView.setText(tags[index]);
+        return view;
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.actionbar_setting:
-////                openActivity(SettingActivity.class);
-//                break;
-//            case R.id.actionbar_about:
-////                openActivity(AboutActivity.class);
-//
-//                break;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
     @Override
     protected void onStop() {

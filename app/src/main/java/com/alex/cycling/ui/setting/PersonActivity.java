@@ -12,14 +12,14 @@ import com.alex.cycling.R;
 import com.alex.cycling.base.BaseActivity;
 import com.alex.cycling.ui.widget.PhotoChoice;
 import com.alex.cycling.utils.BaiduLocationUtils;
+import com.alex.cycling.utils.LogUtil;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -30,21 +30,21 @@ public class PersonActivity extends BaseActivity implements DatePickerDialog.OnD
 
     public static final String DATEPICKER_TAG = "选择日期";
 
-    @Bind(R.id.avatar)
-    SimpleDraweeView avatar;
-    @Bind(R.id.username)
+    //    @Bind(R.id.avatar)
+//    SimpleDraweeView avatar;
+    @BindView(R.id.username)
     TextView username;
-    @Bind(R.id.sex)
+    @BindView(R.id.sex)
     TextView sex;
-    @Bind(R.id.sex_view)
+    @BindView(R.id.sex_view)
     FrameLayout sexView;
-    @Bind(R.id.address)
+    @BindView(R.id.address)
     TextView address;
-    @Bind(R.id.address_view)
+    @BindView(R.id.address_view)
     FrameLayout addressView;
-    @Bind(R.id.birthday)
+    @BindView(R.id.birthday)
     TextView birthday;
-    @Bind(R.id.birthday_view)
+    @BindView(R.id.birthday_view)
     FrameLayout birthdayView;
 
     PhotoChoice photoChoice = null;
@@ -57,15 +57,15 @@ public class PersonActivity extends BaseActivity implements DatePickerDialog.OnD
     }
 
 
-    @OnClick({R.id.avatar, R.id.sex_view, R.id.address_view, R.id.birthday_view})
+    @OnClick({R.id.sex_view, R.id.address_view, R.id.birthday_view})
     public void click(View v) {
         switch (v.getId()) {
-            case R.id.avatar:
-                if (null == photoChoice) {
-                    photoChoice = new PhotoChoice(this, this);
-                }
-                photoChoice.setAvatar();
-                break;
+//            case R.id.avatar:
+//                if (null == photoChoice) {
+//                    photoChoice = new PhotoChoice(this, this);
+//                }
+//                photoChoice.setAvatar();
+//                break;
             case R.id.sex_view:
 
                 break;
@@ -76,6 +76,7 @@ public class PersonActivity extends BaseActivity implements DatePickerDialog.OnD
                         if (bdLocation == null || address == null) {
                             return;
                         }
+                        LogUtil.e(bdLocation.getLatitude() + ":" + bdLocation.getLongitude());
                         address.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -111,12 +112,13 @@ public class PersonActivity extends BaseActivity implements DatePickerDialog.OnD
 
     @Override
     public void choiceSuccess(String uri) {
-        avatar.setImageURI(Uri.parse("file://" + uri));
+//        avatar.setImageURI(Uri.parse("file://" + uri));
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (null != photoChoice) photoChoice.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (null != photoChoice)
+            photoChoice.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

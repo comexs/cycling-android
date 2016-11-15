@@ -23,7 +23,7 @@ import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -31,9 +31,9 @@ import butterknife.ButterKnife;
  */
 public class TrackInfoActivity extends BaseActivity implements OnMenuItemClickListener {
 
-    @Bind(R.id.tab)
+    @BindView(R.id.tab)
     TabLayout tab;
-    @Bind(R.id.viewPager)
+    @BindView(R.id.viewPager)
     CustomViewPager viewPager;
 
     private TabFragmentPagerAdapter mTabAdapter;
@@ -71,7 +71,7 @@ public class TrackInfoActivity extends BaseActivity implements OnMenuItemClickLi
         tab.setupWithViewPager(viewPager);
         tab.setTabGravity(TabLayout.GRAVITY_FILL);
         tab.setTabMode(TabLayout.MODE_FIXED);
-        tab.setTabTextColors(getResources().getColor(R.color.white), getResources().getColor(R.color.cmm_main_red));
+        tab.setTabTextColors(getResources().getColor(R.color.white), getResources().getColor(R.color.green));
         viewPager.setNoScroll(true);
     }
 
@@ -147,7 +147,6 @@ public class TrackInfoActivity extends BaseActivity implements OnMenuItemClickLi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
     }
 
     @Override

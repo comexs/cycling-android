@@ -25,7 +25,7 @@ import com.baidu.mapapi.model.LatLng;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -35,9 +35,9 @@ import butterknife.OnClick;
 public class MapActivity extends BaseActivity implements BDLocationListener {
 
 
-    @Bind(R.id.frg_map)
+    @BindView(R.id.frg_map)
     MapView mapView;
-    @Bind(R.id.close)
+    @BindView(R.id.close)
     FloatingActionButton close;
 
     List<LatLng> latLngList = new ArrayList<>();

@@ -9,11 +9,10 @@ import android.widget.ImageView;
 
 import com.alex.cycling.R;
 import com.alex.cycling.ui.camera.bean.Addon;
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -44,9 +43,9 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
         Addon sticker = filterUris.get(position);
         holder.container.setVisibility(View.GONE);
-        holder.logo.setImageResource(sticker.getId());
-        holder.logo.setTag(position);
-        holder.logo.setOnClickListener(clickListener);
+//        holder.logo.setImageResource(sticker.getId());
+//        holder.logo.setTag(position);
+//        holder.logo.setOnClickListener(clickListener);
     }
 
     private View.OnClickListener clickListener = new View.OnClickListener() {
@@ -73,10 +72,10 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.ViewHold
             ButterKnife.bind(this, itemView);
         }
 
-        @Bind(R.id.effect_background)
+        @BindView(R.id.effect_background)
         ImageView container;
-        @Bind(R.id.effect_image)
-        SimpleDraweeView logo;
+//        @Bind(R.id.effect_image)
+//        SimpleDraweeView logo;
     }
 
 }

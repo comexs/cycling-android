@@ -7,7 +7,6 @@ import android.location.Location;
 import android.os.*;
 
 import com.alex.cycling.client.WorkStatus;
-import com.alex.cycling.utils.LogUtil;
 import com.alex.cycling.utils.thread.ExecutUtils;
 import com.alex.greendao.WorkPoint;
 import com.jni.ActInfo;
@@ -16,6 +15,8 @@ import com.alex.cycling.utils.BaiduTool;
 import com.baidu.mapapi.model.LatLng;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -23,8 +24,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class TrackWorkThread extends Thread {
 
-    private LocationSersor mLocationSersor;
-    private OnHandlerListener handlerListener;
+    private LocationSensor mLocationSersor;
+    private List<OnHandlerListener> handlerListener;
     private long startTime = 0; //开始时间
     private long tempTime = 0;  //间隔时间
     private long lastTime = 0;  //恢复的时间
@@ -37,7 +38,7 @@ public class TrackWorkThread extends Thread {
     private TTSUtils ttsUtils;
 
     public TrackWorkThread(Context context) {
-        mLocationSersor = new LocationSersor();
+        mLocationSersor = new LocationSensor();
         mLocationSersor.setLocationListener(listener);
         TrackClient.getInstance().setWorkHandler(this);
         this.context = context;
@@ -112,14 +113,16 @@ public class TrackWorkThread extends Thread {
                         return;
                     }
                     if (null != handlerListener) {
-                        handlerListener.onPostData(mLocation, (tempTime - startTime) / 1000, mSignal, actInfo);
+                        for (OnHandlerListener listener : handlerListener) {
+                            listener.onPostData(mLocation, (tempTime - startTime) / 1000, mSignal, actInfo);
+                        }
                     }
                 }
             }
         }
     }
 
-    private LocationSersor.LocationListener listener = new LocationSersor.LocationListener() {
+    private LocationSensor.LocationListener listener = new LocationSensor.LocationListener() {
         @Override
         public void onLocationChange(Location location, int signal) {
             if (null == location) {
@@ -183,7 +186,10 @@ public class TrackWorkThread extends Thread {
 
 
     public void setOnHandlerListener(OnHandlerListener listener) {
-        this.handlerListener = listener;
+        if (this.handlerListener == null) {
+            this.handlerListener = new ArrayList<OnHandlerListener>();
+        }
+        this.handlerListener.add(listener);
     }
 
     public interface OnHandlerListener {

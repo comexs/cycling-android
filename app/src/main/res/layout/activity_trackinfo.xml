@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:visibility="visible"
-        app:tabIndicatorColor="@android:color/holo_red_dark"
+        app:tabIndicatorColor="@color/green"
         app:tabMode="scrollable"
         app:tabPaddingEnd="16dp"
         app:tabPaddingStart="16dp" />

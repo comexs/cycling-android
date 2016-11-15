@@ -14,7 +14,7 @@ import com.alex.cycling.utils.permission.PermissionsChecker;
 /**
  * Created by comexs on 16/3/28.
  */
-public class LocationSersor implements LocationListener {
+public class LocationSensor implements LocationListener {
 
 
     private LocationManager mLocationManager;
