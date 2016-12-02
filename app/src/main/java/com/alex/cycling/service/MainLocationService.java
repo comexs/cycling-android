@@ -5,47 +5,61 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.location.Location;
+import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RemoteViews;
 
 import com.alex.cycling.R;
+import com.alex.cycling.client.TClient;
+import com.alex.cycling.client.TrackClient;
 import com.alex.cycling.ui.main.MainActivity;
-import com.alex.cycling.ui.main.fragment.CyclingFragment;
 import com.alex.cycling.utils.LogUtil;
 import com.alex.cycling.utils.MathUtil;
-import com.alex.cycling.utils.ToastUtil;
 import com.jni.ActInfo;
 
 /**
  * Created by comexs on 16/3/28.
  */
-public class LocationService extends Service implements TrackWorkThread.OnHandlerListener {
+public class MainLocationService extends Service implements ILocationBack {
 
-    private static final String ACTION_PLAY_TOGGLE = "io.github.ryanhoo.music.ACTION.PLAY_TOGGLE";
-    private static final String ACTION_PLAY_LAST = "io.github.ryanhoo.music.ACTION.PLAY_LAST";
-    private static final String ACTION_PLAY_NEXT = "io.github.ryanhoo.music.ACTION.PLAY_NEXT";
-    private static final String ACTION_STOP_SERVICE = "io.github.ryanhoo.music.ACTION.STOP_SERVICE";
+    public static final String ACTION_START = "alex.ACTION.START";
+    public static final String ACTION_STOP = "alex.ACTION.STOP";
+    public static final String ACTION_SAVE = "alex.ACTION.SAVE";
+    public static final String ACTION_RECOVERY = "alex.ACTION.RECOVERY";
+
+    public static final String TAG = "service_code";
+    public static final int CODE_SERVICE_START = 0;
+    public static final int CODE_SERVICE_PAUSE = 1;
+    public static final int CODE_SERVICE_STOP = -1;
+    public static final int CODE_SERVICE_SAVE = 2;
+    public static final int CODE_SERVICE_RECOVERY = 3;
 
     private final static String TAG_POWER = "power_cs";
     private PowerManager powerManager;
     private PowerManager.WakeLock wakeLock;
-    private TrackWorkThread workHandler;
+    private TrackThread workHandler;
     private Button wwButton;
+    private TClient mClient;
 
     private RemoteViews mContentViewBig, mContentViewSmall;
     private static final int NOTIFICATION_ID = 1;
     private long time;
-    private ActInfo actInfo;
+
+    private final Binder mBinder = new LocalBinder();
+
+    public class LocalBinder extends Binder {
+        public MainLocationService getService() {
+            return MainLocationService.this;
+        }
+    }
 
     @Override
     public void onCreate() {
@@ -56,7 +70,9 @@ public class LocationService extends Service implements TrackWorkThread.OnHandle
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        LogUtil.e("service is bind..");
+        return mBinder;
+//        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
@@ -68,40 +84,50 @@ public class LocationService extends Service implements TrackWorkThread.OnHandle
             }
         }
         initService(intent);
-        LogUtil.e("服务起来了");
+        LogUtil.e("service has start..");
         return START_STICKY;
     }
-
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         dissWW();
-        LogUtil.e("服务被销毁");
-//        if (null != workHandler) {
-//            workHandler.end();
-//        }
+        LogUtil.e("service has stop..");
     }
 
     private void initService(Intent intent) {
+        showWW();
+        if (mClient == null) {
+            mClient = TrackClient.getInstance();
+        }
         if (null == intent) {   //恢复时走这里
-            if (null == workHandler) {
-                workHandler = new TrackWorkThread(getBaseContext());
-                workHandler.recoveryTrack();
-                LogUtil.e("恢复服务..");
-            }
+            recoveryTrack();
             return;
         }
-        if (null == workHandler) {
-            workHandler = new TrackWorkThread(getBaseContext());
+        if (intent.getIntExtra(TAG, 0) == CODE_SERVICE_START) {
+            startTrack();
+            return;
         }
-        if (!TextUtils.isEmpty(intent.getAction()) && intent.getAction().equals(TrackManager.RECOVERY)) {
-            workHandler.recoveryTrack();
-        } else {
-            workHandler.startWork();
-            workHandler.setOnHandlerListener(this);
+        switch (intent.getAction()) {
+            case ACTION_START:
+                startTrack();
+                break;
+            case ACTION_STOP:
+                pauseTrack();
+                break;
+            case ACTION_SAVE:
+                saveTrack();
+                break;
+            case ACTION_RECOVERY:
+                recoveryTrack();
+                break;
         }
-        showWW();
+    }
+
+    @Override
+    public boolean stopService(Intent name) {
+        stopForeground(true);
+        return super.stopService(name);
     }
 
     private void showWW() {
@@ -179,10 +205,10 @@ public class LocationService extends Service implements TrackWorkThread.OnHandle
         remoteView.setImageViewResource(R.id.image_view_play_last, R.drawable.ic_remote_view_play_last);
         remoteView.setImageViewResource(R.id.image_view_play_next, R.drawable.ic_remote_view_play_next);
 
-        remoteView.setOnClickPendingIntent(R.id.button_close, getPendingIntent(ACTION_STOP_SERVICE));
-        remoteView.setOnClickPendingIntent(R.id.button_play_last, getPendingIntent(ACTION_PLAY_LAST));
-        remoteView.setOnClickPendingIntent(R.id.button_play_next, getPendingIntent(ACTION_PLAY_NEXT));
-        remoteView.setOnClickPendingIntent(R.id.button_play_toggle, getPendingIntent(ACTION_PLAY_TOGGLE));
+        remoteView.setOnClickPendingIntent(R.id.button_close, getPendingIntent(ACTION_START));
+        remoteView.setOnClickPendingIntent(R.id.button_play_last, getPendingIntent(ACTION_STOP));
+        remoteView.setOnClickPendingIntent(R.id.button_play_next, getPendingIntent(ACTION_SAVE));
+        remoteView.setOnClickPendingIntent(R.id.button_play_toggle, getPendingIntent(ACTION_RECOVERY));
     }
 
     private void updateRemoteViews(RemoteViews remoteView) {
@@ -203,12 +229,15 @@ public class LocationService extends Service implements TrackWorkThread.OnHandle
         remoteView.setImageViewResource(R.id.image_view_play_toggle, R.drawable.ic_remote_view_pause);
         remoteView.setImageViewResource(R.id.image_view_album, R.mipmap.ic_launcher);
         remoteView.setTextViewText(R.id.text_view_name, MathUtil.getTimeIntervalFormat(time));
-        if (actInfo == null) {
-            LogUtil.e("actInfo is null");
-            remoteView.setTextViewText(R.id.text_view_artist, "距离：0km");
-        } else {
-            remoteView.setTextViewText(R.id.text_view_artist, String.format("距离：%.2f", actInfo.getDistance()));
-        }
+
+        remoteView.setTextViewText(R.id.text_view_artist, "距离：0km");
+
+//        if (actInfo == null) {
+//            LogUtil.d("actInfo is null");
+//            remoteView.setTextViewText(R.id.text_view_artist, "距离：0km");
+//        } else {
+//            remoteView.setTextViewText(R.id.text_view_artist, String.format("距离：%.2f", actInfo.getDistance()));
+//        }
     }
 
     private PendingIntent getPendingIntent(String action) {
@@ -216,10 +245,48 @@ public class LocationService extends Service implements TrackWorkThread.OnHandle
     }
 
 
-    @Override
-    public void onPostData(Location location, long time, int signal, ActInfo actInfo) {
-        this.time = time;
-        this.actInfo = actInfo;
-        showNotification();
+    public void startTrack() {
+        if (null == workHandler) {
+            workHandler = new TrackThread(getApplicationContext());
+        }
+        workHandler.startWork();
+        workHandler.setOnMainListener(this);
     }
+
+    public void pauseTrack() {
+        LogUtil.e("service is pause..");
+//        if (workHandler != null) workHandler
+    }
+
+    public void saveTrack() {
+        LogUtil.e("service is save..");
+        if (workHandler != null) workHandler.saveTrack();
+    }
+
+    public void recoveryTrack() {
+        if (isTrackRun()) {
+            return;
+        }
+        if (null == workHandler) {
+            workHandler = new TrackThread(getApplicationContext());
+        }
+        workHandler.recoveryTrack();
+        LogUtil.e("service has recovery..");
+    }
+
+    public boolean isTrackRun() {
+        if (workHandler != null && workHandler.isAlive() && !workHandler.isInterrupted()) {
+            LogUtil.e("service is run..");
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onDataChange(Location location, long time, int signal, ActInfo actInfo) {
+        this.time = time;
+        showNotification();
+        if (mClient != null) mClient.onDataChange(location, time, signal, actInfo);
+    }
+
 }

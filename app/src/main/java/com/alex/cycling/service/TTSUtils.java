@@ -3,8 +3,6 @@ package com.alex.cycling.service;
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
 
-import com.alex.cycling.client.WorkStatus;
-
 import java.util.Locale;
 
 /**
@@ -39,34 +37,34 @@ public class TTSUtils implements TextToSpeech.OnInitListener {
         void init();
     }
 
-    public static String getTtsSpeak(WorkStatus status) {
-        String result = null;
-        switch (status) {
-            case start:
-                result = "开始跑步";
-                break;
-            case pause:
-                result = "跑步暂停";
-                break;
-            case stop:
-                result = "跑步停止";
-                break;
-            case end:
-                result = "跑步结束";
-                break;
-            case recovery:
-                result = "恢复跑步";
-                break;
-        }
-        return result;
-    }
+//    public static String getTtsSpeak(WorkStatus status) {
+//        String result = null;
+//        switch (status) {
+//            case start:
+//                result = "开始跑步";
+//                break;
+//            case pause:
+//                result = "跑步暂停";
+//                break;
+//            case stop:
+//                result = "跑步停止";
+//                break;
+//            case end:
+//                result = "跑步结束";
+//                break;
+//            case recovery:
+//                result = "恢复跑步";
+//                break;
+//        }
+//        return result;
+//    }
 
 
-    public void speek(WorkStatus speek) {
-        if (isStart) {
-            tts.speak(getTtsSpeak(speek), TextToSpeech.QUEUE_FLUSH, null);
-        }
-    }
+//    public void speek(WorkStatus speek) {
+//        if (isStart) {
+//            tts.speak(getTtsSpeak(speek), TextToSpeech.QUEUE_FLUSH, null);
+//        }
+//    }
 
 
     public void stop() {

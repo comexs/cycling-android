@@ -1,25 +1,31 @@
 package com.alex.cycling.client;
 
 import android.content.Context;
+import android.location.Location;
+
+import com.jni.ActInfo;
 
 /**
  * Created by comexs on 16/3/28.
  */
 public interface TClient {
 
-    void start(Context context); //开启轨迹监听
+    void start(Context context);
 
-    void pause(); //暂停
+    void pause(Context context);
 
-    void saveTrack(Context context); //保存
+    void saveTrack(Context context);
 
-    void endTrack(Context context); //结束
+    void endTrack(Context context);
 
-    void recoveryTrack(Context context); //恢复
+    void recoveryTrack(Context context);
 
     void addTrackListener(TrackClient.OnCyclingListener listener);
 
     void removeTranckListener(TrackClient.OnCyclingListener listener);
 
-    boolean isRun(Context context);  //是否在运行中
+    void onDataChange(Location location, long time, int signal, ActInfo actInfo);
+
+    boolean isRun();
+
 }

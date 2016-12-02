@@ -74,6 +74,8 @@ public class TrackManager {
             DbUtil.getTrackInfoService().update(trackInfo);
 //            vacuate();
         }
+        workPoints.clear();
+        workPoints = null;
     }
 
     private static OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
@@ -141,7 +143,12 @@ public class TrackManager {
 
     //恢复最后轨迹最后一个点
     public static WorkPoint recoveryLastPoint() {
-        return DbUtil.creTrackDb(getCurrentUUID()).queryBuilder().orderDesc(WorkPointDao.Properties.Time).list().get(0);
+        List<WorkPoint> list = DbUtil.creTrackDb(getCurrentUUID()).queryBuilder().orderDesc(WorkPointDao.Properties.Time).list();
+        if (list.size() == 0) {
+            return null;
+        } else {
+            return DbUtil.creTrackDb(getCurrentUUID()).queryBuilder().orderDesc(WorkPointDao.Properties.Time).list().get(0);
+        }
     }
 
     //恢复最后轨迹第一个点
@@ -176,7 +183,7 @@ public class TrackManager {
 
 
     public static List<LatLng> getCacheList(String trackUUID) {
-        List<LatLng> cacheList = new ArrayList<LatLng>();
+        List<LatLng> cacheList = new ArrayList<>();
         CloseableListIterator<WorkPoint> workPoints = DbUtil.creTrackDb(trackUUID).queryBuilder().listIterator();
         try {
             while (workPoints.hasNext()) {

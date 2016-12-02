@@ -6,14 +6,14 @@ package com.alex.greendao;
  */
 public class WorkPoint {
 
-    private double lat;
-    private double lon;
-    private double alt;
-    private float speed;
-    private float power;
-    private int temp;
-    private int status;
-    private long time;
+    public double lat;
+    public double lon;
+    public double alt;
+    public float speed;
+    public float power;
+    public int temp;
+    public int status;
+    public long time;
 
     public WorkPoint() {
     }

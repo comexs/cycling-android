@@ -59,7 +59,15 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.LocationService" />
+        <service android:name=".service.MainLocationService">
+            <intent-filter>
+                <action android:name="alex.ACTION.START" />
+                <action android:name="alex.ACTION.STOP" />
+                <action android:name="alex.ACTION.SAVE" />
+                <action android:name="alex.ACTION.RECOVERY" />
+            </intent-filter>
+        </service>
+
         <receiver android:name=".base.Receiver1" />
         <service
             android:name=".base.DomeaService"

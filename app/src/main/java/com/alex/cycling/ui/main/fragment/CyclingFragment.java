@@ -39,10 +39,10 @@ public class CyclingFragment extends BaseFragment {
     TextView distance;
     @BindView(R.id.start)
     FloatingActionButton start;
-    @BindView(R.id.map)
-    FloatingActionButton map;
-    @BindView(R.id.end)
-    FloatingActionButton end;
+    //    @BindView(R.id.map)
+//    FloatingActionButton map;
+//    @BindView(R.id.end)
+//    FloatingActionButton end;
     @BindView(R.id.aveage_speed)
     TextView aveageSpeed;
 //    @Bind(R.id.climbup)
@@ -90,7 +90,7 @@ public class CyclingFragment extends BaseFragment {
         }
     };
 
-    @OnClick({R.id.start, R.id.map, R.id.end})
+    @OnClick({R.id.start})
     void click(View v) {
         switch (v.getId()) {
             case R.id.start:
@@ -98,7 +98,7 @@ public class CyclingFragment extends BaseFragment {
                 if (TrackManager.hasRevovery()) {
                     showRecoveryDialoag();
                 } else {
-                    if (TrackClient.getInstance().isRun(getContext())) {
+                    if (TrackClient.getInstance().isRun()) {
                         showSaveDialog();
                     } else {
                         TrackClient.getInstance().start(getActivity());
@@ -107,12 +107,12 @@ public class CyclingFragment extends BaseFragment {
                     }
                 }
                 break;
-            case R.id.map:
-                openActivity(getActivity(), MapActivity.class);
-                break;
-            case R.id.end:
+//            case R.id.map:
+//                openActivity(getActivity(), MapActivity.class);
+//                break;
+//            case R.id.end:
 //                TrackClient.getInstance().saveTrack(getContext());
-                break;
+//                break;
         }
     }
 
@@ -142,7 +142,7 @@ public class CyclingFragment extends BaseFragment {
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
-                    TrackClient.getInstance().recoveryTrack(getActivity());
+                    TrackClient.getInstance().recoveryTrack(getContext());
                     start.setImageResource(R.mipmap.ic_pause);
                     start.setBackgroundColor(getResources().getColor(R.color.cmm_main_red));
                     break;
@@ -160,6 +160,7 @@ public class CyclingFragment extends BaseFragment {
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
+                    TrackClient.getInstance().recoveryTrack(getContext());
                     break;
                 case DialogInterface.BUTTON_NEGATIVE:
                     TrackClient.getInstance().saveTrack(getContext());
@@ -204,7 +205,8 @@ public class CyclingFragment extends BaseFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_common:
-                openActivity(getActivity(), MapActivity.class);
+//                openActivity(getActivity(), MapActivity.class);
+                TrackClient.getInstance().pause(getContext());
                 break;
         }
         return super.onOptionsItemSelected(item);

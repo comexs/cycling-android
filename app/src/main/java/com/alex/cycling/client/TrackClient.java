@@ -1,15 +1,16 @@
 package com.alex.cycling.client;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.location.Location;
+import android.os.IBinder;
 
-import com.alex.cycling.utils.LogUtil;
+import com.alex.cycling.base.CSApplication;
 import com.alex.cycling.utils.SystemUtil;
 import com.jni.ActInfo;
-import com.alex.cycling.service.LocationService;
-import com.alex.cycling.service.TrackManager;
-import com.alex.cycling.service.TrackWorkThread;
+import com.alex.cycling.service.MainLocationService;
 import com.alex.cycling.utils.thread.ExecutUtils;
 
 import java.util.ArrayList;
@@ -20,12 +21,12 @@ import java.util.List;
  */
 public class TrackClient implements TClient {
 
-
     private static TrackClient client = null;
 
-    TrackWorkThread trackWorkHandler;
+    List<OnCyclingListener> listenerList = new ArrayList<>(2);
 
-    List<OnCyclingListener> listenerList = new ArrayList<OnCyclingListener>();
+    private MainLocationService mPlaybackService;
+    private boolean mIsServiceBound;
 
     private TrackClient() {
 
@@ -47,42 +48,47 @@ public class TrackClient implements TClient {
 
     @Override
     public void start(Context context) {
-        Intent intent = new Intent(context, LocationService.class);
+        Intent intent = new Intent(context, MainLocationService.class);
+        intent.putExtra(MainLocationService.TAG, MainLocationService.CODE_SERVICE_START);
         context.startService(intent);
-//        if (!SystemUtil.hasLocationServiceRun(context)) {
-//            Intent intent = new Intent(context, LocationService.class);
-//            context.startService(intent);
-//        } else {
-//
-//            LogUtil.e("服务已启动");
-//        }
-    }
-
-    @Override
-    public void pause() {
-//        if (null != trackWorkHandler) trackWorkHandler.p
-//        listenerList.clear();
-    }
-
-    @Override
-    public void saveTrack(Context context) {
-        if (null != trackWorkHandler) {
-            trackWorkHandler.saveTrack();
-        } else {
-            TrackManager.closeTrackDB();
+        if (isRun()) {
+            context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+            mIsServiceBound = true;
         }
     }
 
     @Override
+    public void pause(Context context) {
+        if (mPlaybackService != null) mPlaybackService.pauseTrack();
+    }
+
+    @Override
+    public void saveTrack(Context context) {
+        if (mPlaybackService != null) mPlaybackService.saveTrack();
+    }
+
+    @Override
     public void endTrack(Context context) {
+        if (mPlaybackService != null) mPlaybackService.pauseTrack();
+        if (mIsServiceBound) {
+            context.unbindService(serviceConnection);
+        }
         listenerList.clear();
     }
 
     @Override
     public void recoveryTrack(Context context) {
-        Intent intent = new Intent(context, LocationService.class);
-        intent.setAction(TrackManager.RECOVERY);
-        context.startService(intent);
+        if (isRun()) {
+            if (mPlaybackService != null) mPlaybackService.recoveryTrack();
+        } else {
+            Intent intent = new Intent(context, MainLocationService.class);
+            intent.putExtra(MainLocationService.TAG, MainLocationService.CODE_SERVICE_RECOVERY);
+            context.startService(intent);
+            if (isRun()) {
+                context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+                mIsServiceBound = true;
+            }
+        }
     }
 
     @Override
@@ -99,22 +105,9 @@ public class TrackClient implements TClient {
     }
 
     @Override
-    public boolean isRun(Context context) {
-        return SystemUtil.hasLocationServiceRun(context);
-    }
-
-    public void setWorkHandler(TrackWorkThread handler) {
-        this.trackWorkHandler = handler;
-        trackWorkHandler.setOnHandlerListener(handlerListener);
-    }
-
-    private TrackWorkThread.OnHandlerListener handlerListener = new TrackWorkThread.OnHandlerListener() {
-        @Override
-        public void onPostData(final Location location, final long time, final int signal, final ActInfo actInfo) {
-            for (final OnCyclingListener listener : listenerList) {
-                if (null == listener) {
-                    return;
-                }
+    public void onDataChange(final Location location, final long time, final int signal, final ActInfo actInfo) {
+        for (final OnCyclingListener listener : listenerList) {
+            if (null != listener) {
                 ExecutUtils.runInMain(new Runnable() {
                     @Override
                     public void run() {
@@ -123,6 +116,24 @@ public class TrackClient implements TClient {
                     }
                 });
             }
+        }
+    }
+
+    @Override
+    public boolean isRun() {
+        return SystemUtil.isServiceRunning(CSApplication.getInstance(), MainLocationService.class);
+    }
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mPlaybackService = ((MainLocationService.LocalBinder) service).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mPlaybackService = null;
         }
     };
 

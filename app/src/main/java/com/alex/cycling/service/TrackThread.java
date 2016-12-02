@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.*;
 
-import com.alex.cycling.client.WorkStatus;
+import com.alex.cycling.utils.LogUtil;
 import com.alex.cycling.utils.thread.ExecutUtils;
 import com.alex.greendao.WorkPoint;
 import com.jni.ActInfo;
@@ -22,10 +22,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by comexs on 16/3/28.
  */
-public class TrackWorkThread extends Thread {
+public class TrackThread extends Thread {
 
     private LocationSensor mLocationSersor;
-    private List<OnHandlerListener> handlerListener;
+    private List<ILocationBack> handlerListener;
     private long startTime = 0; //开始时间
     private long tempTime = 0;  //间隔时间
     private long lastTime = 0;  //恢复的时间
@@ -37,10 +37,9 @@ public class TrackWorkThread extends Thread {
     private Context context;
     private TTSUtils ttsUtils;
 
-    public TrackWorkThread(Context context) {
+    public TrackThread(Context context) {
         mLocationSersor = new LocationSensor();
         mLocationSersor.setLocationListener(listener);
-        TrackClient.getInstance().setWorkHandler(this);
         this.context = context;
     }
 
@@ -54,21 +53,21 @@ public class TrackWorkThread extends Thread {
             ttsUtils = new TTSUtils(context, new TTSUtils.InitSuccess() {
                 @Override
                 public void init() {
-                    ttsUtils.speek(WorkStatus.start);
+//                    ttsUtils.speek(WorkStatus.start);
                 }
             });
         }
     }
 
     public void end() {
-        ttsUtils.speek(WorkStatus.end);
+//        ttsUtils.speek(WorkStatus.end);
         mLocationSersor.end();
         interrupt();
         ExecutUtils.runInBack(new Runnable() {
             @Override
             public void run() {
                 ttsUtils.stop();
-                context.stopService(new Intent(context, LocationService.class));
+                context.stopService(new Intent(context, MainLocationService.class));
             }
         }, 3000);
     }
@@ -83,14 +82,15 @@ public class TrackWorkThread extends Thread {
     public void recoveryTrack() {
         WorkPoint workPoint = TrackManager.recoveryLastPoint();
         if (null == workPoint) {
+            LogUtil.e("not can recovery , point is empty..");
             return;
         }
         mLocation = new Location("gps");
-        mLocation.setLatitude(workPoint.getLat());
-        mLocation.setLongitude(workPoint.getLon());
-        mLocation.setAltitude(workPoint.getAlt());
-        mLocation.setTime(workPoint.getTime());
-        mLocation.setSpeed(workPoint.getSpeed());
+        mLocation.setLatitude(workPoint.lat);
+        mLocation.setLongitude(workPoint.lon);
+        mLocation.setAltitude(workPoint.alt);
+        mLocation.setTime(workPoint.time);
+        mLocation.setSpeed(workPoint.speed);
         lastTime = TrackManager.getLastTrackMillTime();
         startTime = SystemClock.elapsedRealtime();
         startWork();
@@ -101,7 +101,7 @@ public class TrackWorkThread extends Thread {
     public void run() {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
         while (true) {
-            synchronized (TrackWorkThread.class) {
+            synchronized (TrackThread.class) {
                 long minTime = SystemClock.elapsedRealtime() + lastTime;
                 if (minTime - tempTime > 1000) {
                     tempTime = minTime;
@@ -113,8 +113,8 @@ public class TrackWorkThread extends Thread {
                         return;
                     }
                     if (null != handlerListener) {
-                        for (OnHandlerListener listener : handlerListener) {
-                            listener.onPostData(mLocation, (tempTime - startTime) / 1000, mSignal, actInfo);
+                        for (ILocationBack listener : handlerListener) {
+                            listener.onDataChange(mLocation, (tempTime - startTime) / 1000, mSignal, actInfo);
                         }
                     }
                 }
@@ -185,15 +185,11 @@ public class TrackWorkThread extends Thread {
     }
 
 
-    public void setOnHandlerListener(OnHandlerListener listener) {
+    public void setOnMainListener(ILocationBack listener) {
         if (this.handlerListener == null) {
-            this.handlerListener = new ArrayList<OnHandlerListener>();
+            this.handlerListener = new ArrayList<>();
         }
         this.handlerListener.add(listener);
-    }
-
-    public interface OnHandlerListener {
-        void onPostData(Location location, long time, int signal, ActInfo actInfo);
     }
 
 }

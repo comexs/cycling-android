@@ -20,7 +20,6 @@ import java.io.IOException;
  **/
 public class DBContext extends ContextWrapper {
 
-
     public String path;
 
     /**
@@ -55,12 +54,9 @@ public class DBContext extends ContextWrapper {
     }
 
     private File createFile(String path, String name) {
-        //判断目录是否存在，不存在则创建该目录
         File dirFile = new File(path);
         if (!dirFile.exists()) dirFile.mkdirs();
-        //数据库文件是否创建成功
         boolean isFileCreateSuccess = false;
-        //判断文件是否存在，不存在则创建该文件
         File dbFile = new File(path + name);
         if (!dbFile.exists()) {
             try {
@@ -72,7 +68,6 @@ public class DBContext extends ContextWrapper {
         } else {
             isFileCreateSuccess = true;
         }
-        //返回数据库文件对象
         if (isFileCreateSuccess) {
             return dbFile;
         } else {

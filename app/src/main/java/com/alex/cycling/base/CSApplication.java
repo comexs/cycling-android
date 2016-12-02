@@ -4,13 +4,10 @@ import android.app.Application;
 import android.content.Context;
 
 import com.alex.cycling.db.DbCore;
-import com.alex.cycling.service.LocationService;
-import com.alex.cycling.utils.FileUtil;
+import com.alex.cycling.service.MainLocationService;
 import com.baidu.mapapi.SDKInitializer;
 import com.marswin89.marsdaemon.DaemonApplication;
 import com.marswin89.marsdaemon.DaemonConfigurations;
-
-import java.io.File;
 
 /**
  * Created by comexs on 16/3/27.
@@ -60,7 +57,7 @@ public class CSApplication extends DaemonApplication {
     protected DaemonConfigurations getDaemonConfigurations() {
         DaemonConfigurations.DaemonConfiguration configuration1 = new DaemonConfigurations.DaemonConfiguration(
                 "com.marswin89.marsdaemon.demo:process1",
-                LocationService.class.getCanonicalName(),
+                MainLocationService.class.getCanonicalName(),
                 Receiver1.class.getCanonicalName());
 
         DaemonConfigurations.DaemonConfiguration configuration2 = new DaemonConfigurations.DaemonConfiguration(

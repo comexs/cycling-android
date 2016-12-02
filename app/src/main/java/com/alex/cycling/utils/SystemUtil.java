@@ -7,7 +7,7 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import com.alex.cycling.base.CSApplication;
-import com.alex.cycling.service.LocationService;
+import com.alex.cycling.service.MainLocationService;
 import com.alex.cycling.ui.camera.bean.PhotoItem;
 
 import java.io.File;
@@ -20,16 +20,6 @@ import java.util.List;
  * Created by comexs on 16/4/12.
  */
 public class SystemUtil {
-
-    public static boolean hasLocationServiceRun(Context context) {
-        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (LocationService.class.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * 判断服务是否启动, 注意只要名称相同, 会检测任何服务.

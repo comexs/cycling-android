@@ -17,7 +17,6 @@ public class DbUtil {
     private static TrackInfoService trackInfoService;
     private static String trackName = null;
 
-
     private static WorkPointDao getWorkPointDao(String trackUUID) {
         return DbCore.createTrackSession(trackUUID).getWorkPointDao();
     }
